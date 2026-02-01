@@ -22,3 +22,17 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+matches.pgn
+
+.idea/
+uci-arena-tv/target/
+uci-arena/target/
+uci-arena-ipc/target/
+engine-tools/target/
+engine-tools/scripts/venv/
+uci-proxy/target/
+uci-gui/target/
+target/
+scripts/my_env/
+/scripts/.vscode/launch.json

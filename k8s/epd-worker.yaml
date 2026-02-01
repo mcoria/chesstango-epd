@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chesstango-epd-worker
+  labels:
+    app: chesstango-epd-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chesstango-epd-worker
+  template:
+    metadata:
+      name: chesstango-epd-worker
+      labels:
+        app: chesstango-epd-worker
+    spec:
+      containers:
+        - name: chesstango-epd-worker
+          image: coriamauricio/epd-worker:1.3.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RABBIT_HOST
+              value: "chesstango-rabbit-svc.default.svc.cluster.local"
+      restartPolicy: Always
+      

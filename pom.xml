@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.chesstango</groupId>
+        <artifactId>engine-parent</artifactId>
+        <version>1.3.0-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <artifactId>engine-epd-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>epd-core</module>
+        <module>epd-worker</module>
+        <module>epd-master</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.release>25</maven.compiler.release>
+
+        <maven-deploy-plugin.version>3.1.2</maven-deploy-plugin.version>
+        <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+
+        <!-- Dependencies -->
+        <commons-pool2.version>2.11.1</commons-pool2.version>
+        <commons-cli.version>1.8.0</commons-cli.version>
+        <rabitmq.verison>5.26.0</rabitmq.verison>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.chesstango</groupId>
+                <artifactId>epd-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.chesstango</groupId>
+                <artifactId>epd-worker</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.chesstango</groupId>
+                <artifactId>uci-arena-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.chesstango</groupId>
+                <artifactId>uci-arena-worker</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.chesstango</groupId>
+                <artifactId>uci-arena-master</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons-pool2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-cli</groupId>
+                <artifactId>commons-cli</artifactId>
+                <version>${commons-cli.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${rabitmq.verison}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>exec-maven-plugin</artifactId>
+                            <version>${exec-maven-plugin.version}</version>
+                            <executions>
+                                <!-- Remove existing image from local repo -->
+                                <execution>
+                                    <id>docker-clean</id>
+                                    <phase>install</phase>
+                                    <goals>
+                                        <goal>exec</goal>
+                                    </goals>
+                                    <configuration>
+                                        <executable>docker</executable>
+                                        <workingDirectory>${project.basedir}</workingDirectory>
+                                        <arguments>
+                                            <argument>rmi</argument>
+                                            <argument>-f</argument>
+                                            <argument>coriamauricio/${project.artifactId}:${project.version}
+                                            </argument>
+                                        </arguments>
+                                    </configuration>
+                                </execution>
+                                <!--
+                                  Create new docker image using Dockerfile which must be present in current working directory.
+                                  Tag the image using maven project version information.
+                                -->
+                                <execution>
+                                    <id>docker-build</id>
+                                    <phase>install</phase>
+                                    <goals>
+                                        <goal>exec</goal>
+                                    </goals>
+                                    <configuration>
+                                        <executable>docker</executable>
+                                        <workingDirectory>${project.basedir}</workingDirectory>
+                                        <arguments>
+                                            <argument>build</argument>
+                                            <argument>-t</argument>
+                                            <argument>coriamauricio/${project.artifactId}:${project.version}</argument>
+                                            <argument>.</argument>
+                                        </arguments>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <id>docker-push</id>
+                                    <phase>deploy</phase>
+                                    <goals>
+                                        <goal>exec</goal>
+                                    </goals>
+                                    <configuration>
+                                        <executable>docker</executable>
+                                        <workingDirectory>${project.basedir}</workingDirectory>
+                                        <arguments>
+                                            <argument>push</argument>
+                                            <argument>coriamauricio/${project.artifactId}:${project.version}</argument>
+                                        </arguments>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+</project>
