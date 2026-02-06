@@ -29,7 +29,7 @@ public class EpdSearchMainProducer implements Runnable {
      * 4. Filtro de archivos
      * <p>
      * Ejemplo:
-     * 4 500 C:\java\projects\chess\chess-utils\testing\positions\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * 4 500 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * <p>
      *     Ejecutar VM con
