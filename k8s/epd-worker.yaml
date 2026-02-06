@@ -5,7 +5,7 @@ metadata:
   labels:
     app: chesstango-epd-worker
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: chesstango-epd-worker
