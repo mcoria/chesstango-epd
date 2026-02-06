@@ -19,6 +19,11 @@ spec:
         - name: chesstango-epd-worker
           image: coriamauricio/epd-worker:1.3.0
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 1
+            limits:
+              cpu: 1
           env:
             - name: RABBIT_HOST
               value: "chesstango-rabbit-svc.default.svc.cluster.local"
