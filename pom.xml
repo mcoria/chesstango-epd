@@ -47,22 +47,6 @@
                 <version>1.3.0</version>
             </dependency>
             <dependency>
-                <groupId>net.chesstango</groupId>
-                <artifactId>uci-arena-core</artifactId>
-                <version>1.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>net.chesstango</groupId>
-                <artifactId>uci-arena-worker</artifactId>
-                <version>1.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>net.chesstango</groupId>
-                <artifactId>uci-arena-master</artifactId>
-                <version>1.3.0</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-pool2</artifactId>
                 <version>${commons-pool2.version}</version>
