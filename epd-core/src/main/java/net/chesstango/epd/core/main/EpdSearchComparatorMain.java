@@ -20,8 +20,8 @@ import java.util.Objects;
 public class EpdSearchComparatorMain {
 
     public static void main(String[] args) {
-        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-6-2026-01-01-11-32-v1.2.0");
-        epdSearchComparatorMain.addSession("depth-6-2026-02-01-14-44-v1.3.0-SNAPSHOT"); // Con EvaluatorImp04
+        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-5-2026-01-01-11-31-v1.2.0");
+        epdSearchComparatorMain.addSession("depth-5-2026-02-06-01-00-v1.3.0"); // Con EvaluatorImp04
         //epdSearchComparatorMain.addSession("depth-5-2024-09-15-07-14-v0.0.28-SNAPSHOT");
         //
         //
