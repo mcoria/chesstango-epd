@@ -31,7 +31,7 @@ public class EpdSearchMain implements Runnable {
      * 4. Filtro de archivos
      * <p>
      * Ejemplo:
-     * 4 500 C:\java\projects\chess\chess-utils\testing\positions\database "(mate-[wb][123].epd|Bratko-Kopec.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * 6 0 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * @param args
      */
@@ -77,7 +77,7 @@ public class EpdSearchMain implements Runnable {
                         .createDefaultBuilderInstance()
                         // Hasta v0.0.27 se utilizó EvaluatorSEandImp02
                         // (ahora EvaluatorImp04) como evaluador
-                        .withGameEvaluator(Evaluator.getInstance())
+                        .withGameEvaluator(Evaluator.createInstance())
                         .withStatistics()
                         .build())
                 .setDepth(depth)
