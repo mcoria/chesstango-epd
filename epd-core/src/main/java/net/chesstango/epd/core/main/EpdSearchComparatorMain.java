@@ -21,7 +21,7 @@ public class EpdSearchComparatorMain {
 
     public static void main(String[] args) {
         EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-6-2026-02-06-01-00-v1.3.0");
-        epdSearchComparatorMain.addSession("depth-6-2026-02-15-21-59-v1.4.0-SNAPSHOT");
+        epdSearchComparatorMain.addSession("depth-6-2026-02-16-13-21-v1.4.0-SNAPSHOT");
         //depth-6-2026-02-15-21-59-v1.4.0-SNAPSHOT
 
         //

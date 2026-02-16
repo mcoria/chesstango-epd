@@ -24,7 +24,7 @@ class EpdSearchWorker implements Function<EpdSearchRequest, EpdSearchResponse> {
                         .createDefaultBuilderInstance()
                         // Hasta v0.0.27 se utilizó EvaluatorSEandImp02
                         // (ahora EvaluatorImp04) como evaluador
-                        .withGameEvaluator(Evaluator.getInstance())
+                        .withGameEvaluator(Evaluator.createInstance())
                         .withStatistics()
                         .build())
                 .setDepth(epdSearchRequest.getDepth())
