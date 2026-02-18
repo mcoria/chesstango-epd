@@ -1,6 +1,7 @@
 package net.chesstango.epd.master;
 
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.worker.EpdSearchResponse;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class EpdSearchMainReader {
 
         matchResponses.forEach(epdSearchResponse -> {
             log.info("Saving report {}", epdSearchResponse.getSearchId());
-            epdSearchReportSaver.saveReport(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
+            epdSearchReportSaver.saveReports(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
         });
 
     }
@@ -42,13 +43,13 @@ public class EpdSearchMainReader {
 
         assert files != null;
         return Stream.of(files).map(file -> {
-                    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                        log.info("Deserializing file: {}", file.getName());
-                        return (EpdSearchResponse) ois.readObject();
-                    } catch (Exception e) {
-                        log.error("Failed to deserialize file: " + file, e);
-                        return null;
-                    }
-                }).filter(Objects::nonNull);
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                log.info("Deserializing file: {}", file.getName());
+                return (EpdSearchResponse) ois.readObject();
+            } catch (Exception e) {
+                log.error("Failed to deserialize file: " + file, e);
+                return null;
+            }
+        }).filter(Objects::nonNull);
     }
 }
