@@ -7,13 +7,12 @@ import net.chesstango.epd.core.report.EpdSearchReportModel;
 import net.chesstango.epd.core.report.SummaryModel;
 import net.chesstango.epd.core.report.SummaryPrinter;
 import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.reports.tree.evaluation.EvaluationModel;
-import net.chesstango.reports.tree.evaluation.EvaluationReport;
-import net.chesstango.reports.tree.nodes.NodesModel;
-import net.chesstango.reports.tree.nodes.NodesReport;
-import net.chesstango.reports.tree.pv.PrincipalVariationModel;
-import net.chesstango.reports.tree.pv.PrincipalVariationReport;
-
+import net.chesstango.reports.search.evaluation.EvaluationModel;
+import net.chesstango.reports.search.evaluation.EvaluationReport;
+import net.chesstango.reports.search.nodes.NodesModel;
+import net.chesstango.reports.search.nodes.NodesReport;
+import net.chesstango.reports.search.pv.PrincipalVariationModel;
+import net.chesstango.reports.search.pv.PrincipalVariationReport;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,8 +51,9 @@ public class EpdSearchReportSaver {
 
         try (PrintStream out = new PrintStream(new FileOutputStream(searchSummaryPath.toFile()), true)) {
             new SummaryPrinter()
+                    .setOut(out)
                     .withSearchSummaryModel(summaryModel)
-                    .print(out);
+                    .print();
 
             out.flush();
         } catch (IOException e) {
