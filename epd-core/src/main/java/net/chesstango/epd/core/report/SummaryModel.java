@@ -102,7 +102,7 @@ public class SummaryModel {
 
     public static SummaryModel collectStatics(String sessionId,
                                               List<EpdSearchResult> epdSearchResults,
-                                              EpdSearchReportModel epdSearchReportModel,
+                                              EpdSearchModel epdSearchModel,
                                               NodesModel nodesReportModel,
                                               EvaluationModel evaluationReportModel,
                                               PrincipalVariationModel principalVariationReportModel) {
@@ -110,12 +110,12 @@ public class SummaryModel {
         SummaryModel model = new SummaryModel();
 
         model.sessionid = sessionId;
-        model.duration = epdSearchReportModel.duration;
-        model.searches = epdSearchReportModel.searches;
+        model.duration = epdSearchModel.duration;
+        model.searches = epdSearchModel.searches;
 
-        model.success = epdSearchReportModel.success;
-        model.successRate = epdSearchReportModel.successRate;
-        model.depthAccuracyPct = epdSearchReportModel.depthAccuracyPct;
+        model.success = epdSearchModel.success;
+        model.successRate = epdSearchModel.successRate;
+        model.depthAccuracyPct = epdSearchModel.depthAccuracyPct;
 
         model.maxSearchRLevel = nodesReportModel.maxSearchRLevel;
         model.maxSearchQLevel = nodesReportModel.maxSearchQLevel;

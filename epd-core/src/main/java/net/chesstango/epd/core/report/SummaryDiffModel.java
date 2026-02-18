@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-public class SummaryDiffReportModel {
+public class SummaryDiffModel {
 
     String suiteName;
     int elements;
@@ -24,8 +24,8 @@ public class SummaryDiffReportModel {
     ) {
     }
 
-    public static SummaryDiffReportModel createModel(String suiteName, SummaryModel baseLineSearchSummary, List<SummaryModel> searchSummaryList) {
-        SummaryDiffReportModel reportModel = new SummaryDiffReportModel();
+    public static SummaryDiffModel createModel(String suiteName, SummaryModel baseLineSearchSummary, List<SummaryModel> searchSummaryList) {
+        SummaryDiffModel reportModel = new SummaryDiffModel();
 
         reportModel.suiteName = suiteName;
         reportModel.elements = searchSummaryList.size();

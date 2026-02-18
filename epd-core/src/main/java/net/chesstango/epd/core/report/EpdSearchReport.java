@@ -20,7 +20,7 @@ public class EpdSearchReport {
 
     @Setter
     @Accessors(chain = true)
-    private EpdSearchReportModel reportModel;
+    private EpdSearchModel reportModel;
 
     public EpdSearchReport printReport(PrintStream output) {
         out = output;
@@ -29,7 +29,6 @@ public class EpdSearchReport {
     }
 
     private void print() {
-        out.printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
         out.printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
         out.printf("EpdSearchReport: %s\n\n", reportModel.reportTitle);
 
@@ -48,7 +47,7 @@ public class EpdSearchReport {
     }
 
     public EpdSearchReport withEdpEntries(List<EpdSearchResult> edpEntries) {
-        this.reportModel = EpdSearchReportModel.collectStatistics(reportTitle, edpEntries);
+        this.reportModel = EpdSearchModel.collectStatistics(reportTitle, edpEntries);
         return this;
     }
 

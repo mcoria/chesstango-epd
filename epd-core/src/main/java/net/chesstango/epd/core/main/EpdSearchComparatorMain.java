@@ -2,7 +2,7 @@ package net.chesstango.epd.core.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.chesstango.epd.core.report.SummaryDiffReport;
-import net.chesstango.epd.core.report.SummaryDiffReportModel;
+import net.chesstango.epd.core.report.SummaryDiffModel;
 import net.chesstango.epd.core.report.SummaryModel;
 
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class EpdSearchComparatorMain {
     }
 
     private void printReport(PrintStream out) {
-        SummaryDiffReportModel reportModel = SummaryDiffReportModel.createModel(suiteName, baseLineSearchSummary, searchSummaryList);
+        SummaryDiffModel reportModel = SummaryDiffModel.createModel(suiteName, baseLineSearchSummary, searchSummaryList);
 
         new SummaryDiffReport()
                 .withSummaryDiffReportModel(reportModel)

@@ -3,7 +3,7 @@ package net.chesstango.epd.core.main;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.engine.Tango;
 import net.chesstango.epd.core.report.EpdSearchReport;
-import net.chesstango.epd.core.report.EpdSearchReportModel;
+import net.chesstango.epd.core.report.EpdSearchModel;
 import net.chesstango.epd.core.report.SummaryModel;
 import net.chesstango.epd.core.report.SummaryPrinter;
 import net.chesstango.epd.core.search.EpdSearchResult;
@@ -35,13 +35,13 @@ public class EpdSearchReportSaver {
     }
 
     public void saveReport(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        EpdSearchReportModel epdSearchReportModel = EpdSearchReportModel.collectStatistics(suiteName, epdSearchResults);
+        EpdSearchModel epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
         NodesModel nodesReportModel = NodesModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         EvaluationModel evaluationReportModel = EvaluationModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         PrincipalVariationModel principalVariationReportModel = PrincipalVariationModel.collectStatics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        SummaryModel summaryModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchReportModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
+        SummaryModel summaryModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
 
-        saveReports(suiteName, epdSearchReportModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
+        saveReports(suiteName, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
 
         saveSearchSummary(suiteName, summaryModel);
     }
@@ -61,12 +61,12 @@ public class EpdSearchReportSaver {
         }
     }
 
-    private void saveReports(String suiteName, EpdSearchReportModel epdSearchReportModel, NodesModel nodesReportModel, EvaluationModel evaluationReportModel, PrincipalVariationModel principalVariationReportModel) {
+    private void saveReports(String suiteName, EpdSearchModel epdSearchModel, NodesModel nodesReportModel, EvaluationModel evaluationReportModel, PrincipalVariationModel principalVariationReportModel) {
         Path suitePathReport = sessionDirectory.resolve(String.format("%s-report.txt", suiteName));
 
         try (PrintStream out = new PrintStream(new FileOutputStream(suitePathReport.toFile()), true)) {
 
-            printReports(out, epdSearchReportModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
+            printReports(out, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
 
             out.flush();
         } catch (IOException e) {
@@ -74,11 +74,11 @@ public class EpdSearchReportSaver {
         }
     }
 
-    private void printReports(PrintStream output, EpdSearchReportModel epdSearchReportModel, NodesModel nodesReportModel, EvaluationModel evaluationReportModel, PrincipalVariationModel principalVariationReportModel) {
+    private void printReports(PrintStream output, EpdSearchModel epdSearchModel, NodesModel nodesReportModel, EvaluationModel evaluationReportModel, PrincipalVariationModel principalVariationReportModel) {
         output.printf("Version: %s\n", Tango.ENGINE_VERSION);
 
         new EpdSearchReport()
-                .setReportModel(epdSearchReportModel)
+                .setReportModel(epdSearchModel)
                 .printReport(output);
 
         new NodesReport()

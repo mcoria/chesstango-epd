@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-public class EpdSearchReportModel {
+public class EpdSearchModel {
     public String reportTitle;
 
     public int searches;
@@ -20,8 +20,8 @@ public class EpdSearchReportModel {
 
     public long duration;
 
-    public static EpdSearchReportModel collectStatistics(String reportTitle, List<EpdSearchResult> epdEntries) {
-        EpdSearchReportModel reportModel = new EpdSearchReportModel();
+    public static EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdEntries) {
+        EpdSearchModel reportModel = new EpdSearchModel();
 
         List<SearchResult> searchResults = epdEntries.stream().map(EpdSearchResult::getSearchResult).toList();
 
