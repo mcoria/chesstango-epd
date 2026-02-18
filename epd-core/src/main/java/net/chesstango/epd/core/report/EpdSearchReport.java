@@ -3,6 +3,7 @@ package net.chesstango.epd.core.report;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.chesstango.epd.core.search.EpdSearchResult;
+import net.chesstango.reports.Report;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-public class EpdSearchReport {
+public class EpdSearchReport implements Report {
 
     private PrintStream out;
 
@@ -22,28 +23,15 @@ public class EpdSearchReport {
     @Accessors(chain = true)
     private EpdSearchModel reportModel;
 
+    @Override
     public EpdSearchReport printReport(PrintStream output) {
         out = output;
-        print();
+        new EpdSearchPrinter()
+                .setReportTitle(reportTitle)
+                .setReportModel(reportModel)
+                .setOut(out)
+                .print();
         return this;
-    }
-
-    private void print() {
-        out.printf("--------------------------------------------------------------------------------------------------------------------------------------------------------\n");
-        out.printf("EpdSearchReport: %s\n\n", reportModel.reportTitle);
-
-        if (reportModel.failedEntries.isEmpty()) {
-            out.println("\tall tests executed successfully !!!!");
-        } else {
-            for (String failedTest : reportModel.failedEntries) {
-                out.printf("\t%s\n", failedTest);
-            }
-        }
-
-        out.printf("Searches        : %d\n", reportModel.searches);
-        out.printf("Success rate    : %d%%\n", reportModel.successRate);
-        out.printf("Depth Accuracy  : %d%%\n", reportModel.depthAccuracyPct);
-        out.printf("Time taken      : %dms\n", reportModel.duration);
     }
 
     public EpdSearchReport withEdpEntries(List<EpdSearchResult> edpEntries) {
