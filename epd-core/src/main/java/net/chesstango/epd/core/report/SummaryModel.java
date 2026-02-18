@@ -134,25 +134,26 @@ public class SummaryModel {
 
         SimpleMoveEncoder simpleMoveEncoder = new SimpleMoveEncoder();
 
-        epdSearchResults.stream().map(epdSearchResult -> {
-            SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
-            SearchResult searchResult = epdSearchResult.getSearchResult();
-            PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.getEpd().getId());
+        epdSearchResults
+                .stream()
+                .map(epdSearchResult -> {
+                    SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
+                    SearchResult searchResult = epdSearchResult.getSearchResult();
+                    PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.getEpd().getId());
 
-            searchSummaryModeDetail.id = epdSearchResult.getEpd().getId();
-            searchSummaryModeDetail.move = epdSearchResult.getBestMoveFound();
-            searchSummaryModeDetail.success = epdSearchResult.isSearchSuccess();
-            searchSummaryModeDetail.depthMoves = searchResult.getSearchResultByDepths().stream().map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode).toList().toString();
-            searchSummaryModeDetail.depthAccuracyPercentage = epdSearchResult.getDepthAccuracyPct();
-            searchSummaryModeDetail.pv = pvDetail.principalVariation;
-            searchSummaryModeDetail.pvAccuracyPercentage = pvDetail.pvAccuracyPercentage;
-            searchSummaryModeDetail.evaluation = searchResult.getBestEvaluation();
-            return searchSummaryModeDetail;
-        }).forEach(model.searchDetailList::add);
+                    searchSummaryModeDetail.id = epdSearchResult.getEpd().getId();
+                    searchSummaryModeDetail.move = epdSearchResult.getBestMoveFound();
+                    searchSummaryModeDetail.success = epdSearchResult.isSearchSuccess();
+                    searchSummaryModeDetail.depthMoves = searchResult.getSearchResultByDepths().stream().map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode).toList().toString();
+                    searchSummaryModeDetail.depthAccuracyPercentage = epdSearchResult.getDepthAccuracyPct();
+                    searchSummaryModeDetail.pv = pvDetail.principalVariation;
+                    searchSummaryModeDetail.pvAccuracyPercentage = pvDetail.pvAccuracyPercentage;
+                    searchSummaryModeDetail.evaluation = searchResult.getBestEvaluation();
+                    return searchSummaryModeDetail;
+                })
+                .forEach(model.searchDetailList::add);
 
 
         return model;
     }
 }
-
-

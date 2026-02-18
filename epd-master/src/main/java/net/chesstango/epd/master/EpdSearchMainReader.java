@@ -1,7 +1,6 @@
 package net.chesstango.epd.master;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.main.EpdSearchReportSaver;
 import net.chesstango.epd.worker.EpdSearchResponse;
 
 import java.io.File;
@@ -9,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 

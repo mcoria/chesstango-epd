@@ -1,17 +1,27 @@
 package net.chesstango.epd.core.main;
 
+import net.chesstango.epd.core.report.EpdAgregateReport;
+import net.chesstango.epd.core.report.EpdSearchModel;
+import net.chesstango.epd.core.report.SummaryModel;
+import net.chesstango.epd.core.report.SummaryReport;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.EpdSearchResultBuildWithBestMove;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
+import net.chesstango.reports.ReportToFile;
+import net.chesstango.reports.search.evaluation.EvaluationModel;
+import net.chesstango.reports.search.nodes.NodesModel;
+import net.chesstango.reports.search.pv.PrincipalVariationModel;
+import net.chesstango.reports.search.transposition.TranspositionModel;
 import net.chesstango.search.builders.AlphaBetaBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 
 
 /**
@@ -61,13 +71,13 @@ public class EpdSearchMain implements Runnable {
     private final List<Path> epdFiles;
     private final int depth;
     private final int timeOut;
-    private final EpdSearchReportSaver epdSearchReportSaver;
+    private final ReportToFile reportToFile;
 
     public EpdSearchMain(List<Path> epdFiles, int depth, int timeOut, Path sessionDirectory) {
         this.epdFiles = epdFiles;
         this.depth = depth;
         this.timeOut = timeOut;
-        this.epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
+        this.reportToFile = new ReportToFile(sessionDirectory);
     }
 
     @Override
@@ -75,8 +85,6 @@ public class EpdSearchMain implements Runnable {
         EpdSearch epdSearch = new EpdSearch()
                 .setSearchSupplier(() -> AlphaBetaBuilder
                         .createDefaultBuilderInstance()
-                        // Hasta v0.0.27 se utilizó EvaluatorSEandImp02
-                        // (ahora EvaluatorImp04) como evaluador
                         .withGameEvaluator(Evaluator.createInstance())
                         .withStatistics()
                         .build())
@@ -95,8 +103,32 @@ public class EpdSearchMain implements Runnable {
 
             List<EpdSearchResult> epdSearchResults = epdSearch.run(edpEntries);
 
-            epdSearchReportSaver.saveReport(epdFile.getFileName().toString(), epdSearchResults);
+            String suiteName = epdFile.getFileName().toString();
+
+            saveReports(suiteName, epdSearchResults);
         }
+
+    }
+
+    private void saveReports(String suiteName, List<EpdSearchResult> epdSearchResults) {
+        EpdSearchModel epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
+        NodesModel nodesReportModel = NodesModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        EvaluationModel evaluationReportModel = EvaluationModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        PrincipalVariationModel principalVariationReportModel = PrincipalVariationModel.collectStatics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        TranspositionModel transpositionReportModel = TranspositionModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        SummaryModel reportModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
+
+        reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
+                .setEvaluationReportModel(evaluationReportModel)
+                .setEpdSearchModel(epdSearchModel)
+                .setNodesReportModel(nodesReportModel)
+                .setPrincipalVariationReportModel(principalVariationReportModel)
+                .setTranspositionReportModel(transpositionReportModel)
+        );
+
+        reportToFile.save(String.format("%s.json", suiteName), new SummaryReport()
+                .setReportModel(reportModel)
+        );
 
     }
 }
