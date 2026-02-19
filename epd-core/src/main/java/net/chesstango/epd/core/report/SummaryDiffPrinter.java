@@ -25,6 +25,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String accuracyFmt = "| %17d%% ";
     private static final String cutoffFmt = "| %17d%% ";
     private static final String pvAccuracyFmt = "| %17d%% ";
+    private static final String overWriteFmt = "| %17d%% ";
 
 
     @Setter
@@ -137,6 +138,12 @@ public class SummaryDiffPrinter implements Printer {
         out.printf("| PV Accuracy  ");
         out.printf(pvAccuracyFmt, baseLineSearchSummary.pvAccuracyAvgPercentageTotal);
         IntStream.range(0, reportModel.elements).forEach(i -> out.printf(pvAccuracyFmt, searchSummaryList.get(i).pvAccuracyAvgPercentageTotal));
+        out.printf("|\n");
+
+
+        out.printf("| TT Overwrites");
+        out.printf(overWriteFmt, baseLineSearchSummary.overWritePercentageTotal);
+        IntStream.range(0, reportModel.elements).forEach(i -> out.printf(pvAccuracyFmt, searchSummaryList.get(i).overWritePercentageTotal));
         out.printf("|\n");
 
 

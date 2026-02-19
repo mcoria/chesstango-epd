@@ -8,6 +8,7 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.nodes.NodesModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
+import net.chesstango.reports.search.transposition.TranspositionModel;
 import net.chesstango.search.SearchResultByDepth;
 import net.chesstango.search.SearchResult;
 
@@ -70,6 +71,9 @@ public class SummaryModel {
     @JsonProperty("pvAccuracyAvgPercentageTotal")
     int pvAccuracyAvgPercentageTotal;
 
+    @JsonProperty("overWritePercentageTotal")
+    int overWritePercentageTotal;
+
     @JsonProperty("searchDetail")
     List<SearchSummaryModeDetail> searchDetailList = new LinkedList<>();
 
@@ -105,7 +109,8 @@ public class SummaryModel {
                                               EpdSearchModel epdSearchModel,
                                               NodesModel nodesReportModel,
                                               EvaluationModel evaluationReportModel,
-                                              PrincipalVariationModel principalVariationReportModel) {
+                                              PrincipalVariationModel principalVariationReportModel,
+                                              TranspositionModel transpositionModel) {
 
         SummaryModel model = new SummaryModel();
 
@@ -128,6 +133,7 @@ public class SummaryModel {
         model.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         model.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
         model.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
+        model.overWritePercentageTotal = transpositionModel.overWritePercentageTotal;
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));

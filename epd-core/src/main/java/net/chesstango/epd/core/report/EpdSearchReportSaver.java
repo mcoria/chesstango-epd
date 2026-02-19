@@ -28,7 +28,7 @@ public class EpdSearchReportSaver {
         EvaluationModel evaluationReportModel = EvaluationModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         PrincipalVariationModel principalVariationReportModel = PrincipalVariationModel.collectStatics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         TranspositionModel transpositionReportModel = TranspositionModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        SummaryModel reportModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel);
+        SummaryModel reportModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionReportModel);
 
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
                 .setEvaluationReportModel(evaluationReportModel)

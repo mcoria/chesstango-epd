@@ -54,6 +54,7 @@ public class SummaryDiffModel {
         List<SummaryModel.SearchSummaryModeDetail> summaryModeDetailListModeDetail = searchSummary.searchDetailList;
         int baseLineSearches = baseLineSummaryModeDetailListModeDetail.size();
         int searches = summaryModeDetailListModeDetail.size();
+
         for (int i = 0; i < Math.min(baseLineSearches,searches) ; i++) {
             SummaryModel.SearchSummaryModeDetail baseMoveDetail = baseLineSummaryModeDetailListModeDetail.get(i);
             SummaryModel.SearchSummaryModeDetail moveDetail = summaryModeDetailListModeDetail.get(i);
