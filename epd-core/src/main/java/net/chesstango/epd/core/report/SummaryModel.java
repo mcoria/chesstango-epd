@@ -38,7 +38,7 @@ public class SummaryModel {
     int successRate;
 
     @JsonProperty("depthAccuracyAvgPercentageTotal")
-    int depthAccuracyPct;
+    int depthAccuracyAvgPercentageTotal;
 
     @JsonProperty("executedMovesTotal")
     long executedMovesTotal;
@@ -115,7 +115,7 @@ public class SummaryModel {
 
         model.success = epdSearchModel.success;
         model.successRate = epdSearchModel.successRate;
-        model.depthAccuracyPct = epdSearchModel.depthAccuracyPct;
+        model.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
 
         model.maxSearchRLevel = nodesReportModel.maxSearchRLevel;
         model.maxSearchQLevel = nodesReportModel.maxSearchQLevel;

@@ -41,7 +41,7 @@ public class EpdSearchPrinter implements Printer {
 
         out.printf("Searches        : %d\n", reportModel.searches);
         out.printf("Success rate    : %d%%\n", reportModel.successRate);
-        out.printf("Depth Accuracy  : %d%%\n", reportModel.depthAccuracyPct);
+        out.printf("Depth Accuracy  : %d%%\n", reportModel.depthAccuracyAvgPercentageTotal);
         out.printf("Time taken      : %dms\n", reportModel.duration);
 
         return this;

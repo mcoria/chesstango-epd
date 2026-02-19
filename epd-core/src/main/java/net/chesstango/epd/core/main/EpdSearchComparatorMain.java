@@ -20,6 +20,8 @@ import java.util.Objects;
 public class EpdSearchComparatorMain {
 
     public static void main(String[] args) {
+        printSummaryLegends();
+
         EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-2-2026-02-06-00-59-v1.3.0");
         epdSearchComparatorMain.addSession("depth-2-2026-02-16-20-00-v1.4.0-SNAPSHOT");
         //depth-6-2026-02-15-21-59-v1.4.0-SNAPSHOT
@@ -57,6 +59,28 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS13.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS14.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS15.epd");
+    }
+
+    private static void printSummaryLegends() {
+        String content = """
+            Metric description:
+            Duration (ms)   : milliseconds spent in the search phase.
+            Searches        : number of searches performed.
+            Success      (%): percentage of successful moves.
+            Coincidences (%): percentage of coincidences between evaluations.
+            Dpt Accuracy (%): AVG percentage of the best moves found at each depth level that match the expected successful moves defined in the EPD position.  
+            Exec Moves      : executed moves.
+            Evaluations     : evaluations performed.
+             Collisions  (%): Different positions with same evaluation (Collisions).
+            Max RLevel      : Max regular depth reached.
+            Max QLevel      : Max quiscence depth reached.
+            Vis RNodes      : Visited nodes at regular depth.
+            Vis QNodes      : Visited nodes at quiscence depth.
+            Vis  Nodes      : Visited nodes.
+            Cutoff       (%): Cutoff percentage.
+            PV Accuracy  (%): Principal variation accuracy percentage.
+            """;
+        System.out.println(content);
     }
 
     private final String baseLineSessionID;

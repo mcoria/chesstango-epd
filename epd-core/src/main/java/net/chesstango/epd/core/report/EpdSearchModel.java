@@ -15,7 +15,7 @@ public class EpdSearchModel {
     public int searches;
     public int success;
     public int successRate;
-    public int depthAccuracyPct;
+    public int depthAccuracyAvgPercentageTotal;
     public List<String> failedEntries;
 
     public long duration;
@@ -31,7 +31,7 @@ public class EpdSearchModel {
 
         reportModel.success = (int) epdEntries.stream().filter(EpdSearchResult::isSearchSuccess).count();
 
-        reportModel.depthAccuracyPct = (int) epdEntries.stream().mapToInt(EpdSearchResult::getDepthAccuracyPct).average().orElse(0);
+        reportModel.depthAccuracyAvgPercentageTotal = (int) epdEntries.stream().mapToInt(EpdSearchResult::getDepthAccuracyPct).average().orElse(0);
 
         reportModel.successRate = ((100 * reportModel.success) / reportModel.searches);
 

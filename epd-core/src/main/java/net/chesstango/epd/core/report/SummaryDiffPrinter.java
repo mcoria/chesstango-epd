@@ -81,8 +81,8 @@ public class SummaryDiffPrinter implements Printer {
         out.printf("|\n");
 
         out.printf("| Dpt Accuracy ");
-        out.printf(accuracyFmt, baseLineSearchSummary.depthAccuracyPct);
-        IntStream.range(0, reportModel.elements).forEach(i -> out.printf(accuracyFmt, searchSummaryList.get(i).depthAccuracyPct));
+        out.printf(accuracyFmt, baseLineSearchSummary.depthAccuracyAvgPercentageTotal);
+        IntStream.range(0, reportModel.elements).forEach(i -> out.printf(accuracyFmt, searchSummaryList.get(i).depthAccuracyAvgPercentageTotal));
         out.printf("|\n");
 
         out.printf("| Exec Moves   ");
