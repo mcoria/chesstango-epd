@@ -23,11 +23,11 @@ public class EpdSearchComparatorMain {
         printSummaryLegends();
 
         EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-6-2026-02-06-01-00-v1.3.0");
-        epdSearchComparatorMain.addSession("depth-6-2026-02-19-00-43-v1.4.0-SNAPSHOT");
+        epdSearchComparatorMain.addSession("depth-6-2026-02-19-08-22-v1.4.0-SNAPSHOT");
         //depth-6-2026-02-15-21-59-v1.4.0-SNAPSHOT
 
         //
-         /*
+
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w1.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b1.epd");
 
@@ -36,10 +36,9 @@ public class EpdSearchComparatorMain {
 
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w3.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b3.epd");
-        */
+
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Bratko-Kopec.epd");
 
-        /*
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Kaufman.epd");
 
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\wac-2018.epd");
@@ -61,7 +60,6 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS13.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS14.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS15.epd");
-         */
     }
 
     private static void printSummaryLegends() {
