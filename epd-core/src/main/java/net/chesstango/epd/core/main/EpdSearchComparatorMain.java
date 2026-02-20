@@ -1,8 +1,9 @@
 package net.chesstango.epd.core.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.chesstango.epd.core.report.SummaryDiffReport;
 import net.chesstango.epd.core.report.SummaryDiffModel;
+import net.chesstango.epd.core.report.SummaryDiffModelInput;
+import net.chesstango.epd.core.report.SummaryDiffReport;
 import net.chesstango.epd.core.report.SummaryModel;
 
 import java.io.IOException;
@@ -65,23 +66,23 @@ public class EpdSearchComparatorMain {
 
     private static void printSummaryLegends() {
         String content = """
-            Metric description:
-            Duration (ms)   : milliseconds spent in the search phase.
-            Searches        : number of searches performed.
-            Success      (%): percentage of successful moves.
-            Coincidences (%): percentage of coincidences between evaluations.
-            Dpt Accuracy (%): AVG percentage of the best moves found at each depth level that match the expected successful moves defined in the EPD position.  
-            Exec Moves      : executed moves.
-            Evaluations     : evaluations performed.
-             Collisions  (%): Different positions with same evaluation (Collisions).
-            Max RLevel      : Max regular depth reached.
-            Max QLevel      : Max quiscence depth reached.
-            Vis RNodes      : Visited nodes at regular depth.
-            Vis QNodes      : Visited nodes at quiscence depth.
-            Vis  Nodes      : Visited nodes.
-            Cutoff       (%): Cutoff percentage.
-            PV Accuracy  (%): Principal variation accuracy percentage.
-            """;
+                Metric description:
+                Duration (ms)   : milliseconds spent in the search phase.
+                Searches        : number of searches performed.
+                Success      (%): percentage of successful moves.
+                Coincidences (%): percentage of coincidences between evaluations.
+                Dpt Accuracy (%): AVG percentage of the best moves found at each depth level that match the expected successful moves defined in the EPD position.  
+                Exec Moves      : executed moves.
+                Evaluations     : evaluations performed.
+                 Collisions  (%): Different positions with same evaluation (Collisions).
+                Max RLevel      : Max regular depth reached.
+                Max QLevel      : Max quiscence depth reached.
+                Vis RNodes      : Visited nodes at regular depth.
+                Vis QNodes      : Visited nodes at quiscence depth.
+                Vis  Nodes      : Visited nodes.
+                Cutoff       (%): Cutoff percentage.
+                PV Accuracy  (%): Principal variation accuracy percentage.
+                """;
         System.out.println(content);
     }
 
@@ -103,7 +104,7 @@ public class EpdSearchComparatorMain {
     }
 
     private void printReport(PrintStream out) {
-        SummaryDiffModel reportModel = SummaryDiffModel.createModel(suiteName, baseLineSearchSummary, searchSummaryList);
+        SummaryDiffModel reportModel = new SummaryDiffModel().collectStatistics(suiteName, new SummaryDiffModelInput(baseLineSearchSummary, searchSummaryList));
 
         new SummaryDiffReport()
                 .withSummaryDiffReportModel(reportModel)
