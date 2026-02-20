@@ -11,16 +11,16 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-public class EpdSearchModel implements Model<List<EpdSearchResult>> {
-    public String reportTitle;
+class EpdSearchModel implements Model<List<EpdSearchResult>> {
+    String reportTitle;
 
-    public int searches;
-    public int success;
-    public int successRate;
-    public int depthAccuracyAvgPercentageTotal;
-    public List<String> failedEntries;
+    int searches;
+    int success;
+    int successRate;
+    int depthAccuracyAvgPercentageTotal;
+    List<String> failedEntries;
 
-    public long duration;
+    long duration;
 
 
     @Override
