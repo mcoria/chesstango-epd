@@ -4,14 +4,13 @@ package net.chesstango.epd.core.report;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.chesstango.board.representations.move.SimpleMoveEncoder;
 import net.chesstango.epd.core.search.EpdSearchResult;
-
+import net.chesstango.reports.Model;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.nodes.NodesModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
-import net.chesstango.search.SearchResultByDepth;
 import net.chesstango.search.SearchResult;
-
+import net.chesstango.search.SearchResultByDepth;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  * @author Mauricio Coria
  */
-public class SummaryModel {
+public class SummaryModel implements Model<SummaryModelInput> {
 
     @JsonProperty("sessionid")
     String sessionid;
@@ -104,36 +103,35 @@ public class SummaryModel {
     }
 
 
-    public static SummaryModel collectStatics(String sessionId,
-                                              List<EpdSearchResult> epdSearchResults,
-                                              EpdSearchModel epdSearchModel,
-                                              NodesModel nodesReportModel,
-                                              EvaluationModel evaluationReportModel,
-                                              PrincipalVariationModel principalVariationReportModel,
-                                              TranspositionModel transpositionModel) {
+    @Override
+    public SummaryModel collectStatistics(String sessionId, SummaryModelInput input) {
+        List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
+        EpdSearchModel epdSearchModel = input.epdSearchModel();
+        NodesModel nodesReportModel = input.nodesReportModel();
+        EvaluationModel evaluationReportModel = input.evaluationReportModel();
+        PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
+        TranspositionModel transpositionModel = input.transpositionModel();
 
-        SummaryModel model = new SummaryModel();
+        this.sessionid = sessionId;
+        this.duration = epdSearchModel.duration;
+        this.searches = epdSearchModel.searches;
 
-        model.sessionid = sessionId;
-        model.duration = epdSearchModel.duration;
-        model.searches = epdSearchModel.searches;
+        this.success = epdSearchModel.success;
+        this.successRate = epdSearchModel.successRate;
+        this.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
 
-        model.success = epdSearchModel.success;
-        model.successRate = epdSearchModel.successRate;
-        model.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
+        this.maxSearchRLevel = nodesReportModel.maxSearchRLevel;
+        this.maxSearchQLevel = nodesReportModel.maxSearchQLevel;
 
-        model.maxSearchRLevel = nodesReportModel.maxSearchRLevel;
-        model.maxSearchQLevel = nodesReportModel.maxSearchQLevel;
-
-        model.visitedRNodesTotal = nodesReportModel.visitedRNodesTotal;
-        model.visitedQNodesTotal = nodesReportModel.visitedQNodesTotal;
-        model.visitedNodesTotal = nodesReportModel.visitedNodesTotal;
-        model.executedMovesTotal = nodesReportModel.executedMovesTotal;
-        model.cutoffPercentageTotal = nodesReportModel.cutoffPercentageTotal;
-        model.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
-        model.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
-        model.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
-        model.overWritePercentageTotal = transpositionModel.overWritePercentageTotal;
+        this.visitedRNodesTotal = nodesReportModel.visitedRNodesTotal;
+        this.visitedQNodesTotal = nodesReportModel.visitedQNodesTotal;
+        this.visitedNodesTotal = nodesReportModel.visitedNodesTotal;
+        this.executedMovesTotal = nodesReportModel.executedMovesTotal;
+        this.cutoffPercentageTotal = nodesReportModel.cutoffPercentageTotal;
+        this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
+        this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
+        this.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
+        this.overWritePercentageTotal = transpositionModel.overWritePercentageTotal;
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));
@@ -157,9 +155,9 @@ public class SummaryModel {
                     searchSummaryModeDetail.evaluation = searchResult.getBestEvaluation();
                     return searchSummaryModeDetail;
                 })
-                .forEach(model.searchDetailList::add);
+                .forEach(this.searchDetailList::add);
 
 
-        return model;
+        return this;
     }
 }

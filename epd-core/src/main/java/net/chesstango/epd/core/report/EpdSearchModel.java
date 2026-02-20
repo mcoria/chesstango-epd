@@ -1,6 +1,8 @@
 package net.chesstango.epd.core.report;
 
 import net.chesstango.epd.core.search.EpdSearchResult;
+import net.chesstango.reports.Model;
+import net.chesstango.reports.search.nodes.NodesModel;
 import net.chesstango.search.SearchResult;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-public class EpdSearchModel {
+public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     public String reportTitle;
 
     public int searches;
@@ -20,35 +22,35 @@ public class EpdSearchModel {
 
     public long duration;
 
-    public static EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdEntries) {
-        EpdSearchModel reportModel = new EpdSearchModel();
 
+    @Override
+    public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdEntries) {
         List<SearchResult> searchResults = epdEntries.stream().map(EpdSearchResult::getSearchResult).toList();
 
-        reportModel.reportTitle = reportTitle;
+        this.reportTitle = reportTitle;
 
-        reportModel.searches = epdEntries.size();
+        this.searches = epdEntries.size();
 
-        reportModel.success = (int) epdEntries.stream().filter(EpdSearchResult::isSearchSuccess).count();
+        this.success = (int) epdEntries.stream().filter(EpdSearchResult::isSearchSuccess).count();
 
-        reportModel.depthAccuracyAvgPercentageTotal = (int) epdEntries.stream().mapToInt(EpdSearchResult::getDepthAccuracyPct).average().orElse(0);
+        this.depthAccuracyAvgPercentageTotal = (int) epdEntries.stream().mapToInt(EpdSearchResult::getDepthAccuracyPct).average().orElse(0);
 
-        reportModel.successRate = ((100 * reportModel.success) / reportModel.searches);
+        this.successRate = ((100 * this.success) / this.searches);
 
-        reportModel.duration = searchResults.stream().mapToLong(SearchResult::getTimeSearching).sum();
+        this.duration = searchResults.stream().mapToLong(SearchResult::getTimeSearching).sum();
 
-        reportModel.failedEntries = new ArrayList<>();
+        this.failedEntries = new ArrayList<>();
 
         epdEntries.stream()
                 .filter(edpEntry -> !edpEntry.isSearchSuccess())
                 .forEach(edpEntry ->
-                        reportModel.failedEntries.add(
+                        this.failedEntries.add(
                                 String.format("Fail [%s] - best move found %s",
                                         edpEntry.getText(),
                                         edpEntry.getBestMoveFound()
                                 )
                         ));
 
-        return reportModel;
+        return this;
     }
 }

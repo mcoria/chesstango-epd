@@ -62,7 +62,7 @@ public class EpdAgregateReport implements Report {
     }
 
     public EpdAgregateReport withEpdSearchResults(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        this.epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
+        this.epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
         this.nodesReportModel = new NodesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         this.evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         this.principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
