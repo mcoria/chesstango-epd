@@ -35,7 +35,7 @@ public class EpdSearchReport implements Report {
     }
 
     public EpdSearchReport withEdpEntries(List<EpdSearchResult> edpEntries) {
-        this.reportModel = EpdSearchModel.collectStatistics(reportTitle, edpEntries);
+        this.reportModel = new EpdSearchModel().collectStatistics(reportTitle, edpEntries);
         return this;
     }
 

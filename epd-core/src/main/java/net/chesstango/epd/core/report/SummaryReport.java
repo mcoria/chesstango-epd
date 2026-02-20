@@ -39,7 +39,7 @@ public class SummaryReport implements Report {
                                               PrincipalVariationModel principalVariationReportModel,
                                               TranspositionModel transpositionModel) {
 
-        reportModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionModel);
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new SummaryModelInput(epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionModel));
 
         return this;
     }

@@ -23,9 +23,9 @@ import java.util.List;
 @Accessors(chain = true)
 public class EpdAgregateReport implements Report {
 
-    private PrincipalVariationModel principalVariationReportModel;
-    private EvaluationModel evaluationReportModel;
-    private NodesModel nodesReportModel;
+    private PrincipalVariationModel principalVariationModel;
+    private EvaluationModel evaluationModel;
+    private NodesModel nodesModel;
     private EpdSearchModel epdSearchModel;
     private TranspositionModel transpositionReportModel;
 
@@ -39,19 +39,19 @@ public class EpdAgregateReport implements Report {
                 .printReport(out);
 
         new NodesReport()
-                .setReportModel(nodesReportModel)
+                .setReportModel(nodesModel)
                 .withCutoffStatistics()
                 .withNodesVisitedStatistics()
                 .printReport(out);
 
         new EvaluationReport()
-                .setReportModel(evaluationReportModel)
+                .setReportModel(evaluationModel)
                 //.withExportEvaluations()
                 .withEvaluationsStatistics()
                 .printReport(out);
 
         new PrincipalVariationReport()
-                .setReportModel(principalVariationReportModel)
+                .setReportModel(principalVariationModel)
                 .printReport(out);
 
         new TranspositionReport()
@@ -62,10 +62,10 @@ public class EpdAgregateReport implements Report {
     }
 
     public EpdAgregateReport withEpdSearchResults(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        this.epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
-        this.nodesReportModel = new NodesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        this.evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        this.principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
+        this.nodesModel = new NodesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.evaluationModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.principalVariationModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         this.transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         return this;
     }

@@ -2,10 +2,6 @@ package net.chesstango.epd.core.report;
 
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.ReportToFile;
-import net.chesstango.reports.search.evaluation.EvaluationModel;
-import net.chesstango.reports.search.nodes.NodesModel;
-import net.chesstango.reports.search.pv.PrincipalVariationModel;
-import net.chesstango.reports.search.transposition.TranspositionModel;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -23,19 +19,15 @@ public class EpdSearchReportSaver {
     }
 
     public void saveReports(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        EpdSearchModel epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
-        NodesModel nodesReportModel = new NodesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        EvaluationModel evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        PrincipalVariationModel principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        TranspositionModel transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        SummaryModel reportModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionReportModel);
+        SummaryModelInput summaryModelInput = SummaryModelInput.load(suiteName, epdSearchResults);
+        SummaryModel reportModel = new SummaryModel().collectStatistics(SESSION_DATE, summaryModelInput);
 
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
-                .setEvaluationReportModel(evaluationReportModel)
-                .setEpdSearchModel(epdSearchModel)
-                .setNodesReportModel(nodesReportModel)
-                .setPrincipalVariationReportModel(principalVariationReportModel)
-                .setTranspositionReportModel(transpositionReportModel)
+                .setEvaluationModel(summaryModelInput.evaluationReportModel())
+                .setEpdSearchModel(summaryModelInput.epdSearchModel())
+                .setNodesModel(summaryModelInput.nodesReportModel())
+                .setPrincipalVariationModel(summaryModelInput.principalVariationReportModel())
+                .setTranspositionReportModel(summaryModelInput.transpositionModel())
         );
 
         reportToFile.save(String.format("%s.json", suiteName), new SummaryReport()
