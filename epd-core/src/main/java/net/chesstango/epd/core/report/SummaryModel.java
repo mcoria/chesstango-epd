@@ -13,7 +13,6 @@ import net.chesstango.search.SearchResultByDepth;
 import net.chesstango.search.SearchResult;
 
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class SummaryModel {
     int depthAccuracyAvgPercentageTotal;
 
     @JsonProperty("executedMovesTotal")
-    BigInteger executedMovesTotal;
+    long executedMovesTotal;
 
     @JsonProperty("maxSearchRLevel")
     int maxSearchRLevel;
@@ -129,7 +128,7 @@ public class SummaryModel {
         model.visitedRNodesTotal = nodesReportModel.visitedRNodesTotal;
         model.visitedQNodesTotal = nodesReportModel.visitedQNodesTotal;
         model.visitedNodesTotal = nodesReportModel.visitedNodesTotal;
-        model.executedMovesTotal = BigInteger.valueOf(nodesReportModel.executedMovesTotal);
+        model.executedMovesTotal = nodesReportModel.executedMovesTotal;
         model.cutoffPercentageTotal = nodesReportModel.cutoffPercentageTotal;
         model.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         model.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;

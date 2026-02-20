@@ -1,6 +1,5 @@
 package net.chesstango.epd.core.report;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class SummaryDiffModel {
         int visitedQNodesPercentage = baseLineSearchSummary.visitedQNodesTotal != 0 ? (int) ((searchSummary.visitedQNodesTotal * 100) / baseLineSearchSummary.visitedQNodesTotal) : 0;
         int visitedNodesPercentage = (int) ((searchSummary.visitedNodesTotal * 100) / baseLineSearchSummary.visitedNodesTotal);
         int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
-        int executedMovesPercentage = (int) (searchSummary.executedMovesTotal.multiply(BigInteger.valueOf(100)).divide(baseLineSearchSummary.executedMovesTotal).longValue());
+        int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
 
         int evaluationCoincidences = 0;
         List<SummaryModel.SearchSummaryModeDetail> baseLineSummaryModeDetailListModeDetail = baseLineSearchSummary.searchDetailList;

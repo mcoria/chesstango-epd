@@ -24,10 +24,10 @@ public class EpdSearchReportSaver {
 
     public void saveReports(String suiteName, List<EpdSearchResult> epdSearchResults) {
         EpdSearchModel epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
-        NodesModel nodesReportModel = NodesModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        EvaluationModel evaluationReportModel = EvaluationModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        PrincipalVariationModel principalVariationReportModel = PrincipalVariationModel.collectStatics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        TranspositionModel transpositionReportModel = TranspositionModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        NodesModel nodesReportModel = new NodesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        EvaluationModel evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        PrincipalVariationModel principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        TranspositionModel transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         SummaryModel reportModel = SummaryModel.collectStatics(SESSION_DATE, epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionReportModel);
 
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
