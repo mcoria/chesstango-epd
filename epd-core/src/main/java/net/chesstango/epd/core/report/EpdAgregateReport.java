@@ -63,10 +63,10 @@ public class EpdAgregateReport implements Report {
 
     public EpdAgregateReport withEpdSearchResults(String suiteName, List<EpdSearchResult> epdSearchResults) {
         this.epdSearchModel = EpdSearchModel.collectStatistics(suiteName, epdSearchResults);
-        this.nodesReportModel = NodesModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        this.evaluationReportModel = EvaluationModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        this.principalVariationReportModel = PrincipalVariationModel.collectStatics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        this.transpositionReportModel = TranspositionModel.collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.nodesReportModel = new NodesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        this.transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         return this;
     }
 
