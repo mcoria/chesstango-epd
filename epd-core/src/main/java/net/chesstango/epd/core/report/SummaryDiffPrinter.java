@@ -20,7 +20,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String successLevelFmt = "| %18d ";
     private static final String visitedNodesFmt = "| %11d (%3d%%) ";
     private static final String evaluatedGamesFmt = "| %11d (%3d%%) ";
-    private static final String executedMovesFmt = "| %11d (%3d%%) ";
+    private static final String executedMovesFmt = "| %11s (%3d%%) ";
     private static final String evaluationCoincidencesFmt = "| %17d%% ";
     private static final String accuracyFmt = "| %17d%% ";
     private static final String cutoffFmt = "| %17d%% ";
