@@ -8,25 +8,15 @@ import java.util.List;
  * @author Mauricio Coria
  */
 public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
-
-    String suiteName;
-    int elements;
-    SummaryModel baseLineSearchSummary;
-    List<SummaryModel> searchSummaryList;
-    List<SearchSummaryDiff> searchSummaryDiffs;
-
     public record SearchSummaryDiff(int durationPercentage,
-                                    boolean sameSearches,
                                     int evaluationCoincidencePercentage,
                                     int visitedRNodesPercentage,
                                     int visitedQNodesPercentage,
                                     int visitedNodesPercentage,
                                     int evaluatedGamesPercentage,
-                                    int executedMovesPercentage
-    ) {
+                                    int executedMovesPercentage) {
         static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
             int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
-            boolean sameSearches = searchSummary.searches == baseLineSearchSummary.searches;
             int visitedRNodesPercentage = (int) ((searchSummary.visitedRNodesTotal * 100) / baseLineSearchSummary.visitedRNodesTotal);
             int visitedQNodesPercentage = baseLineSearchSummary.visitedQNodesTotal != 0 ? (int) ((searchSummary.visitedQNodesTotal * 100) / baseLineSearchSummary.visitedQNodesTotal) : 0;
             int visitedNodesPercentage = (int) ((searchSummary.visitedNodesTotal * 100) / baseLineSearchSummary.visitedNodesTotal);
@@ -50,9 +40,15 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
 
             int evaluationCoincidencePercentage = (evaluationCoincidences * 100) / baseLineSearches;
 
-            return new SearchSummaryDiff(durationPercentage, sameSearches, evaluationCoincidencePercentage, visitedRNodesPercentage, visitedQNodesPercentage, visitedNodesPercentage, evaluatedGamesPercentage, executedMovesPercentage);
+            return new SearchSummaryDiff(durationPercentage, evaluationCoincidencePercentage, visitedRNodesPercentage, visitedQNodesPercentage, visitedNodesPercentage, evaluatedGamesPercentage, executedMovesPercentage);
         }
     }
+    record SummaryDiffPair(SummaryModel searchSummary, SearchSummaryDiff searchSummaryDiff) {}
+
+    String suiteName;
+    int elements;
+    SummaryModel baseLineSearchSummary;
+    List<SummaryDiffPair> searchSummaryPairs;
 
     @Override
     public SummaryDiffModel collectStatistics(String suiteName, SummaryDiffModelInput input) {
@@ -63,12 +59,10 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
         reportModel.suiteName = suiteName;
         reportModel.elements = searchSummaryList.size();
         reportModel.baseLineSearchSummary = baseLineSearchSummary;
-        reportModel.searchSummaryList = searchSummaryList;
-        reportModel.searchSummaryDiffs = searchSummaryList
+        reportModel.searchSummaryPairs = searchSummaryList
                 .stream()
-                .map(searchSummary -> SearchSummaryDiff.calculateDiff(baseLineSearchSummary, searchSummary))
+                .map(searchSummary -> new SummaryDiffPair(searchSummary, SearchSummaryDiff.calculateDiff(baseLineSearchSummary, searchSummary)))
                 .toList();
-
 
         return reportModel;
     }
