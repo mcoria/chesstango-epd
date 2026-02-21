@@ -5,7 +5,7 @@ metadata:
   labels:
     app: chesstango-epd-worker
 spec:
-  replicas: 10
+  replicas: 7
   selector:
     matchLabels:
       app: chesstango-epd-worker
@@ -21,9 +21,9 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 2
+              cpu: 3
             limits:
-              cpu: 2
+              cpu: 3
           env:
             - name: RABBIT_HOST
               value: "chesstango-rabbit-svc.default.svc.cluster.local"

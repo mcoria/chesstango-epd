@@ -23,10 +23,9 @@ public class EpdSearchComparatorMain {
     public static void main(String[] args) {
         printSummaryLegends();
 
-        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-7-2026-02-19-08-51-v1.4.0-SNAPSHOT");
-        epdSearchComparatorMain.addSession("depth-8-2026-02-19-09-37-v1.4.0-SNAPSHOT");
+        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-5-2026-02-06-01-00-v1.3.0");
+        epdSearchComparatorMain.addSession("depth-5-2026-02-21-17-31-v1.4.0-SNAPSHOT");
         //epdSearchComparatorMain.addSession("depth-7-2026-02-19-08-51-v1.4.0-SNAPSHOT");
-
 
         //
 
