@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-class EpdSearchModel implements Model<List<EpdSearchResult>> {
+public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     String reportTitle;
 
     int searches;

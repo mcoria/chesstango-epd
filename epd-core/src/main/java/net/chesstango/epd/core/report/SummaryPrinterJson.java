@@ -19,7 +19,7 @@ import java.io.PrintStream;
  * 
  * @author Mauricio Coria
  */
-public class SummaryPrinter implements Printer {
+public class SummaryPrinterJson implements Printer {
 
     @Setter
     @Accessors(chain = true)
@@ -42,7 +42,7 @@ public class SummaryPrinter implements Printer {
      * @throws RuntimeException if an I/O error occurs during JSON serialization
      */
     @Override
-    public SummaryPrinter print() {
+    public SummaryPrinterJson print() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(out, reportModel);

@@ -25,7 +25,7 @@ public class SummaryReport implements Report {
 
 
     public SummaryReport printReport(PrintStream output) {
-        new SummaryPrinter()
+        new SummaryPrinterJson()
                 .setReportModel(reportModel)
                 .setOut(output)
                 .print();
