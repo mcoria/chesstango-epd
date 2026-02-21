@@ -73,8 +73,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp = new LinkedList<>();
         tmp.add("Coincidences");
-        tmp.add(String.format(evaluationCoincidencesFmt, baseLineSearchSummary.evaluationCollisionPercentageTotal));
-        searchSummaryPairs.stream().map(pair -> String.format(evaluationCoincidencesFmt, pair.searchSummary().evaluationCollisionPercentageTotal)).forEach(tmp::add);
+        tmp.add(String.format(evaluationCoincidencesFmt, 100 ));
+        searchSummaryPairs.stream().map(pair -> String.format(evaluationCoincidencesFmt, pair.searchSummaryDiff().evaluationCoincidencePercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp = new LinkedList<>();
@@ -124,6 +124,12 @@ public class SummaryDiffPrinter implements Printer {
         tmp.add("Vis QNodes");
         tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.visitedQNodesTotal, 100));
         searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().visitedQNodesTotal, pair.searchSummaryDiff().visitedQNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp = new LinkedList<>();
+        tmp.add("Vis Nodes");
+        tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.visitedNodesTotal, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().visitedNodesTotal, pair.searchSummaryDiff().visitedNodesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp = new LinkedList<>();
