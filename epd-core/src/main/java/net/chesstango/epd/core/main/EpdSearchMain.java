@@ -1,5 +1,6 @@
 package net.chesstango.epd.core.main;
 
+import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
@@ -12,6 +13,9 @@ import net.chesstango.search.builders.AlphaBetaBuilder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 
 
 /**
@@ -21,6 +25,7 @@ import java.util.List;
  *
  * @author Mauricio Coria
  */
+@Slf4j
 public class EpdSearchMain implements Runnable {
 
     /**
@@ -55,7 +60,8 @@ public class EpdSearchMain implements Runnable {
 
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, depth);
 
-        new EpdSearchMain(epdFiles, depth, timeOut, sessionDirectory).run();
+        new EpdSearchMain(epdFiles, depth, timeOut, sessionDirectory)
+                .run();
     }
 
     private final List<Path> epdFiles;
@@ -95,7 +101,23 @@ public class EpdSearchMain implements Runnable {
 
             String suiteName = epdFile.getFileName().toString();
 
-            epdSearchReportSaver.saveReports(suiteName, epdSearchResults);
+            epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
+
+            CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
+                epdSearchReportSaver.saveReport(suiteName);
+                return null;
+            });
+
+            CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
+                epdSearchReportSaver.saveJson(suiteName);
+                return null;
+            });
+
+            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
+
+            log.info("Saving reports {}", suiteName);
+
+            combinedSave.join();
         }
     }
 }
