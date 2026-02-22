@@ -42,7 +42,7 @@ public class SummaryDiffPrinter implements Printer {
         SummaryModel baseLineSearchSummary = reportModel.baseLineSearchSummary;
         List<SummaryDiffModel.SummaryDiffPair> searchSummaryPairs = reportModel.searchSummaryPairs;
 
-        out.printf("Suite: %s\n", reportModel.suiteName);
+        out.printf("Suite: %s%n", reportModel.suiteName);
 
         PrinterTxtTable printerTxtTable = new PrinterTxtTable(2 + reportModel.elements).setOut(out);
 

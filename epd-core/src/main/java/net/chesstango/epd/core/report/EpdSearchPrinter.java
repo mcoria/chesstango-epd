@@ -35,7 +35,7 @@ public class EpdSearchPrinter implements Printer {
             out.println("\tall tests executed successfully !!!!");
         } else {
             for (String failedTest : reportModel.failedEntries) {
-                out.printf("\t%s\n", failedTest);
+                out.printf("\t%s%n", failedTest);
             }
         }
 
