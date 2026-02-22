@@ -12,16 +12,23 @@ import static net.chesstango.epd.core.main.Common.SESSION_DATE;
  * @author Mauricio Coria
  */
 public class EpdSearchReportSaver {
-    private final ReportToFile reportToFile;
+    private final Path directory;
+
+    private SummaryModelInput summaryModelInput;
+    private SummaryModel summaryModel;
+
 
     public EpdSearchReportSaver(Path directory) {
-        this.reportToFile = new ReportToFile(directory);
+        this.directory = directory;
     }
 
-    public void saveReports(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        SummaryModelInput summaryModelInput = SummaryModelInput.load(suiteName, epdSearchResults);
-        SummaryModel reportModel = new SummaryModel().collectStatistics(SESSION_DATE, summaryModelInput);
+    public void loadModel(String sessionId, List<EpdSearchResult> epdSearchResults) {
+        this.summaryModelInput = SummaryModelInput.load(sessionId, epdSearchResults);
+        this.summaryModel = new SummaryModel().collectStatistics(sessionId, summaryModelInput);
+    }
 
+    public void saveReport(String suiteName) {
+        ReportToFile reportToFile = new ReportToFile(directory);
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
                 .setEvaluationModel(summaryModelInput.evaluationReportModel())
                 .setEpdSearchModel(summaryModelInput.epdSearchModel())
@@ -29,10 +36,13 @@ public class EpdSearchReportSaver {
                 .setPrincipalVariationModel(summaryModelInput.principalVariationReportModel())
                 .setTranspositionReportModel(summaryModelInput.transpositionModel())
         );
-
-        reportToFile.save(String.format("%s.json", suiteName), new SummaryReport()
-                .setReportModel(reportModel)
-        );
-
     }
+
+    public void saveJson(String suiteName) {
+        ReportToFile reportToFile = new ReportToFile(directory);
+        reportToFile.save(String.format("%s.json", suiteName), new SummaryReport()
+                .setReportModel(summaryModel)
+        );
+    }
+
 }

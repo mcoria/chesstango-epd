@@ -95,7 +95,7 @@ public class EpdSearchMain implements Runnable {
 
             String suiteName = epdFile.getFileName().toString();
 
-            epdSearchReportSaver.saveReports(suiteName, epdSearchResults);
+            epdSearchReportSaver.loadModel(suiteName, epdSearchResults);
         }
     }
 }
