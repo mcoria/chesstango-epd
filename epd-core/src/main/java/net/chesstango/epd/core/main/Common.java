@@ -38,7 +38,6 @@ public class Common {
             return sessionDirectory;
         }
 
-
         try {
             log.info("Creating session directory {}", sessionDirectory.getFileName().toString());
             return Files.createDirectory(sessionDirectory);
