@@ -70,8 +70,11 @@ public class SummaryModel implements Model<SummaryModelInput> {
     @JsonProperty("pvAccuracyAvgPercentageTotal")
     int pvAccuracyAvgPercentageTotal;
 
-    @JsonProperty("overWritePercentageTotal")
-    int overWritePercentageTotal;
+    @JsonProperty("ttOverWritePercentageTotal")
+    int ttOverWritePercentageTotal;
+
+    @JsonProperty("ttReadHitPercentageTotal")
+    int ttReadHitPercentageTotal;
 
     @JsonProperty("searchDetail")
     List<SearchSummaryModeDetail> searchDetailList = new LinkedList<>();
@@ -131,7 +134,8 @@ public class SummaryModel implements Model<SummaryModelInput> {
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
         this.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
-        this.overWritePercentageTotal = transpositionModel.overWritePercentageTotal;
+        this.ttOverWritePercentageTotal = transpositionModel.overWritePercentageTotal;
+        this.ttReadHitPercentageTotal = transpositionModel.readHitPercentageTotal;
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));

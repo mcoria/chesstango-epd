@@ -66,21 +66,23 @@ public class EpdSearchComparatorMain {
     private static void printSummaryLegends() {
         String content = """
                 Metric description:
-                Duration (ms)   : milliseconds spent in the search phase.
-                Searches        : number of searches performed.
-                Success      (%): percentage of successful moves.
-                Coincidences (%): percentage of coincidences between evaluations.
-                Dpt Accuracy (%): AVG percentage of the best moves found at each depth level that match the expected successful moves defined in the EPD position.  
-                Exec Moves      : executed moves.
-                Evaluations     : evaluations performed.
-                 Collisions  (%): Different positions with same evaluation (Collisions).
-                Max RLevel      : Max regular depth reached.
-                Max QLevel      : Max quiscence depth reached.
-                Vis RNodes      : Visited nodes at regular depth.
-                Vis QNodes      : Visited nodes at quiscence depth.
-                Vis  Nodes      : Visited nodes.
-                Cutoff       (%): Cutoff percentage.
-                PV Accuracy  (%): Principal variation accuracy percentage.
+                Duration     (ms): milliseconds spent in the search phase.
+                Searches         : number of searches performed.
+                Success       (%): percentage of successful moves.
+                Coincidences  (%): percentage of coincidences between evaluations.
+                Dpt Accuracy  (%): AVG percentage of the best moves found at each depth level that match the expected successful moves defined in the EPD position.  
+                Exec Moves       : executed moves.
+                Evaluations      : evaluations performed.
+                 Collisions   (%): Different positions with same evaluation (Collisions).
+                Max RLevel       : Max regular depth reached.
+                Max QLevel       : Max quiscence depth reached.
+                Vis RNodes       : Visited nodes at regular depth.
+                Vis QNodes       : Visited nodes at quiscence depth.
+                Vis  Nodes       : Visited nodes.
+                Cutoff        (%): Cutoff percentage.
+                PV Accuracy   (%): Principal variation accuracy percentage.
+                TT ReadHits   (%): TT read hits percentage.
+                TT OverWrites (%): TT overwrites percentage.
                 """;
         System.out.println(content);
     }

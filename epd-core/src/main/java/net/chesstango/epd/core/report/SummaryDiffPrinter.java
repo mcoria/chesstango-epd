@@ -25,7 +25,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String cutoffFmt = "%d%%";
     private static final String pvAccuracyFmt = "%d%%";
     private static final String overWriteFmt = "%d%%";
-
+    private static final String readHitsFmt = "%d%%";
 
     @Setter
     @Accessors(chain = true)
@@ -145,9 +145,15 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp = new LinkedList<>();
-        tmp.add("TT Overwrites");
-        tmp.add(String.format(overWriteFmt, baseLineSearchSummary.overWritePercentageTotal));
-        searchSummaryPairs.stream().map(pair -> String.format(overWriteFmt, pair.searchSummary().overWritePercentageTotal)).forEach(tmp::add);
+        tmp.add("TT ReadHits");
+        tmp.add(String.format(readHitsFmt, baseLineSearchSummary.ttReadHitPercentageTotal));
+        searchSummaryPairs.stream().map(pair -> String.format(overWriteFmt, pair.searchSummary().ttReadHitPercentageTotal)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp = new LinkedList<>();
+        tmp.add("TT OverWrites");
+        tmp.add(String.format(overWriteFmt, baseLineSearchSummary.ttOverWritePercentageTotal));
+        searchSummaryPairs.stream().map(pair -> String.format(overWriteFmt, pair.searchSummary().ttOverWritePercentageTotal)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         printerTxtTable.print();
