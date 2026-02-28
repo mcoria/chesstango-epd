@@ -9,6 +9,9 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import static net.chesstango.reports.PrinterTxtTable.TextAlignment.LEFT;
+import static net.chesstango.reports.PrinterTxtTable.TextAlignment.RIGHT;
+
 /**
  * @author Mauricio Coria
  */
@@ -47,6 +50,15 @@ public class SummaryDiffPrinter implements Printer {
 
         PrinterTxtTable printerTxtTable = new PrinterTxtTable(2 + reportModel.elements).setOut(out);
 
+        PrinterTxtTable.TextAlignment[] alignments = new PrinterTxtTable.TextAlignment[2 + reportModel.elements];
+        alignments[0] = LEFT;
+        alignments[1] = RIGHT;
+        for (int i = 2; i < 2 + reportModel.elements; i++) {
+            alignments[i] = RIGHT;
+        }
+        printerTxtTable.setTextAlignment(alignments);
+
+
         List<String> tmp = new LinkedList<>();
         tmp.add("Metric");
         tmp.add(baseLineSearchSummary.sessionid);
@@ -74,7 +86,7 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp = new LinkedList<>();
         tmp.add("Coincidences");
-        tmp.add(String.format(evaluationCoincidencesFmt, 100 ));
+        tmp.add(String.format(evaluationCoincidencesFmt, 100));
         searchSummaryPairs.stream().map(pair -> String.format(evaluationCoincidencesFmt, pair.searchSummaryDiff().evaluationCoincidencePercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
