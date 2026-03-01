@@ -70,8 +70,14 @@ public class SummaryModel implements Model<SummaryModelInput> {
     @JsonProperty("pvAccuracyAvgPercentageTotal")
     int pvAccuracyAvgPercentageTotal;
 
-    @JsonProperty("ttReadHitPercentageTotal")
-    int ttReadHitPercentageTotal;
+    @JsonProperty("ttReadsTotal")
+    long ttReadsTotal;
+
+    @JsonProperty("ttReadHitsPercentageTotal")
+    int ttReadHitsPercentageTotal;
+
+    @JsonProperty("ttWritesTotal")
+    long ttWritesTotal;
 
     @JsonProperty("ttUpdatesPercentageTotal")
     int ttUpdatesPercentageTotal;
@@ -137,9 +143,14 @@ public class SummaryModel implements Model<SummaryModelInput> {
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
         this.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
+
+        this.ttReadsTotal = transpositionModel.readsTotal;
+        this.ttReadHitsPercentageTotal = transpositionModel.readHitPercentageTotal;
+
+        this.ttWritesTotal = transpositionModel.writesTotal;
         this.ttUpdatesPercentageTotal = transpositionModel.updatesPercentageTotal;
         this.ttOverWritesPercentageTotal = transpositionModel.overWritesPercentageTotal;
-        this.ttReadHitPercentageTotal = transpositionModel.readHitPercentageTotal;
+
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));
