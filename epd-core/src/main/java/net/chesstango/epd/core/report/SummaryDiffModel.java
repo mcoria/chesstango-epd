@@ -14,7 +14,10 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                                     int visitedQNodesPercentage,
                                     int visitedNodesPercentage,
                                     int evaluatedGamesPercentage,
-                                    int executedMovesPercentage) {
+                                    int executedMovesPercentage,
+                                    int ttReadsPercentage,
+                                    int ttWritesPercentage
+    ) {
         static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
             int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
             int visitedRNodesPercentage = (int) ((searchSummary.visitedRNodesTotal * 100) / baseLineSearchSummary.visitedRNodesTotal);
@@ -22,6 +25,8 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
             int visitedNodesPercentage = (int) ((searchSummary.visitedNodesTotal * 100) / baseLineSearchSummary.visitedNodesTotal);
             int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
             int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
+            int ttReadsPercentage = baseLineSearchSummary.ttReadsTotal != 0 ? (int) ((searchSummary.ttReadsTotal * 100) / baseLineSearchSummary.ttReadsTotal) : 0;
+            int ttWritesPercentage = baseLineSearchSummary.ttWritesTotal != 0 ? (int) ((searchSummary.ttWritesTotal * 100) / baseLineSearchSummary.ttWritesTotal) : 0;
 
             int evaluationCoincidences = 0;
             List<SummaryModel.SearchSummaryModeDetail> baseLineSummaryModeDetailListModeDetail = baseLineSearchSummary.searchDetailList;
@@ -40,10 +45,20 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
 
             int evaluationCoincidencePercentage = (evaluationCoincidences * 100) / baseLineSearches;
 
-            return new SearchSummaryDiff(durationPercentage, evaluationCoincidencePercentage, visitedRNodesPercentage, visitedQNodesPercentage, visitedNodesPercentage, evaluatedGamesPercentage, executedMovesPercentage);
+            return new SearchSummaryDiff(durationPercentage,
+                    evaluationCoincidencePercentage,
+                    visitedRNodesPercentage,
+                    visitedQNodesPercentage,
+                    visitedNodesPercentage,
+                    evaluatedGamesPercentage,
+                    executedMovesPercentage,
+                    ttReadsPercentage,
+                    ttWritesPercentage);
         }
     }
-    record SummaryDiffPair(SummaryModel searchSummary, SearchSummaryDiff searchSummaryDiff) {}
+
+    record SummaryDiffPair(SummaryModel searchSummary, SearchSummaryDiff searchSummaryDiff) {
+    }
 
     String suiteName;
     int elements;

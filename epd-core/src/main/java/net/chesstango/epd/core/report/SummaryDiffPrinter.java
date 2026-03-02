@@ -164,7 +164,7 @@ public class SummaryDiffPrinter implements Printer {
         tmp.clear();
         tmp.add("TT Reads");
         tmp.add(String.format(ttReadFmt, baseLineSearchSummary.ttReadsTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().ttReadsTotal, 0)).forEach(tmp::add);
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().ttReadsTotal, pair.searchSummaryDiff().ttReadsPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp = new LinkedList<>();
@@ -177,7 +177,7 @@ public class SummaryDiffPrinter implements Printer {
         tmp.clear();
         tmp.add("TT Writes");
         tmp.add(String.format(ttWritesFmt, baseLineSearchSummary.ttWritesTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(ttWritesFmt, pair.searchSummary().ttWritesTotal, 100)).forEach(tmp::add);
+        searchSummaryPairs.stream().map(pair -> String.format(ttWritesFmt, pair.searchSummary().ttWritesTotal, pair.searchSummaryDiff().ttWritesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
