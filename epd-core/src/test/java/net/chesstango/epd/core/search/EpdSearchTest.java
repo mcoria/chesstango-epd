@@ -213,6 +213,14 @@ public class EpdSearchTest {
     }
 
     @Test
+    public void test_40H_069() {
+        epdSearch.setDepth(3);
+        EPD epd = epdDecoder.readEdpLine("1B1Q1R2/8/qNrn3p/2p1rp2/Rn3k1K/8/5P2/bbN4B w - - bm Qd8-f6; ce +M2; pv Qd8-f6 h6-h5 Qf6-g5+; id \"069\";");
+        epdSearchResult = epdSearch.run(buildSearchMove(new EvaluatorImp04()), epd);
+        assertTrue(epdSearchResult.isSearchSuccess());
+    }
+
+    @Test
     public void test_40H_2857() {
         epdSearch.setDepth(5);
         EPD epd = epdDecoder.readEdpLine("1R3b1k/2p3pp/4qr2/Q7/3p2P1/3P3K/6NP/8 b - - bm Rf6-f3+; ce -M3; pv Rf6-f3+ Kh3-h4 Qe6-h6+ Qa5-h5 g7-g5+; id \"2857\";");
