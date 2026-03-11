@@ -126,12 +126,13 @@ public class EpdSearch {
     public EpdSearchResult run(Search search, EPD epd) {
         Game game = Game.from(FEN.of(epd.getFenWithoutClocks() + " 0 1"));
 
+        search.reset();
+
         search.accept(new SetMaxDepthVisitor(depth));
+
         SearchResult searchResult = search.startSearch(game);
 
         searchResult.setId(epd.getId());
-
-        search.reset();
 
         return epdSearchResultBuilder.apply(epd, searchResult);
     }
