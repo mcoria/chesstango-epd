@@ -24,11 +24,9 @@ public class EpdSearchComparatorMain {
         printSummaryLegends();
 
         EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-5-2026-03-04-00-08-v1.4.0");
-        epdSearchComparatorMain.addSession("depth-5-2026-03-10-09-18-v1.5.0-SNAPSHOT");
-        //
+        epdSearchComparatorMain.addSession("depth-5-2026-03-11-16-21-v1.5.0-SNAPSHOT");
 
         //
-
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w1.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b1.epd");
 
