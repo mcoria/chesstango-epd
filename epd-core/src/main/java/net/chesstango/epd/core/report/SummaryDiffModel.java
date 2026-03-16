@@ -10,8 +10,6 @@ import java.util.List;
 public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
     public record SearchSummaryDiff(int durationPercentage,
                                     int evaluationCoincidencePercentage,
-                                    int visitedRNodesPercentage,
-                                    int visitedQNodesPercentage,
                                     int visitedNodesPercentage,
                                     int evaluatedGamesPercentage,
                                     int executedMovesPercentage,
@@ -20,8 +18,6 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
     ) {
         static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
             int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
-            int visitedRNodesPercentage = (int) ((searchSummary.visitedRNodesTotal * 100) / baseLineSearchSummary.visitedRNodesTotal);
-            int visitedQNodesPercentage = baseLineSearchSummary.visitedQNodesTotal != 0 ? (int) ((searchSummary.visitedQNodesTotal * 100) / baseLineSearchSummary.visitedQNodesTotal) : 0;
             int visitedNodesPercentage = (int) ((searchSummary.visitedNodesTotal * 100) / baseLineSearchSummary.visitedNodesTotal);
             int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
             int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
@@ -47,8 +43,6 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
 
             return new SearchSummaryDiff(durationPercentage,
                     evaluationCoincidencePercentage,
-                    visitedRNodesPercentage,
-                    visitedQNodesPercentage,
                     visitedNodesPercentage,
                     evaluatedGamesPercentage,
                     executedMovesPercentage,

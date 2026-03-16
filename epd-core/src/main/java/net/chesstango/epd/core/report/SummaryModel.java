@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.chesstango.board.representations.move.SimpleMoveEncoder;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
+import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.nodes.NodesModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
@@ -43,17 +44,8 @@ public class SummaryModel implements Model<SummaryModelInput> {
     @JsonProperty("executedMovesTotal")
     long executedMovesTotal;
 
-    @JsonProperty("maxSearchRLevel")
-    int maxSearchRLevel;
-
-    @JsonProperty("maxSearchQLevel")
-    int maxSearchQLevel;
-
-    @JsonProperty("visitedRNodesTotal")
-    long visitedRNodesTotal;
-
-    @JsonProperty("visitedQNodesTotal")
-    long visitedQNodesTotal;
+    @JsonProperty("maxSearchLevel")
+    int maxSearchLevel;
 
     @JsonProperty("visitedNodesTotal")
     long visitedNodesTotal;
@@ -123,6 +115,8 @@ public class SummaryModel implements Model<SummaryModelInput> {
         EvaluationModel evaluationReportModel = input.evaluationReportModel();
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
         TranspositionModel transpositionModel = input.transpositionModel();
+        BoardModel boardModel = input.boardModel();
+
 
         this.sessionid = sessionId;
         this.duration = epdSearchModel.duration;
@@ -132,13 +126,10 @@ public class SummaryModel implements Model<SummaryModelInput> {
         this.successRate = epdSearchModel.successRate;
         this.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
 
-        this.maxSearchRLevel = nodesReportModel.maxSearchRLevel;
-        this.maxSearchQLevel = nodesReportModel.maxSearchQLevel;
+        this.maxSearchLevel = nodesReportModel.maxDepth;
 
-        this.visitedRNodesTotal = nodesReportModel.visitedRNodesTotal;
-        this.visitedQNodesTotal = nodesReportModel.visitedQNodesTotal;
         this.visitedNodesTotal = nodesReportModel.visitedNodesTotal;
-        this.executedMovesTotal = nodesReportModel.executedMovesTotal;
+        this.executedMovesTotal = boardModel.executedMovesTotal;
         this.cutoffPercentageTotal = nodesReportModel.cutoffPercentageTotal;
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;

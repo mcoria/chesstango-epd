@@ -121,26 +121,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp.clear();
         tmp.add("Max RLevel");
-        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxSearchRLevel));
-        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxSearchRLevel)).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("Max QLevel");
-        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxSearchQLevel));
-        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxSearchQLevel)).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("Vis RNodes");
-        tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.visitedRNodesTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().visitedRNodesTotal, pair.searchSummaryDiff().visitedRNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("Vis QNodes");
-        tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.visitedQNodesTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().visitedQNodesTotal, pair.searchSummaryDiff().visitedQNodesPercentage())).forEach(tmp::add);
+        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxSearchLevel));
+        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxSearchLevel)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

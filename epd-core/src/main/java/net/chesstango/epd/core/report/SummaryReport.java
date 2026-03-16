@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
+import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.nodes.NodesModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
@@ -34,12 +35,13 @@ public class SummaryReport implements Report {
 
     public SummaryReport withEpdSearchResults(List<EpdSearchResult> epdSearchResults,
                                               EpdSearchModel epdSearchModel,
+                                              BoardModel boardModel,
                                               NodesModel nodesReportModel,
                                               EvaluationModel evaluationReportModel,
                                               PrincipalVariationModel principalVariationReportModel,
                                               TranspositionModel transpositionModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new SummaryModelInput(epdSearchResults, epdSearchModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionModel));
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new SummaryModelInput(epdSearchResults, epdSearchModel, boardModel, nodesReportModel, evaluationReportModel, principalVariationReportModel, transpositionModel));
 
         return this;
     }
