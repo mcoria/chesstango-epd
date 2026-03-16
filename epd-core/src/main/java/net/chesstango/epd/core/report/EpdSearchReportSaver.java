@@ -6,8 +6,6 @@ import net.chesstango.reports.ReportToFile;
 import java.nio.file.Path;
 import java.util.List;
 
-import static net.chesstango.epd.core.main.Common.SESSION_DATE;
-
 /**
  * @author Mauricio Coria
  */
@@ -32,7 +30,7 @@ public class EpdSearchReportSaver {
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
                 .setEvaluationModel(summaryModelInput.evaluationReportModel())
                 .setEpdSearchModel(summaryModelInput.epdSearchModel())
-                .setNodesModel(summaryModelInput.nodesReportModel())
+                .setNodesVisitedModel(summaryModelInput.nodesReportModel())
                 .setPrincipalVariationModel(summaryModelInput.principalVariationReportModel())
                 .setTranspositionReportModel(summaryModelInput.transpositionModel())
         );

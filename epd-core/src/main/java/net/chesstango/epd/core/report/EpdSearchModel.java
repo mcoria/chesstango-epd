@@ -2,7 +2,6 @@ package net.chesstango.epd.core.report;
 
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
-import net.chesstango.reports.search.nodes.NodesModel;
 import net.chesstango.search.SearchResult;
 
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
-import net.chesstango.reports.search.nodes.NodesModel;
+import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
 import net.chesstango.search.SearchResult;
@@ -111,7 +111,7 @@ public class SummaryModel implements Model<SummaryModelInput> {
     public SummaryModel collectStatistics(String sessionId, SummaryModelInput input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
-        NodesModel nodesReportModel = input.nodesReportModel();
+        NodesVisitedModel nodesReportModel = input.nodesReportModel();
         EvaluationModel evaluationReportModel = input.evaluationReportModel();
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
         TranspositionModel transpositionModel = input.transpositionModel();

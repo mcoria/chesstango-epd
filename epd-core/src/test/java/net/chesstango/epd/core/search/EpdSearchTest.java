@@ -1,12 +1,10 @@
 package net.chesstango.epd.core.search;
 
-import net.chesstango.gardel.epd.EPD;
-import net.chesstango.gardel.epd.EPDDecoder;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.evaluation.evaluators.EvaluatorImp04;
-import net.chesstango.reports.search.evaluation.EvaluationReport;
-import net.chesstango.reports.search.nodes.NodesReport;
-import net.chesstango.reports.search.pv.PrincipalVariationReport;
+import net.chesstango.gardel.epd.EPD;
+import net.chesstango.gardel.epd.EPDDecoder;
+import net.chesstango.reports.search.DetailsReport;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
 import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
@@ -28,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Mauricio Coria
  */
 public class EpdSearchTest {
-    private static final boolean PRINT_REPORT = true;
+    private static final boolean PRINT_REPORT = false;
     private static EPDDecoder epdDecoder;
     private static EpdSearch epdSearch;
     private static DebugNodeTrap debugNodeTrap;
@@ -44,19 +42,14 @@ public class EpdSearchTest {
     @AfterEach
     public void tearDown() {
         if (PRINT_REPORT) {
-            new NodesReport()
+            new DetailsReport()
+                    //.withBoardReport()
                     .withNodesVisitedStatistics()
-                    //.withCutoffStatics()
-                    //.withPrincipalVariation()
-                    .withMoveResults(List.of(epdSearchResult.getSearchResult()))
-                    .printReport(System.out);
-
-            new EvaluationReport()
-                    .withEvaluationsStatistics()
-                    .withMoveResults(List.of(epdSearchResult.getSearchResult()))
-                    .printReport(System.out);
-
-            new PrincipalVariationReport()
+                    .withNodesTypesStatistics()
+                    //.withCutoffStatistics()
+                    //.withEvaluationReport()
+                    //.withTranspositionReport()
+                    //.withPrincipalVariationReport()
                     .withMoveResults(List.of(epdSearchResult.getSearchResult()))
                     .printReport(System.out);
         }
