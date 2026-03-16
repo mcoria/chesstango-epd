@@ -111,7 +111,7 @@ public class SummaryModel implements Model<SummaryModelInput> {
     public SummaryModel collectStatistics(String sessionId, SummaryModelInput input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
-        NodesVisitedModel nodesReportModel = input.nodesReportModel();
+        NodesVisitedModel nodesReportModel = input.nodesVisitedModel();
         EvaluationModel evaluationReportModel = input.evaluationReportModel();
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
         TranspositionModel transpositionModel = input.transpositionModel();

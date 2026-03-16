@@ -15,7 +15,7 @@ import java.util.List;
 public record SummaryModelInput(List<EpdSearchResult> epdSearchResults,
                                 EpdSearchModel epdSearchModel,
                                 BoardModel boardModel,
-                                NodesVisitedModel nodesReportModel,
+                                NodesVisitedModel nodesVisitedModel,
                                 EvaluationModel evaluationReportModel,
                                 PrincipalVariationModel principalVariationReportModel,
                                 TranspositionModel transpositionModel) {

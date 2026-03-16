@@ -30,7 +30,7 @@ public class EpdSearchReportSaver {
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
                 .setEvaluationModel(summaryModelInput.evaluationReportModel())
                 .setEpdSearchModel(summaryModelInput.epdSearchModel())
-                .setNodesVisitedModel(summaryModelInput.nodesReportModel())
+                .setNodesVisitedModel(summaryModelInput.nodesVisitedModel())
                 .setPrincipalVariationModel(summaryModelInput.principalVariationReportModel())
                 .setTranspositionReportModel(summaryModelInput.transpositionModel())
         );
