@@ -120,9 +120,9 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
-        tmp.add("Max RLevel");
-        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxSearchLevel));
-        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxSearchLevel)).forEach(tmp::add);
+        tmp.add("Max Depth");
+        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxDepth));
+        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxDepth)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

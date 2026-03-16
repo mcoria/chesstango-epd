@@ -23,10 +23,11 @@ public class EpdSearchComparatorMain {
     public static void main(String[] args) {
         printSummaryLegends();
 
-        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-5-2026-03-04-00-08-v1.4.0");
-        epdSearchComparatorMain.addSession("depth-5-2026-03-11-16-21-v1.5.0-SNAPSHOT");
+        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-3-2026-03-16-01-29-v1.6.0-SNAPSHOT");
+        epdSearchComparatorMain.addSession("depth-3-2026-03-16-01-30-v1.6.0-SNAPSHOT");
 
         //
+         /*
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w1.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b1.epd");
 
@@ -36,8 +37,11 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w3.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b3.epd");
 
+          */
+
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Bratko-Kopec.epd");
 
+        /*
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Kaufman.epd");
 
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\wac-2018.epd");
@@ -59,6 +63,8 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS13.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS14.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS15.epd");
+
+         */
     }
 
     private static void printSummaryLegends() {
@@ -72,10 +78,7 @@ public class EpdSearchComparatorMain {
                 Exec Moves       : executed moves.
                 Evaluations      : evaluations performed.
                  Collisions   (%): Different positions with same evaluation (Collisions).
-                Max RLevel       : Max regular depth reached.
-                Max QLevel       : Max quiscence depth reached.
-                Vis RNodes       : Visited nodes at regular depth.
-                Vis QNodes       : Visited nodes at quiscence depth.
+                Max  Level       : Max depth reached.
                 Vis  Nodes       : Visited nodes.
                 Cutoff        (%): Cutoff percentage.
                 PV Accuracy   (%): Principal variation accuracy percentage.
