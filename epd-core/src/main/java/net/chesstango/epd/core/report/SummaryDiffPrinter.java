@@ -21,7 +21,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String successRateFmt = "%d%%";
     private static final String evaluationCoincidencesFmt = "%d%%";
     private static final String successLevelFmt = "%d";
-    private static final String visitedNodesFmt = "%d (%3d%%)";
+    private static final String nodesFmt = "%d (%3d%%)";
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
     private static final String accuracyFmt = "%d%%";
@@ -126,9 +126,51 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
-        tmp.add("Vis Nodes");
-        tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.nodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().nodes, pair.searchSummaryDiff().visitedNodesPercentage())).forEach(tmp::add);
+        tmp.add("RNodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.rootNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().rootNodes, pair.searchSummaryDiff().rootNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("INodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.interiorNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().interiorNodes, pair.searchSummaryDiff().interiorNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("QNodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.quiescenceNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().quiescenceNodes, pair.searchSummaryDiff().quiescenceNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("LNodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.leafNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().leafNodes, pair.searchSummaryDiff().leafNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("TNodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.terminalNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().terminalNodes, pair.searchSummaryDiff().terminalNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("LoNodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.loopNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().loopNodes, pair.searchSummaryDiff().loopNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("ENode");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.egtbNodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().egtbNodes, pair.searchSummaryDiff().egtbNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("Nodes");
+        tmp.add(String.format(nodesFmt, baseLineSearchSummary.nodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().nodes, pair.searchSummaryDiff().nodesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
