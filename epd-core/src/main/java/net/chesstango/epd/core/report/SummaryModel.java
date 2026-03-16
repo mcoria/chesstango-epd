@@ -7,6 +7,7 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
+import net.chesstango.reports.search.nodes.types.NodesTypesModel;
 import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
@@ -47,8 +48,29 @@ public class SummaryModel implements Model<SummaryModelInput> {
     @JsonProperty("maxDepth")
     int maxDepth;
 
-    @JsonProperty("visitedNodesTotal")
-    long visitedNodesTotal;
+    @JsonProperty("rootNodes")
+    long rootNodes;
+
+    @JsonProperty("interiorNodes")
+    long interiorNodes;
+
+    @JsonProperty("quiescenceNodes")
+    long quiescenceNodes;
+
+    @JsonProperty("leafNodes")
+    long leafNodes;
+
+    @JsonProperty("terminalNodes")
+    long terminalNodes;
+
+    @JsonProperty("loopNodes")
+    long loopNodes;
+
+    @JsonProperty("egtbNodes")
+    long egtbNodes;
+
+    @JsonProperty("nodes")
+    long nodes;
 
     @JsonProperty("cutoffPercentageTotal")
     int cutoffPercentageTotal;
@@ -111,7 +133,8 @@ public class SummaryModel implements Model<SummaryModelInput> {
     public SummaryModel collectStatistics(String sessionId, SummaryModelInput input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
-        NodesVisitedModel nodesReportModel = input.nodesVisitedModel();
+        NodesVisitedModel nodesVisitedModel = input.nodesVisitedModel();
+        NodesTypesModel nodesTypesModel = input.nodesTypesModel();
         EvaluationModel evaluationReportModel = input.evaluationReportModel();
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
         TranspositionModel transpositionModel = input.transpositionModel();
@@ -126,11 +149,20 @@ public class SummaryModel implements Model<SummaryModelInput> {
         this.successRate = epdSearchModel.successRate;
         this.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
 
-        this.maxDepth = nodesReportModel.maxDepth;
-
-        this.visitedNodesTotal = nodesReportModel.visitedNodesTotal;
         this.executedMovesTotal = boardModel.executedMovesTotal;
-        this.cutoffPercentageTotal = nodesReportModel.cutoffPercentageTotal;
+
+        this.maxDepth = nodesVisitedModel.maxDepth;
+        this.nodes = nodesVisitedModel.visitedNodesTotal;
+        this.cutoffPercentageTotal = nodesVisitedModel.cutoffPercentageTotal;
+
+        this.rootNodes = nodesTypesModel.rootNodeCounterTotal;
+        this.interiorNodes = nodesTypesModel.interiorNodeCounterTotal;
+        this.quiescenceNodes = nodesTypesModel.quiescenceNodeCounterTotal;
+        this.leafNodes = nodesTypesModel.leafNodeCounterTotal;
+        this.terminalNodes = nodesTypesModel.terminalNodeCounterTotal;
+        this.loopNodes = nodesTypesModel.loopNodeCounterTotal;
+        this.egtbNodes = nodesTypesModel.egtbNodeCounterTotal;
+
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
         this.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
@@ -141,7 +173,6 @@ public class SummaryModel implements Model<SummaryModelInput> {
         this.ttWritesTotal = transpositionModel.writesTotal;
         this.ttUpdatesPercentageTotal = transpositionModel.updatesPercentageTotal;
         this.ttOverWritesPercentageTotal = transpositionModel.overWritesPercentageTotal;
-
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));

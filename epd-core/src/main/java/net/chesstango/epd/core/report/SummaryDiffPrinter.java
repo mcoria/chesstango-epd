@@ -127,8 +127,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp.clear();
         tmp.add("Vis Nodes");
-        tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.visitedNodesTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().visitedNodesTotal, pair.searchSummaryDiff().visitedNodesPercentage())).forEach(tmp::add);
+        tmp.add(String.format(visitedNodesFmt, baseLineSearchSummary.nodes, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(visitedNodesFmt, pair.searchSummary().nodes, pair.searchSummaryDiff().visitedNodesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
