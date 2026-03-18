@@ -20,7 +20,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String searchesFmt = "%d";
     private static final String successRateFmt = "%d%%";
     private static final String evaluationCoincidencesFmt = "%d%%";
-    private static final String exploredDepthAvgFmt = "%.1f";
+    private static final String exploredDepthAvgFmt = "%.1f (%3d%%)";
     private static final String nodesFmt = "%d (%3d%%)";
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
@@ -109,8 +109,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp.clear();
         tmp.add("Depth");
-        tmp.add(String.format(exploredDepthAvgFmt, baseLineSearchSummary.exploredDepthAvg));
-        searchSummaryPairs.stream().map(pair -> String.format(exploredDepthAvgFmt, pair.searchSummary().exploredDepthAvg)).forEach(tmp::add);
+        tmp.add(String.format(exploredDepthAvgFmt, baseLineSearchSummary.exploredDepthAvg, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(exploredDepthAvgFmt, pair.searchSummary().exploredDepthAvg, pair.searchSummaryDiff().exploredDepthAvgPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
 

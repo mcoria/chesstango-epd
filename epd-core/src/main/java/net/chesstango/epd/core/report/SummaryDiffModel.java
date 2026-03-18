@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
     public record SearchSummaryDiff(int durationPercentage,
+                                    int exploredDepthAvgPercentage,
                                     int evaluationCoincidencePercentage,
                                     int rootNodesPercentage,
                                     int interiorNodesPercentage,
@@ -25,6 +26,7 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
     ) {
         static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
             int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
+            int exploredDepthAvgPercentage = (int) ((searchSummary.exploredDepthAvg * 100) / baseLineSearchSummary.exploredDepthAvg);
             int rootNodesPercentage = (int) ((searchSummary.rootNodes * 100) / baseLineSearchSummary.rootNodes);
             int interiorNodesPercentage = baseLineSearchSummary.interiorNodes != 0 ? (int) ((searchSummary.interiorNodes * 100) / baseLineSearchSummary.interiorNodes) : 100;
             int quiescenceNodesPercentage = baseLineSearchSummary.quiescenceNodes != 0 ? (int) ((searchSummary.quiescenceNodes * 100) / baseLineSearchSummary.quiescenceNodes) : 100;
@@ -56,6 +58,7 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
             int evaluationCoincidencePercentage = (evaluationCoincidences * 100) / baseLineSearches;
 
             return new SearchSummaryDiff(durationPercentage,
+                    exploredDepthAvgPercentage,
                     evaluationCoincidencePercentage,
                     rootNodesPercentage,
                     interiorNodesPercentage,
