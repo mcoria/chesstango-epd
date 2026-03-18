@@ -28,9 +28,10 @@ public class EpdSearchReportSaver {
     public void saveReport(String suiteName) {
         ReportToFile reportToFile = new ReportToFile(directory);
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
-                .setEvaluationModel(summaryModelInput.evaluationReportModel())
                 .setEpdSearchModel(summaryModelInput.epdSearchModel())
+                .setBoardModel(summaryModelInput.boardModel())
                 .setNodesVisitedModel(summaryModelInput.nodesVisitedModel())
+                .setEvaluationModel(summaryModelInput.evaluationReportModel())
                 .setPrincipalVariationModel(summaryModelInput.principalVariationReportModel())
                 .setTranspositionReportModel(summaryModelInput.transpositionModel())
         );

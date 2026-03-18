@@ -121,8 +121,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp.clear();
         tmp.add("Max Depth");
-        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxDepth));
-        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxDepth)).forEach(tmp::add);
+        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxSelDepth));
+        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxSelDepth)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
@@ -144,7 +144,7 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
-        tmp.add("LNodes");
+        tmp.add("LeNodes");
         tmp.add(String.format(nodesFmt, baseLineSearchSummary.leafNodes, 100));
         searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().leafNodes, pair.searchSummaryDiff().leafNodesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));

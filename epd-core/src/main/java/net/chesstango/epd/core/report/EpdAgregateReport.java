@@ -6,6 +6,8 @@ import lombok.experimental.Accessors;
 import net.chesstango.engine.Tango;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
+import net.chesstango.reports.search.board.BoardModel;
+import net.chesstango.reports.search.board.BoardReport;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.evaluation.EvaluationReport;
 import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
@@ -23,10 +25,11 @@ import java.util.List;
 @Accessors(chain = true)
 public class EpdAgregateReport implements Report {
 
-    private PrincipalVariationModel principalVariationModel;
-    private EvaluationModel evaluationModel;
-    private NodesVisitedModel nodesVisitedModel;
     private EpdSearchModel epdSearchModel;
+    private BoardModel boardModel;
+    private NodesVisitedModel nodesVisitedModel;
+    private EvaluationModel evaluationModel;
+    private PrincipalVariationModel principalVariationModel;
     private TranspositionModel transpositionReportModel;
 
     @Override
@@ -36,6 +39,10 @@ public class EpdAgregateReport implements Report {
 
         new EpdSearchReport()
                 .setReportModel(epdSearchModel)
+                .printReport(out);
+
+        new BoardReport()
+                .setReportModel(boardModel)
                 .printReport(out);
 
         new NodesVisitedReport()
@@ -63,6 +70,7 @@ public class EpdAgregateReport implements Report {
 
     public EpdAgregateReport withEpdSearchResults(String suiteName, List<EpdSearchResult> epdSearchResults) {
         this.epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
+        this.boardModel = new BoardModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         this.nodesVisitedModel = new NodesVisitedModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         this.evaluationModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         this.principalVariationModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());

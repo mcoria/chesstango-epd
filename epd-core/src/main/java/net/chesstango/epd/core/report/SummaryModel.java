@@ -45,8 +45,11 @@ public class SummaryModel implements Model<SummaryModelInput> {
     @JsonProperty("executedMovesTotal")
     long executedMovesTotal;
 
-    @JsonProperty("maxDepth")
-    int maxDepth;
+    @JsonProperty("maxDepthAvg")
+    float maxDepthAvg;
+
+    @JsonProperty("maxSelDepth")
+    int maxSelDepth;
 
     @JsonProperty("rootNodes")
     long rootNodes;
@@ -150,8 +153,9 @@ public class SummaryModel implements Model<SummaryModelInput> {
         this.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
 
         this.executedMovesTotal = boardModel.executedMovesTotal;
+        this.maxDepthAvg =  boardModel.maxDepthAvg;
 
-        this.maxDepth = nodesVisitedModel.maxDepth;
+        this.maxSelDepth = nodesVisitedModel.maxSelDepth;
         this.nodes = nodesVisitedModel.visitedNodesTotal;
         this.cutoffPercentageTotal = nodesVisitedModel.cutoffPercentageTotal;
 
