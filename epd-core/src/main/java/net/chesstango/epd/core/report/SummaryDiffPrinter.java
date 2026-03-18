@@ -20,14 +20,13 @@ public class SummaryDiffPrinter implements Printer {
     private static final String searchesFmt = "%d";
     private static final String successRateFmt = "%d%%";
     private static final String evaluationCoincidencesFmt = "%d%%";
-    private static final String successLevelFmt = "%d";
+    private static final String exploredDepthAvgFmt = "%.1f";
     private static final String nodesFmt = "%d (%3d%%)";
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
     private static final String accuracyFmt = "%d%%";
     private static final String cutoffFmt = "%d%%";
     private static final String pvAccuracyFmt = "%d%%";
-
 
     private static final String ttReadFmt = "%d (%3d%%)";
     private static final String ttReadHitsFmt = "%d%%";
@@ -107,6 +106,14 @@ public class SummaryDiffPrinter implements Printer {
         searchSummaryPairs.stream().map(pair -> String.format(executedMovesFmt, pair.searchSummary().executedMovesTotal, pair.searchSummaryDiff().executedMovesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
+
+        tmp.clear();
+        tmp.add("Depth");
+        tmp.add(String.format(exploredDepthAvgFmt, baseLineSearchSummary.exploredDepthAvg));
+        searchSummaryPairs.stream().map(pair -> String.format(exploredDepthAvgFmt, pair.searchSummary().exploredDepthAvg)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+
         tmp.clear();
         tmp.add("Evaluations");
         tmp.add(String.format(evaluatedGamesFmt, baseLineSearchSummary.evaluationCounterTotal, 100));
@@ -117,12 +124,6 @@ public class SummaryDiffPrinter implements Printer {
         tmp.add("Collisions");
         tmp.add(String.format(cutoffFmt, baseLineSearchSummary.evaluationCollisionPercentageTotal));
         searchSummaryPairs.stream().map(pair -> String.format(cutoffFmt, pair.searchSummary().evaluationCollisionPercentageTotal)).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("Max Depth");
-        tmp.add(String.format(successLevelFmt, baseLineSearchSummary.maxSelDepth));
-        searchSummaryPairs.stream().map(pair -> String.format(successLevelFmt, pair.searchSummary().maxSelDepth)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
