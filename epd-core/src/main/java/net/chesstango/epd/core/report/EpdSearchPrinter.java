@@ -29,7 +29,12 @@ public class EpdSearchPrinter implements Printer {
     @Override
     public EpdSearchPrinter print() {
         out.printf("--------------------------------------------------------------------------------------------------------------------------------------------------------%n");
-        out.printf("EpdSearchReport: %s\n\n", reportModel.reportTitle);
+        out.printf("EpdSearchReport: %s%n%n", reportModel.reportTitle);
+
+        out.printf("Searches        : %d%n", reportModel.searches);
+        out.printf("Success rate    : %d%%%n", reportModel.successRate);
+        out.printf("Depth Accuracy  : %d%%%n", reportModel.depthAccuracyAvgPercentageTotal);
+        out.printf("Time taken      : %dms%n%n", reportModel.duration);
 
         if (reportModel.failedEntries.isEmpty()) {
             out.println("\tall tests executed successfully !!!!");
@@ -38,12 +43,6 @@ public class EpdSearchPrinter implements Printer {
                 out.printf("\t%s%n", failedTest);
             }
         }
-
-        out.printf("Searches        : %d%n", reportModel.searches);
-        out.printf("Success rate    : %d%%%n", reportModel.successRate);
-        out.printf("Depth Accuracy  : %d%%%n", reportModel.depthAccuracyAvgPercentageTotal);
-        out.printf("Time taken      : %dms%n", reportModel.duration);
-
         return this;
     }
 

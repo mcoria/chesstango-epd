@@ -6,6 +6,7 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
+import net.chesstango.reports.search.iteration.IterationEvaluationModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
 import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
@@ -39,11 +40,12 @@ public class SummaryReport implements Report {
                                               BoardModel boardModel,
                                               NodesVisitedModel nodesVisitedModel,
                                               NodesTypesModel nodesTypesModel,
+                                              IterationEvaluationModel iterationEvaluationModel,
                                               EvaluationModel evaluationReportModel,
                                               PrincipalVariationModel principalVariationReportModel,
                                               TranspositionModel transpositionModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, principalVariationReportModel, evaluationReportModel, transpositionModel));
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, evaluationReportModel, transpositionModel));
 
         return this;
     }

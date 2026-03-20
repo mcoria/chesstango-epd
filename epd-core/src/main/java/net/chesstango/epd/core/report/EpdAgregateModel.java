@@ -3,6 +3,7 @@ package net.chesstango.epd.core.report;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
+import net.chesstango.reports.search.iteration.IterationEvaluationModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
 import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
@@ -18,6 +19,7 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                                BoardModel boardModel,
                                NodesVisitedModel nodesVisitedModel,
                                NodesTypesModel nodesTypesModel,
+                               IterationEvaluationModel iterationEvaluationModel,
                                PrincipalVariationModel principalVariationReportModel,
                                EvaluationModel evaluationReportModel,
                                TranspositionModel transpositionModel) {
@@ -26,9 +28,10 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
         BoardModel boardModel = new BoardModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         NodesVisitedModel nodesVisitedModel = new NodesVisitedModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         NodesTypesModel nodesTypesModel = new NodesTypesModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
+        IterationEvaluationModel iterationEvaluationModel = new IterationEvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         EvaluationModel evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         PrincipalVariationModel principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         TranspositionModel transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        return new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, principalVariationReportModel, evaluationReportModel, transpositionReportModel);
+        return new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, evaluationReportModel, transpositionReportModel);
     }
 }
