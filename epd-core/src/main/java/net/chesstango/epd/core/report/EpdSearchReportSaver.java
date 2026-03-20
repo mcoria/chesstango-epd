@@ -12,7 +12,7 @@ import java.util.List;
 public class EpdSearchReportSaver {
     private final Path directory;
 
-    private SummaryModelInput summaryModelInput;
+    private EpdAgregateModel epdAgregateModel;
     private SummaryModel summaryModel;
 
 
@@ -21,19 +21,14 @@ public class EpdSearchReportSaver {
     }
 
     public void loadModel(String sessionId, List<EpdSearchResult> epdSearchResults) {
-        this.summaryModelInput = SummaryModelInput.load(sessionId, epdSearchResults);
-        this.summaryModel = new SummaryModel().collectStatistics(sessionId, summaryModelInput);
+        this.epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults);
+        this.summaryModel = new SummaryModel().collectStatistics(sessionId, epdAgregateModel);
     }
 
     public void saveReport(String suiteName) {
         ReportToFile reportToFile = new ReportToFile(directory);
         reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
-                .setEpdSearchModel(summaryModelInput.epdSearchModel())
-                .setBoardModel(summaryModelInput.boardModel())
-                .setNodesVisitedModel(summaryModelInput.nodesVisitedModel())
-                .setEvaluationModel(summaryModelInput.evaluationReportModel())
-                .setPrincipalVariationModel(summaryModelInput.principalVariationReportModel())
-                .setTranspositionReportModel(summaryModelInput.transpositionModel())
+                .setEpdAgregateModel(epdAgregateModel)
         );
     }
 

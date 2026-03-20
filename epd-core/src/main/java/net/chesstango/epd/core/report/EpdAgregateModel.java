@@ -13,15 +13,15 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
-public record SummaryModelInput(List<EpdSearchResult> epdSearchResults,
-                                EpdSearchModel epdSearchModel,
-                                BoardModel boardModel,
-                                NodesVisitedModel nodesVisitedModel,
-                                NodesTypesModel nodesTypesModel,
-                                EvaluationModel evaluationReportModel,
-                                PrincipalVariationModel principalVariationReportModel,
-                                TranspositionModel transpositionModel) {
-    public static SummaryModelInput load(String suiteName, List<EpdSearchResult> epdSearchResults) {
+public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
+                               EpdSearchModel epdSearchModel,
+                               BoardModel boardModel,
+                               NodesVisitedModel nodesVisitedModel,
+                               NodesTypesModel nodesTypesModel,
+                               PrincipalVariationModel principalVariationReportModel,
+                               EvaluationModel evaluationReportModel,
+                               TranspositionModel transpositionModel) {
+    public static EpdAgregateModel load(String suiteName, List<EpdSearchResult> epdSearchResults) {
         EpdSearchModel epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
         BoardModel boardModel = new BoardModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         NodesVisitedModel nodesVisitedModel = new NodesVisitedModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
@@ -29,6 +29,6 @@ public record SummaryModelInput(List<EpdSearchResult> epdSearchResults,
         EvaluationModel evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         PrincipalVariationModel principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
         TranspositionModel transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList());
-        return new SummaryModelInput(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, evaluationReportModel, principalVariationReportModel, transpositionReportModel);
+        return new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, principalVariationReportModel, evaluationReportModel, transpositionReportModel);
     }
 }

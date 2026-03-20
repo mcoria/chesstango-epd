@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author Mauricio Coria
  */
-public class SummaryModel implements Model<SummaryModelInput> {
+public class SummaryModel implements Model<EpdAgregateModel> {
 
     @JsonProperty("sessionid")
     String sessionid;
@@ -130,7 +130,7 @@ public class SummaryModel implements Model<SummaryModelInput> {
 
 
     @Override
-    public SummaryModel collectStatistics(String sessionId, SummaryModelInput input) {
+    public SummaryModel collectStatistics(String sessionId, EpdAgregateModel input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
         NodesVisitedModel nodesVisitedModel = input.nodesVisitedModel();
