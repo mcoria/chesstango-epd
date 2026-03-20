@@ -30,15 +30,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
-        <!-- logback: Este provider es excluyente con slf4j-nop -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <!-- logback -->
-
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -74,6 +65,16 @@
     <profiles>
         <profile>
             <id>shade</id>
+            <!-- Place dependencies specific to this profile inside its own <dependencies> section -->
+            <dependencies>
+                <!-- logback: Este provider es excluyente con slf4j-nop -->
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+                <!-- logback -->
+            </dependencies>
             <build>
                 <resources>
                     <resource>

@@ -23,8 +23,8 @@ public class EpdSearchComparatorMain {
     public static void main(String[] args) {
         printSummaryLegends();
 
-        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-3-2026-03-18-01-16-v1.6.0-SNAPSHOT");
-        epdSearchComparatorMain.addSession("depth-3-2026-03-18-01-17-v1.6.0-SNAPSHOT");
+        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-7-2026-03-20-07-55-v1.6.0-SNAPSHOT");
+        epdSearchComparatorMain.addSession("depth-7-2026-03-20-08-15-v1.6.0-SNAPSHOT");
 
         //
          /*
@@ -75,7 +75,7 @@ public class EpdSearchComparatorMain {
                 Success       (%): percentage of successful moves.
                 Coincidences  (%): percentage of coincidences between evaluations.
                 Dpt Accuracy  (%): AVG percentage of the best moves found at each depth level that match the expected successful moves defined in the EPD position.  
-                Exec Moves       : executed moves.
+                Moves            : executed moves.
                 Evaluations      : evaluations performed.
                  Collisions   (%): Different positions with same evaluation (Collisions).
                 Max  Level       : Max depth reached.

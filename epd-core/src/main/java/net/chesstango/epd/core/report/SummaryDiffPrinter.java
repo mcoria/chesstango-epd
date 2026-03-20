@@ -101,7 +101,7 @@ public class SummaryDiffPrinter implements Printer {
 
 
         tmp.clear();
-        tmp.add("Exec Moves");
+        tmp.add("Moves");
         tmp.add(String.format(executedMovesFmt, baseLineSearchSummary.executedMovesTotal, 100));
         searchSummaryPairs.stream().map(pair -> String.format(executedMovesFmt, pair.searchSummary().executedMovesTotal, pair.searchSummaryDiff().executedMovesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
@@ -160,12 +160,6 @@ public class SummaryDiffPrinter implements Printer {
         tmp.add("LoNodes");
         tmp.add(String.format(nodesFmt, baseLineSearchSummary.loopNodes, 100));
         searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().loopNodes, pair.searchSummaryDiff().loopNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("ENode");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.egtbNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().egtbNodes, pair.searchSummaryDiff().egtbNodesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

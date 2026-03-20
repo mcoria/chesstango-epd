@@ -66,9 +66,6 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("loopNodes")
     long loopNodes;
 
-    @JsonProperty("egtbNodes")
-    long egtbNodes;
-
     @JsonProperty("nodes")
     long nodes;
 
@@ -161,7 +158,6 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.leafNodes = nodesTypesModel.leafNodeCounterTotal;
         this.terminalNodes = nodesTypesModel.terminalNodeCounterTotal;
         this.loopNodes = nodesTypesModel.loopNodeCounterTotal;
-        this.egtbNodes = nodesTypesModel.egtbNodeCounterTotal;
 
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;

@@ -17,7 +17,6 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                                     int leafNodesPercentage,
                                     int terminalNodesPercentage,
                                     int loopNodesPercentage,
-                                    int egtbNodesPercentage,
                                     int nodesPercentage,
                                     int evaluatedGamesPercentage,
                                     int executedMovesPercentage,
@@ -33,7 +32,6 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
             int leafNodesPercentage = baseLineSearchSummary.leafNodes != 0 ? (int) ((searchSummary.leafNodes * 100) / baseLineSearchSummary.leafNodes) : 100;
             int terminalNodesPercentage = baseLineSearchSummary.terminalNodes != 0 ? (int) ((searchSummary.terminalNodes * 100) / baseLineSearchSummary.terminalNodes) : 100;
             int loopNodesPercentage = baseLineSearchSummary.loopNodes != 0 ? (int) ((searchSummary.loopNodes * 100) / baseLineSearchSummary.loopNodes) : 100;
-            int egtbNodesPercentage = baseLineSearchSummary.egtbNodes != 0 ? (int) ((searchSummary.egtbNodes * 100) / baseLineSearchSummary.egtbNodes) : 100;
             int nodesPercentage = (int) ((searchSummary.nodes * 100) / baseLineSearchSummary.nodes);
             int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
             int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
@@ -66,7 +64,6 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                     leafNodesPercentage,
                     terminalNodesPercentage,
                     loopNodesPercentage,
-                    egtbNodesPercentage,
                     nodesPercentage,
                     evaluatedGamesPercentage,
                     executedMovesPercentage,

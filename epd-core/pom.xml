@@ -65,4 +65,27 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>shade</id>
+            <!-- Place dependencies specific to this profile inside its own <dependencies> section -->
+            <dependencies>
+                <!-- logback: Este provider es excluyente con slf4j-nop -->
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+                <!-- logback -->
+            </dependencies>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/shade</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
