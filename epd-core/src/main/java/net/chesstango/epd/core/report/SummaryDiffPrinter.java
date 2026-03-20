@@ -20,11 +20,11 @@ public class SummaryDiffPrinter implements Printer {
     private static final String searchesFmt = "%d";
     private static final String successRateFmt = "%d%%";
     private static final String evaluationCoincidencesFmt = "%d%%";
-    private static final String exploredDepthAvgFmt = "%.1f (%3d%%)";
+    private static final String exploredDepthAvgFmt = "%.1f";
+    private static final String nodesPercentageFmt = "%3d%%";
     private static final String nodesFmt = "%d (%3d%%)";
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
-    private static final String accuracyFmt = "%d%%";
     private static final String cutoffFmt = "%d%%";
     private static final String pvAccuracyFmt = "%d%%";
 
@@ -94,11 +94,10 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
-        tmp.add("Dpt Accuracy");
-        tmp.add(String.format(accuracyFmt, baseLineSearchSummary.depthAccuracyAvgPercentageTotal));
-        searchSummaryPairs.stream().map(pair -> String.format(accuracyFmt, pair.searchSummary().depthAccuracyAvgPercentageTotal)).forEach(tmp::add);
+        tmp.add("Depth");
+        tmp.add(String.format(exploredDepthAvgFmt, baseLineSearchSummary.exploredDepthAvg));
+        searchSummaryPairs.stream().map(pair -> String.format(exploredDepthAvgFmt, pair.searchSummary().exploredDepthAvg)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
-
 
         tmp.clear();
         tmp.add("Moves");
@@ -108,65 +107,29 @@ public class SummaryDiffPrinter implements Printer {
 
 
         tmp.clear();
-        tmp.add("Depth");
-        tmp.add(String.format(exploredDepthAvgFmt, baseLineSearchSummary.exploredDepthAvg, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(exploredDepthAvgFmt, pair.searchSummary().exploredDepthAvg, pair.searchSummaryDiff().exploredDepthAvgPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-
-        tmp.clear();
-        tmp.add("Evaluations");
-        tmp.add(String.format(evaluatedGamesFmt, baseLineSearchSummary.evaluationCounterTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(evaluatedGamesFmt, pair.searchSummary().evaluationCounterTotal, pair.searchSummaryDiff().evaluatedGamesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("Collisions");
-        tmp.add(String.format(cutoffFmt, baseLineSearchSummary.evaluationCollisionPercentageTotal));
-        searchSummaryPairs.stream().map(pair -> String.format(cutoffFmt, pair.searchSummary().evaluationCollisionPercentageTotal)).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("RNodes");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.rootNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().rootNodes, pair.searchSummaryDiff().rootNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("INodes");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.interiorNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().interiorNodes, pair.searchSummaryDiff().interiorNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("QNodes");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.quiescenceNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().quiescenceNodes, pair.searchSummaryDiff().quiescenceNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("LeNodes");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.leafNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().leafNodes, pair.searchSummaryDiff().leafNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("TNodes");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.terminalNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().terminalNodes, pair.searchSummaryDiff().terminalNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
-        tmp.add("LoNodes");
-        tmp.add(String.format(nodesFmt, baseLineSearchSummary.loopNodes, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().loopNodes, pair.searchSummaryDiff().loopNodesPercentage())).forEach(tmp::add);
-        printerTxtTable.addRow(tmp.toArray(new String[0]));
-
-        tmp.clear();
         tmp.add("Nodes");
         tmp.add(String.format(nodesFmt, baseLineSearchSummary.nodes, 100));
         searchSummaryPairs.stream().map(pair -> String.format(nodesFmt, pair.searchSummary().nodes, pair.searchSummaryDiff().nodesPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("INodes");
+        tmp.add(String.format(nodesPercentageFmt, baseLineSearchSummary.interiorNodeCounterPercentage));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesPercentageFmt, pair.searchSummary().interiorNodeCounterPercentage)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("QNodes");
+        tmp.add(String.format(nodesPercentageFmt, baseLineSearchSummary.quiescenceNodeCounterPercentage));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesPercentageFmt, pair.searchSummary().quiescenceNodeCounterPercentage)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("LeNodes");
+        tmp.add(String.format(nodesPercentageFmt, baseLineSearchSummary.leafNodeCounterPercentage));
+        searchSummaryPairs.stream().map(pair -> String.format(nodesPercentageFmt, pair.searchSummary().leafNodeCounterPercentage)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
 
         tmp.clear();
         tmp.add("Cutoff");
@@ -181,6 +144,18 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
+        tmp.add("Evaluations");
+        tmp.add(String.format(evaluatedGamesFmt, baseLineSearchSummary.evaluationCounterTotal, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(evaluatedGamesFmt, pair.searchSummary().evaluationCounterTotal, pair.searchSummaryDiff().evaluatedGamesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("Collisions");
+        tmp.add(String.format(cutoffFmt, baseLineSearchSummary.evaluationCollisionPercentageTotal));
+        searchSummaryPairs.stream().map(pair -> String.format(cutoffFmt, pair.searchSummary().evaluationCollisionPercentageTotal)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
         tmp.add("TT Reads");
         tmp.add(String.format(ttReadFmt, baseLineSearchSummary.ttReadsTotal, 100));
         searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().ttReadsTotal, pair.searchSummaryDiff().ttReadsPercentage())).forEach(tmp::add);
@@ -191,7 +166,6 @@ public class SummaryDiffPrinter implements Printer {
         tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.ttReadHitsPercentageTotal));
         searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().ttReadHitsPercentageTotal)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
-
 
         tmp.clear();
         tmp.add("TT Writes");
@@ -212,6 +186,7 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         printerTxtTable.print();
+
         return this;
     }
 

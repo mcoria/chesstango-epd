@@ -39,29 +39,20 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("successRate")
     int successRate;
 
-    @JsonProperty("depthAccuracyAvgPercentageTotal")
-    int depthAccuracyAvgPercentageTotal;
-
     @JsonProperty("executedMovesTotal")
     long executedMovesTotal;
 
     @JsonProperty("exploredDepthAvg")
     float exploredDepthAvg;
 
-    @JsonProperty("rootNodes")
-    long rootNodes;
+    @JsonProperty("interiorNodeCounterPercentage")
+    int interiorNodeCounterPercentage;
 
-    @JsonProperty("interiorNodes")
-    long interiorNodes;
+    @JsonProperty("quiescenceNodeCounterPercentage")
+    int quiescenceNodeCounterPercentage;
 
-    @JsonProperty("quiescenceNodes")
-    long quiescenceNodes;
-
-    @JsonProperty("leafNodes")
-    long leafNodes;
-
-    @JsonProperty("terminalNodes")
-    long terminalNodes;
+    @JsonProperty("leafNodeCounterPercentage")
+    int leafNodeCounterPercentage;
 
     @JsonProperty("loopNodes")
     long loopNodes;
@@ -144,7 +135,6 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         this.success = epdSearchModel.success;
         this.successRate = epdSearchModel.successRate;
-        this.depthAccuracyAvgPercentageTotal = epdSearchModel.depthAccuracyAvgPercentageTotal;
 
         this.executedMovesTotal = boardModel.executedMovesTotal;
         this.exploredDepthAvg =  boardModel.exploredDepthAvg;
@@ -152,11 +142,9 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.nodes = nodesVisitedModel.visitedNodesTotal;
         this.cutoffPercentageTotal = nodesVisitedModel.cutoffPercentageTotal;
 
-        this.rootNodes = nodesTypesModel.rootNodeCounterTotal;
-        this.interiorNodes = nodesTypesModel.interiorNodeCounterTotal;
-        this.quiescenceNodes = nodesTypesModel.quiescenceNodeCounterTotal;
-        this.leafNodes = nodesTypesModel.leafNodeCounterTotal;
-        this.terminalNodes = nodesTypesModel.terminalNodeCounterTotal;
+        this.interiorNodeCounterPercentage = nodesTypesModel.interiorNodeCounterPercentage;
+        this.quiescenceNodeCounterPercentage = nodesTypesModel.quiescenceNodeCounterPercentage;
+        this.leafNodeCounterPercentage = nodesTypesModel.leafNodeCounterPercentage;
         this.loopNodes = nodesTypesModel.loopNodeCounterTotal;
 
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;

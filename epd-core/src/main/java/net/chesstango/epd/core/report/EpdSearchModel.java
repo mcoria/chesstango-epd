@@ -16,7 +16,6 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     int searches;
     int success;
     int successRate;
-    int depthAccuracyAvgPercentageTotal;
     List<String> failedEntries;
 
     long duration;
@@ -31,8 +30,6 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
         this.searches = epdEntries.size();
 
         this.success = (int) epdEntries.stream().filter(EpdSearchResult::isSearchSuccess).count();
-
-        this.depthAccuracyAvgPercentageTotal = (int) epdEntries.stream().mapToInt(EpdSearchResult::getDepthAccuracyPct).average().orElse(0);
 
         this.successRate = ((100 * this.success) / this.searches);
 
