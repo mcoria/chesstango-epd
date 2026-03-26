@@ -26,7 +26,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
     private static final String cutoffFmt = "%d%%";
-    private static final String pvAccuracyFmt = "%d%%";
+    private static final String pvCompleteFmt = "%d%%";
 
     private static final String ttReadFmt = "%d (%3d%%)";
     private static final String ttReadHitsFmt = "%d%%";
@@ -138,9 +138,9 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
-        tmp.add("PV Accuracy");
-        tmp.add(String.format(pvAccuracyFmt, baseLineSearchSummary.pvCompletePercentageAvg));
-        searchSummaryPairs.stream().map(pair -> String.format(pvAccuracyFmt, pair.searchSummary().pvCompletePercentageAvg)).forEach(tmp::add);
+        tmp.add("PV Complete");
+        tmp.add(String.format(pvCompleteFmt, baseLineSearchSummary.pvCompletePercentageAvg));
+        searchSummaryPairs.stream().map(pair -> String.format(pvCompleteFmt, pair.searchSummary().pvCompletePercentageAvg)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
@@ -161,10 +161,16 @@ public class SummaryDiffPrinter implements Printer {
         searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().ttReadsTotal, pair.searchSummaryDiff().ttReadsPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
-        tmp = new LinkedList<>();
-        tmp.add("TT ReadHits");
+        tmp.clear();
+        tmp.add("TT Read NHits");
         tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.ttReadNodeHitPercentageTotal));
         searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().ttReadNodeHitPercentageTotal)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("TT Read CHits");
+        tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.ttReadComparatorHitPercentage));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().ttReadComparatorHitPercentage)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

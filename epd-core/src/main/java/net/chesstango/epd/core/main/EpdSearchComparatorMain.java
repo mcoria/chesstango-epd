@@ -75,7 +75,7 @@ public class EpdSearchComparatorMain {
                 Max  Level       : Max depth reached.
                 Vis  Nodes       : Visited nodes.
                 Cutoff        (%): Cutoff percentage.
-                PV Accuracy   (%): Principal variation accuracy percentage.
+                PV Complete   (%): Principal variation complete percentage.
                 TT ReadHits   (%): TT read hits percentage.
                 TT OverWrites (%): TT overwrites percentage.
                 """;

@@ -78,6 +78,9 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("ttReadNodeHitPercentageTotal")
     int ttReadNodeHitPercentageTotal;
 
+    @JsonProperty("ttReadComparatorHitPercentage")
+    int ttReadComparatorHitPercentage;
+
     @JsonProperty("ttWritesTotal")
     long ttWritesTotal;
 
@@ -152,6 +155,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         this.ttReadsTotal = transpositionModel.readsTotal;
         this.ttReadNodeHitPercentageTotal = transpositionModel.readNodeHitPercentageTotal;
+        this.ttReadComparatorHitPercentage = transpositionModel.readComparatorHitPercentageTotal;
 
         this.ttWritesTotal = transpositionModel.writesTotal;
         this.ttUpdatesPercentageTotal = transpositionModel.updatesPercentageTotal;
