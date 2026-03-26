@@ -7,8 +7,8 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
+import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
-import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
 import net.chesstango.search.SearchResult;
@@ -69,14 +69,14 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("evaluationCollisionPercentageTotal")
     int evaluationCollisionPercentageTotal;
 
-    @JsonProperty("pvAccuracyAvgPercentageTotal")
-    int pvAccuracyAvgPercentageTotal;
+    @JsonProperty("pvCompletePercentageAvg")
+    int pvCompletePercentageAvg;
 
     @JsonProperty("ttReadsTotal")
     long ttReadsTotal;
 
-    @JsonProperty("ttReadHitsPercentageTotal")
-    int ttReadHitsPercentageTotal;
+    @JsonProperty("ttReadNodeHitPercentageTotal")
+    int ttReadNodeHitPercentageTotal;
 
     @JsonProperty("ttWritesTotal")
     long ttWritesTotal;
@@ -109,8 +109,8 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         @JsonProperty("pv")
         public String pv;
 
-        @JsonProperty("pvAccuracyPercentage")
-        public int pvAccuracyPercentage;
+        @JsonProperty("pvComplete")
+        public boolean pvComplete;
 
         @JsonProperty("evaluation")
         public int evaluation;
@@ -121,13 +121,12 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     public SummaryModel collectStatistics(String sessionId, EpdAgregateModel input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
-        NodesVisitedModel nodesVisitedModel = input.nodesVisitedModel();
+        NodesDepthModel nodesDepthModel = input.nodesDepthModel();
         NodesTypesModel nodesTypesModel = input.nodesTypesModel();
         EvaluationModel evaluationReportModel = input.evaluationReportModel();
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
         TranspositionModel transpositionModel = input.transpositionModel();
         BoardModel boardModel = input.boardModel();
-
 
         this.sessionid = sessionId;
         this.duration = epdSearchModel.duration;
@@ -137,10 +136,10 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.successRate = epdSearchModel.successRate;
 
         this.executedMovesTotal = boardModel.executedMovesTotal;
-        this.exploredDepthAvg =  boardModel.exploredDepthAvg;
+        this.exploredDepthAvg = boardModel.exploredDepthAvg;
 
-        this.nodes = nodesVisitedModel.visitedNodesTotal;
-        this.cutoffPercentageTotal = nodesVisitedModel.cutoffPercentageTotal;
+        this.nodes = nodesDepthModel.visitedNodesTotal;
+        this.cutoffPercentageTotal = nodesDepthModel.cutoffPercentageTotal;
 
         this.interiorNodeCounterPercentage = nodesTypesModel.interiorNodeCounterPercentage;
         this.quiescenceNodeCounterPercentage = nodesTypesModel.quiescenceNodeCounterPercentage;
@@ -149,10 +148,10 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         this.evaluationCounterTotal = evaluationReportModel.evaluationCounterTotal;
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
-        this.pvAccuracyAvgPercentageTotal = principalVariationReportModel.pvAccuracyAvgPercentageTotal;
+        this.pvCompletePercentageAvg = principalVariationReportModel.pvCompletePercentageAvg;
 
         this.ttReadsTotal = transpositionModel.readsTotal;
-        this.ttReadHitsPercentageTotal = transpositionModel.readHitPercentageTotal;
+        this.ttReadNodeHitPercentageTotal = transpositionModel.readNodeHitPercentageTotal;
 
         this.ttWritesTotal = transpositionModel.writesTotal;
         this.ttUpdatesPercentageTotal = transpositionModel.updatesPercentageTotal;
@@ -176,7 +175,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
                     searchSummaryModeDetail.depthMoves = searchResult.getSearchResultByDepths().stream().map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode).toList().toString();
                     searchSummaryModeDetail.depthAccuracyPercentage = epdSearchResult.getDepthAccuracyPct();
                     searchSummaryModeDetail.pv = pvDetail.principalVariation;
-                    searchSummaryModeDetail.pvAccuracyPercentage = pvDetail.pvAccuracyPercentage;
+                    searchSummaryModeDetail.pvComplete = pvDetail.pvComplete;
                     searchSummaryModeDetail.evaluation = searchResult.getBestEvaluation();
                     return searchSummaryModeDetail;
                 })

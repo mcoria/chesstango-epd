@@ -139,8 +139,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp.clear();
         tmp.add("PV Accuracy");
-        tmp.add(String.format(pvAccuracyFmt, baseLineSearchSummary.pvAccuracyAvgPercentageTotal));
-        searchSummaryPairs.stream().map(pair -> String.format(pvAccuracyFmt, pair.searchSummary().pvAccuracyAvgPercentageTotal)).forEach(tmp::add);
+        tmp.add(String.format(pvAccuracyFmt, baseLineSearchSummary.pvCompletePercentageAvg));
+        searchSummaryPairs.stream().map(pair -> String.format(pvAccuracyFmt, pair.searchSummary().pvCompletePercentageAvg)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
@@ -163,8 +163,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp = new LinkedList<>();
         tmp.add("TT ReadHits");
-        tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.ttReadHitsPercentageTotal));
-        searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().ttReadHitsPercentageTotal)).forEach(tmp::add);
+        tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.ttReadNodeHitPercentageTotal));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().ttReadNodeHitPercentageTotal)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

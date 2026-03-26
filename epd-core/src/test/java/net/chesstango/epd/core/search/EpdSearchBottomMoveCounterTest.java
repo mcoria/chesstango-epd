@@ -6,7 +6,7 @@ import net.chesstango.gardel.epd.EPDDecoder;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.evaluation.evaluators.EvaluatorImp04;
 import net.chesstango.reports.search.evaluation.EvaluationReport;
-import net.chesstango.reports.search.nodes.visited.NodesVisitedReport;
+import net.chesstango.reports.search.nodes.depth.NodesDepthReport;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.BottomMoveCounterBuilder;
 import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
@@ -44,7 +44,7 @@ public class EpdSearchBottomMoveCounterTest {
     @AfterEach
     public void tearDown() {
         if (PRINT_REPORT) {
-            new NodesVisitedReport()
+            new NodesDepthReport()
                     .withNodesVisitedStatistics()
                     //.withCutoffStatics()
                     //.withPrincipalVariation()

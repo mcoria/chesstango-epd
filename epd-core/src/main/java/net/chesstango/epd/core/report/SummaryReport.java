@@ -7,8 +7,9 @@ import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.iteration.IterationEvaluationModel;
+import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
-import net.chesstango.reports.search.nodes.visited.NodesVisitedModel;
+
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
 
@@ -38,14 +39,14 @@ public class SummaryReport implements Report {
     public SummaryReport withEpdSearchResults(List<EpdSearchResult> epdSearchResults,
                                               EpdSearchModel epdSearchModel,
                                               BoardModel boardModel,
-                                              NodesVisitedModel nodesVisitedModel,
+                                              NodesDepthModel nodesDepthModel,
                                               NodesTypesModel nodesTypesModel,
                                               IterationEvaluationModel iterationEvaluationModel,
                                               EvaluationModel evaluationReportModel,
                                               PrincipalVariationModel principalVariationReportModel,
                                               TranspositionModel transpositionModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, evaluationReportModel, transpositionModel));
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, evaluationReportModel, transpositionModel));
 
         return this;
     }

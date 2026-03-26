@@ -9,8 +9,8 @@ import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardReport;
 import net.chesstango.reports.search.evaluation.EvaluationReport;
 import net.chesstango.reports.search.iteration.IterationEvaluationReport;
+import net.chesstango.reports.search.nodes.depth.NodesDepthReport;
 import net.chesstango.reports.search.nodes.types.NodesTypesReport;
-import net.chesstango.reports.search.nodes.visited.NodesVisitedReport;
 import net.chesstango.reports.search.pv.PrincipalVariationReport;
 import net.chesstango.reports.search.transposition.TranspositionReport;
 
@@ -37,8 +37,8 @@ public class EpdAgregateReport implements Report {
                 .setReportModel(epdAgregateModel.boardModel())
                 .printReport(out);
 
-        new NodesVisitedReport()
-                .setReportModel(epdAgregateModel.nodesVisitedModel())
+        new NodesDepthReport()
+                .setReportModel(epdAgregateModel.nodesDepthModel())
                 .withCutoffStatistics()
                 .withNodesVisitedStatistics()
                 .printReport(out);

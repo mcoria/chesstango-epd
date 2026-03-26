@@ -44,7 +44,7 @@ public class EpdSearchTest {
         if (PRINT_REPORT) {
             new DetailsReport()
                     //.withBoardReport()
-                    .withNodesVisitedStatistics()
+                    .withNodesDepthStatistics()
                     .withNodesTypesStatistics()
                     //.withCutoffStatistics()
                     //.withEvaluationReport()
