@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: chesstango-epd-worker
-          image: coriamauricio/epd-worker:1.6.0
+          image: coriamauricio/epd-worker:1.7.0-SNAPSHOT
           imagePullPolicy: Always
           resources:
             requests:
