@@ -5,6 +5,7 @@ import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.EpdSearchResultBuildWithBestMove;
+import net.chesstango.epd.core.search.SearchSupplier;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
@@ -79,11 +80,7 @@ public class EpdSearchMain implements Runnable {
     @Override
     public void run() {
         EpdSearch epdSearch = new EpdSearch()
-                .setSearchSupplier(() -> AlphaBetaBuilder
-                        .createDefaultBuilderInstance()
-                        .withGameEvaluator(Evaluator.createInstance())
-                        .withStatistics()
-                        .build())
+                .setSearchSupplier(new SearchSupplier())
                 .setDepth(depth)
                 .setEpdSearchResultBuilder(new EpdSearchResultBuildWithBestMove());
 

@@ -23,10 +23,11 @@ public class EpdSearchComparatorMain {
     public static void main(String[] args) {
         printSummaryLegends();
 
-        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-7-2026-03-31-08-37-v1.6.0");
-        epdSearchComparatorMain.addSession("depth-7-2026-03-31-20-41-v1.7.0-SNAPSHOT");
+        EpdSearchComparatorMain epdSearchComparatorMain = new EpdSearchComparatorMain("depth-6-2026-03-31-08-21-v1.6.0");
+        epdSearchComparatorMain.addSession("depth-6-2026-04-03-12-07-v1.7.0-SNAPSHOT");             // Cambio por RootMoveEvaluationComparator
+        epdSearchComparatorMain.addSession("depth-6-2026-04-08-15-01-v1.7.0-SNAPSHOT");             // CHT-593 - WIP: QuiescenceNode: reemplazar NodeMoveSorter por  NodeGroupSorter
+        //
 
-        /*
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w1.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b1.epd");
 
@@ -36,7 +37,6 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-w3.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\mate-b3.epd");
 
-         */
 
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Bratko-Kopec.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Kaufman.epd");
@@ -44,7 +44,7 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\sbd.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\Nolot.epd");
 
-        /*
+
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS1.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS2.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS3.epd");
@@ -60,7 +60,6 @@ public class EpdSearchComparatorMain {
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS13.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS14.epd");
         epdSearchComparatorMain.execute("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\STS15.epd");
-        */
     }
 
     private static void printSummaryLegends() {
