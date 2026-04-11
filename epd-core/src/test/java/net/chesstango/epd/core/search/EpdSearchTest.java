@@ -43,13 +43,16 @@ public class EpdSearchTest {
     public void tearDown() {
         if (PRINT_REPORT) {
             new DetailsReport()
-                    //.withBoardReport()
+                    .withBoardReport()
                     .withNodesDepthStatistics()
                     .withNodesTypesStatistics()
-                    //.withCutoffStatistics()
-                    //.withEvaluationReport()
-                    //.withTranspositionReport()
-                    //.withPrincipalVariationReport()
+                    .withCutoffStatistics()
+                    .withEvaluationReport()
+                    .withEvaluationCacheReport()
+                    .withTranspositionReport()
+                    .withIterationEvaluationReport()
+                    .withPrincipalVariationReport()
+                    .withPrincipalVariationIterationReport()
                     .withMoveResults(List.of(epdSearchResult.getSearchResult()))
                     .printReport(System.out);
         }
@@ -125,7 +128,7 @@ public class EpdSearchTest {
 
     @Test
     public void test_BK01() {
-        epdSearch.setDepth(5);
+        epdSearch.setDepth(2);
         EPD epd = epdDecoder.readEdpLine("1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - - bm Qd1+; id \"BK.01\";");
         epdSearchResult = epdSearch.run(buildSearchMove(new EvaluatorImp04()), epd);
         assertTrue(epdSearchResult.isSearchSuccess());
@@ -328,30 +331,15 @@ public class EpdSearchTest {
 
 
     private static Search buildSearchMove(Evaluator evaluator) {
-        AlphaBetaBuilder builder = new AlphaBetaBuilder()
+        AlphaBetaBuilder builder = AlphaBetaBuilder
+                .createDefaultBuilderInstance()
                 .withGameEvaluator(evaluator)
-                .withGameEvaluatorCache()
-
-                //.withExtensionCheckResolver()
-                .withQuiescence()
-
-                //.withTriangularPV()
-                .withTranspositionTable()
-
-                .withTranspositionMoveSorter()
-                .withKillerMoveSorter()
-                .withRecaptureSorter()
-                .withMvvLvaSorter()
-
-                .withAspirationWindows()
-                .withIterativeDeepening()
 
                 //.withStopProcessingCatch()
                 //.withPrintChain()
                 //.withZobristTracker()
                 //.withTrackEvaluations() // Consume demasiada memoria
-                //.withDebugSearchTree(true, false, false)
-                ;
+                .withDebugSearchTree(false, false, true);
 
         if (PRINT_REPORT) {
             builder.withStatistics();

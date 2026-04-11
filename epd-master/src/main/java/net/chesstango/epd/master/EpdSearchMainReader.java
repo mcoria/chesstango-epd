@@ -20,9 +20,9 @@ import java.util.stream.Stream;
 public class EpdSearchMainReader {
 
     public static void main(String[] args) {
-        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-6-2026-04-08-15-01-v1.7.0-SNAPSHOT");
+        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-6-2026-04-11-06-57-v1.7.0-SNAPSHOT");
 
-        Stream<EpdSearchResponse> epdSearchResponseStream = readlEpdSearchResponses(sessionDirectory);
+        Stream<EpdSearchResponse> epdSearchResponseStream = readEpdSearchResponses(sessionDirectory);
 
         epdSearchResponseStream
                 .parallel()
@@ -51,7 +51,7 @@ public class EpdSearchMainReader {
         log.info("Work completed");
     }
 
-    private static Stream<EpdSearchResponse> readlEpdSearchResponses(Path sessionDirectory) {
+    private static Stream<EpdSearchResponse> readEpdSearchResponses(Path sessionDirectory) {
         File directory = sessionDirectory.toFile();
 
         log.info("Loading EpdSearchResponse from {}", directory.getAbsolutePath());
