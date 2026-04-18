@@ -36,3 +36,5 @@ uci-gui/target/
 target/
 scripts/my_env/
 /scripts/.vscode/launch.json
+/epd-core/DebugSearchTree-*
+

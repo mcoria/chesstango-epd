@@ -12,6 +12,7 @@ import net.chesstango.reports.search.iteration.IterationEvaluationReport;
 import net.chesstango.reports.search.nodes.depth.NodesDepthReport;
 import net.chesstango.reports.search.nodes.types.NodesTypesReport;
 import net.chesstango.reports.search.pv.PrincipalVariationReport;
+import net.chesstango.reports.search.pv.iteration.PrincipalVariationIterationReport;
 import net.chesstango.reports.search.transposition.TranspositionReport;
 
 import java.io.PrintStream;
@@ -53,6 +54,10 @@ public class EpdAgregateReport implements Report {
 
         new PrincipalVariationReport()
                 .setReportModel(epdAgregateModel.principalVariationReportModel())
+                .printReport(out);
+
+        new PrincipalVariationIterationReport()
+                .setReportModel(epdAgregateModel.principalVariationIterationReportModel())
                 .printReport(out);
 
         new EvaluationReport()

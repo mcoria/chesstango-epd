@@ -128,7 +128,7 @@ public class EpdSearchTest {
 
     @Test
     public void test_BK01() {
-        epdSearch.setDepth(2);
+        epdSearch.setDepth(5);
         EPD epd = epdDecoder.readEdpLine("1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - - bm Qd1+; id \"BK.01\";");
         epdSearchResult = epdSearch.run(buildSearchMove(new EvaluatorImp04()), epd);
         assertTrue(epdSearchResult.isSearchSuccess());
@@ -339,7 +339,8 @@ public class EpdSearchTest {
                 //.withPrintChain()
                 //.withZobristTracker()
                 //.withTrackEvaluations() // Consume demasiada memoria
-                .withDebugSearchTree(false, false, true);
+                //.withDebugSearchTree(false, false, true)
+                ;
 
         if (PRINT_REPORT) {
             builder.withStatistics();

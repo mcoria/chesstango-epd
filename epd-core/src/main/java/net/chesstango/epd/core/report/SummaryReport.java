@@ -11,6 +11,7 @@ import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
 
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
+import net.chesstango.reports.search.pv.iteration.PrincipalVariationIterationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
 
 import java.io.PrintStream;
@@ -44,9 +45,10 @@ public class SummaryReport implements Report {
                                               IterationEvaluationModel iterationEvaluationModel,
                                               EvaluationModel evaluationReportModel,
                                               PrincipalVariationModel principalVariationReportModel,
+                                              PrincipalVariationIterationModel principalVariationIterationReportModel,
                                               TranspositionModel transpositionModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, evaluationReportModel, transpositionModel));
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, transpositionModel));
 
         return this;
     }
