@@ -6,7 +6,7 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
-import net.chesstango.reports.search.iteration.IterationEvaluationModel;
+import net.chesstango.reports.search.evaluation.iteration.EvaluationIterationModel;
 import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
 
@@ -42,13 +42,13 @@ public class SummaryReport implements Report {
                                               BoardModel boardModel,
                                               NodesDepthModel nodesDepthModel,
                                               NodesTypesModel nodesTypesModel,
-                                              IterationEvaluationModel iterationEvaluationModel,
+                                              EvaluationIterationModel evaluationIterationModel,
                                               EvaluationModel evaluationReportModel,
                                               PrincipalVariationModel principalVariationReportModel,
                                               PrincipalVariationIterationModel principalVariationIterationReportModel,
                                               TranspositionModel transpositionModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, transpositionModel));
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, evaluationIterationModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, transpositionModel));
 
         return this;
     }

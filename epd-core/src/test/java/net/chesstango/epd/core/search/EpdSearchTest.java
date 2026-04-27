@@ -50,7 +50,7 @@ public class EpdSearchTest {
                     .withEvaluationReport()
                     .withEvaluationCacheReport()
                     .withTranspositionReport()
-                    .withIterationEvaluationReport()
+                    .withEvaluationIterationReport()
                     .withPrincipalVariationReport()
                     .withPrincipalVariationIterationReport()
                     .withMoveResults(List.of(epdSearchResult.getSearchResult()))
