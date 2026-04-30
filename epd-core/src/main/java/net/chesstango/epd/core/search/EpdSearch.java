@@ -125,7 +125,7 @@ public class EpdSearch {
 
 
     public EpdSearchResult run(Search search, EPD epd) {
-        Game game = Game.from(FEN.of(epd.getFenWithoutClocks() + " 0 1"));
+        Game game = Game.from(FEN.from(epd.getFenWithoutClocks() + " 0 1"));
 
         search.reset();
 
