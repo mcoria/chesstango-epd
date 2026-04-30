@@ -2,16 +2,18 @@ package net.chesstango.epd.master;
 
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.epd.worker.EpdSearchRequest;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
-import net.chesstango.epd.worker.EpdSearchRequest;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 import static net.chesstango.epd.master.Common.createSessionId;
 import static net.chesstango.epd.master.Common.listEpdFiles;
@@ -32,9 +34,10 @@ public class EpdSearchMainProducer implements Runnable {
      * 4 500 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * <p>
-     *     Ejecutar VM con
-     *     -Dlogback.configurationFile=./src/shade/logback.xml
+     * Ejecutar VM con
+     * -Dlogback.configurationFile=./src/shade/logback.xml
      * </p>
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -102,18 +105,22 @@ public class EpdSearchMainProducer implements Runnable {
 
         EPDDecoder reader = new EPDDecoder();
         for (Path epdFile : epdFiles) {
-            log.info("Reading {}", epdFile.getFileName());
+            try {
+                log.info("Reading {}", epdFile.getFileName());
 
-            List<EPD> edpEntries = reader.readEpdFile(epdFile);
+                Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-            EpdSearchRequest epdSearchRequest = new EpdSearchRequest()
-                    .setSessionId(sessionId)
-                    .setSearchId(epdFile.getFileName().toString())
-                    .setEpdList(edpEntries)
-                    .setDepth(depth)
-                    .setTimeOut(timeOut);
+                EpdSearchRequest epdSearchRequest = new EpdSearchRequest()
+                        .setSessionId(sessionId)
+                        .setSearchId(epdFile.getFileName().toString())
+                        .setEpdList(edpEntries.toList())
+                        .setDepth(depth)
+                        .setTimeOut(timeOut);
 
-            epdSearchRequests.add(epdSearchRequest);
+                epdSearchRequests.add(epdSearchRequest);
+            } catch (IOException ioException) {
+                log.error("Error reading {}", epdFile.getFileName(), ioException);
+            }
         }
         return epdSearchRequests;
     }

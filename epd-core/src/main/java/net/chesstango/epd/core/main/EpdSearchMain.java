@@ -6,15 +6,15 @@ import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.EpdSearchResultBuildWithBestMove;
 import net.chesstango.epd.core.search.SearchSupplier;
-import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
-import net.chesstango.search.builders.AlphaBetaBuilder;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 
@@ -89,32 +89,37 @@ public class EpdSearchMain implements Runnable {
             epdSearch.setTimeOut(timeOut);
         }
 
+
         for (Path epdFile : epdFiles) {
-            EPDDecoder reader = new EPDDecoder();
+            try {
+                EPDDecoder reader = new EPDDecoder();
 
-            List<EPD> edpEntries = reader.readEpdFile(epdFile);
+                Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-            List<EpdSearchResult> epdSearchResults = epdSearch.run(edpEntries);
+                List<EpdSearchResult> epdSearchResults = epdSearch.run(edpEntries);
 
-            String suiteName = epdFile.getFileName().toString();
+                String suiteName = epdFile.getFileName().toString();
 
-            epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
+                epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
 
-            CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
-                epdSearchReportSaver.saveReport(suiteName);
-                return null;
-            });
+                CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
+                    epdSearchReportSaver.saveReport(suiteName);
+                    return null;
+                });
 
-            CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
-                epdSearchReportSaver.saveJson(suiteName);
-                return null;
-            });
+                CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
+                    epdSearchReportSaver.saveJson(suiteName);
+                    return null;
+                });
 
-            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
+                CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
 
-            log.info("Saving reports {}", suiteName);
+                log.info("Saving reports {}", suiteName);
 
-            combinedSave.join();
+                combinedSave.join();
+            } catch (IOException ioException) {
+                log.error("Error reading file: {}", epdFile, ioException);
+            }
         }
     }
 }

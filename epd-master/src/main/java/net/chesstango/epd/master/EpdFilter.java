@@ -1,11 +1,11 @@
 package net.chesstango.epd.master;
 
 import lombok.Setter;
+import net.chesstango.epd.master.filters.BookFilter;
+import net.chesstango.epd.master.filters.PlayerFilter;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
 import net.chesstango.piazzolla.polyglot.PolyglotBook;
-import net.chesstango.epd.master.filters.BookFilter;
-import net.chesstango.epd.master.filters.PlayerFilter;
 import org.apache.commons.cli.*;
 
 import java.io.FileInputStream;
@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
@@ -54,8 +54,8 @@ public class EpdFilter {
 
     private void process(InputStream in, PrintStream out, PrintStream err) throws IOException {
         EPDDecoder epdDecoder = new EPDDecoder();
-        List<EPD> epdStream = epdDecoder.readEpdInputStream(in);
-        epdStream.stream().filter(filter).forEach(out::println);
+        Stream<EPD> epdStream = epdDecoder.decodeEPDs(in);
+        epdStream.filter(filter).forEach(out::println);
     }
 
 

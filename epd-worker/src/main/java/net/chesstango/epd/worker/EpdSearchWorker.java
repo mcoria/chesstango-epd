@@ -5,8 +5,6 @@ import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.EpdSearchResultBuildWithBestMove;
 import net.chesstango.epd.core.search.SearchSupplier;
-import net.chesstango.evaluation.Evaluator;
-import net.chesstango.search.builders.AlphaBetaBuilder;
 
 import java.util.List;
 import java.util.function.Function;
@@ -29,7 +27,7 @@ class EpdSearchWorker implements Function<EpdSearchRequest, EpdSearchResponse> {
             epdSearch.setTimeOut(epdSearchRequest.getTimeOut());
         }
 
-        List<EpdSearchResult> epdSearchResults = epdSearch.run(epdSearchRequest.getEpdList());
+        List<EpdSearchResult> epdSearchResults = epdSearch.run(epdSearchRequest.getEpdList().stream());
 
         log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", epdSearchRequest.getSessionId(), epdSearchRequest.getEpdList().size(), epdSearchRequest.getDepth(), epdSearchRequest.getTimeOut());
 

@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
@@ -38,7 +39,7 @@ public class EpdSearch {
 
     private Integer timeOut;
 
-    public List<EpdSearchResult> run(List<EPD> edpEntries) {
+    public List<EpdSearchResult> run(Stream<EPD> edpEntries) {
         final int availableCores = Runtime.getRuntime().availableProcessors();
 
         AtomicInteger pendingJobsCounter = new AtomicInteger(0);

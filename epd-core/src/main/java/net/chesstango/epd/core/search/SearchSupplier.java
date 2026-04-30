@@ -10,6 +10,7 @@ import java.util.function.Supplier;
  * @author Mauricio Coria
  */
 public class SearchSupplier implements Supplier<Search> {
+
     @Override
     public Search get() {
         return createDefault();
