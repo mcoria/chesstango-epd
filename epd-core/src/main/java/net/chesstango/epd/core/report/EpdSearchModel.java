@@ -42,8 +42,8 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
                 .forEach(edpEntry ->
                         this.failedEntries.add(
                                 String.format("Fail [%s] - best move found %s",
-                                        edpEntry.getText(),
-                                        edpEntry.getBestMoveFound()
+                                        edpEntry.getEPDText(),
+                                        edpEntry.getBestMove()
                                 )
                         ));
 

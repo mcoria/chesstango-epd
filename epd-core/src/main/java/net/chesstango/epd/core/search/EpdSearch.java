@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 public class EpdSearch {
     private Supplier<Search> searchSupplier;
 
-    private EpdSearchResultBuilder epdSearchResultBuilder = EpdSearchResult::new;
+    private EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
 
     private int depth;
 

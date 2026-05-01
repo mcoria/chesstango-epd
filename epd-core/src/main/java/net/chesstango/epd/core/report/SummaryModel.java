@@ -174,7 +174,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
                     PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.getEpd().getId());
 
                     searchSummaryModeDetail.id = epdSearchResult.getEpd().getId();
-                    searchSummaryModeDetail.move = epdSearchResult.getBestMoveFound();
+                    searchSummaryModeDetail.move = epdSearchResult.getBestMove();
                     searchSummaryModeDetail.success = epdSearchResult.isSearchSuccess();
                     searchSummaryModeDetail.depthMoves = searchResult.getSearchResultByDepths().stream().map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode).toList().toString();
                     searchSummaryModeDetail.depthAccuracyPercentage = epdSearchResult.getDepthAccuracyPct();

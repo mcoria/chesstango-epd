@@ -3,7 +3,7 @@ package net.chesstango.epd.worker;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.EpdSearchResultBuildWithBestMove;
+import net.chesstango.epd.core.search.EpdSearchResultBuilder;
 import net.chesstango.epd.core.search.SearchSupplier;
 
 import java.util.List;
@@ -21,7 +21,7 @@ class EpdSearchWorker implements Function<EpdSearchRequest, EpdSearchResponse> {
         EpdSearch epdSearch = new EpdSearch()
                 .setSearchSupplier(new SearchSupplier())
                 .setDepth(epdSearchRequest.getDepth())
-                .setEpdSearchResultBuilder(new EpdSearchResultBuildWithBestMove());
+                .setEpdSearchResultBuilder(new EpdSearchResultBuilder());
 
         if (epdSearchRequest.getTimeOut() > 0) {
             epdSearch.setTimeOut(epdSearchRequest.getTimeOut());
