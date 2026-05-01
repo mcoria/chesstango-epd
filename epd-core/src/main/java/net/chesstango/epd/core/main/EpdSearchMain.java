@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.EpdSearchResultBuilder;
 import net.chesstango.epd.core.search.SearchSupplier;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
@@ -80,15 +79,11 @@ public class EpdSearchMain implements Runnable {
     @Override
     public void run() {
         EpdSearch epdSearch = new EpdSearch()
-                .setSearchSupplier(new SearchSupplier())
-                .setDepth(depth)
-                .setEpdSearchResultBuilder(new EpdSearchResultBuilder());
-
+                .setDepth(depth);
 
         if (timeOut > 0) {
             epdSearch.setTimeOut(timeOut);
         }
-
 
         for (Path epdFile : epdFiles) {
             try {
@@ -96,7 +91,7 @@ public class EpdSearchMain implements Runnable {
 
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-                List<EpdSearchResult> epdSearchResults = epdSearch.run(edpEntries);
+                List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(new SearchSupplier(), edpEntries);
 
                 String suiteName = epdFile.getFileName().toString();
 

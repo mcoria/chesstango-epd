@@ -32,8 +32,7 @@ public class EpdSearchTest {
 
     @BeforeAll
     public static void setup() {
-        epdSearch = new EpdSearch()
-                .setEpdSearchResultBuilder(new EpdSearchResultBuilder());
+        epdSearch = new EpdSearch();
     }
 
     @AfterEach

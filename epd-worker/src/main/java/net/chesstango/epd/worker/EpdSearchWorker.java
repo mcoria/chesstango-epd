@@ -3,7 +3,6 @@ package net.chesstango.epd.worker;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.EpdSearchResultBuilder;
 import net.chesstango.epd.core.search.SearchSupplier;
 
 import java.util.List;
@@ -19,15 +18,13 @@ class EpdSearchWorker implements Function<EpdSearchRequest, EpdSearchResponse> {
     public EpdSearchResponse apply(EpdSearchRequest epdSearchRequest) {
         log.info("[{}] Running EPD search entries={}, depth={}, timeOut={}", epdSearchRequest.getSessionId(), epdSearchRequest.getEpdList().size(), epdSearchRequest.getDepth(), epdSearchRequest.getTimeOut());
         EpdSearch epdSearch = new EpdSearch()
-                .setSearchSupplier(new SearchSupplier())
-                .setDepth(epdSearchRequest.getDepth())
-                .setEpdSearchResultBuilder(new EpdSearchResultBuilder());
+                .setDepth(epdSearchRequest.getDepth());
 
         if (epdSearchRequest.getTimeOut() > 0) {
             epdSearch.setTimeOut(epdSearchRequest.getTimeOut());
         }
 
-        List<EpdSearchResult> epdSearchResults = epdSearch.run(epdSearchRequest.getEpdList().stream());
+        List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(new SearchSupplier(), epdSearchRequest.getEpdList().stream());
 
         log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", epdSearchRequest.getSessionId(), epdSearchRequest.getEpdList().size(), epdSearchRequest.getDepth(), epdSearchRequest.getTimeOut());
 
