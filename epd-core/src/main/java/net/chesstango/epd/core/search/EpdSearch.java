@@ -31,14 +31,10 @@ public class EpdSearch {
     @Getter(AccessLevel.PACKAGE)
     private Integer timeOut;
 
-    public List<EpdSearchResult> runParallel(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
+    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
         return new EpdSearchParallel(this).run(searchSupplier, edpEntries);
     }
 
-
-    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
-        return new EpdSearchSequential(this).run(searchSupplier, edpEntries);
-    }
 
 
     public EpdSearchResult run(Search search, EPD epd) {

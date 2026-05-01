@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.SearchSupplier;
+import net.chesstango.gardel.epd.EPD;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
@@ -24,7 +26,11 @@ class EpdSearchWorker implements Function<EpdSearchRequest, EpdSearchResponse> {
             epdSearch.setTimeOut(epdSearchRequest.getTimeOut());
         }
 
-        List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(new SearchSupplier(), epdSearchRequest.getEpdList().stream());
+        SearchSupplier searchSupplier = new SearchSupplier();
+
+        Stream<EPD> epdStream = epdSearchRequest.getEpdList().stream();
+
+        List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, epdStream);
 
         log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", epdSearchRequest.getSessionId(), epdSearchRequest.getEpdList().size(), epdSearchRequest.getDepth(), epdSearchRequest.getTimeOut());
 

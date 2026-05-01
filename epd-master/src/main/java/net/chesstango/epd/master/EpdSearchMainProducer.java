@@ -49,7 +49,7 @@ public class EpdSearchMainProducer implements Runnable {
 
         String filePattern = args[3];
 
-        System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}\n", depth, timeOut, directory, filePattern);
+        System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
 
         Path suiteDirectory = Path.of(directory);
         if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
@@ -69,6 +69,7 @@ public class EpdSearchMainProducer implements Runnable {
     private final List<Path> epdFiles;
     private final int depth;
     private final int timeOut;
+
 
     public EpdSearchMainProducer(String sessionId, List<Path> epdFiles, int depth, int timeOut) {
         this.rabbitHost = "localhost";
@@ -118,11 +119,11 @@ public class EpdSearchMainProducer implements Runnable {
                         .setTimeOut(timeOut);
 
                 epdSearchRequests.add(epdSearchRequest);
+
             } catch (IOException ioException) {
                 log.error("Error reading {}", epdFile.getFileName(), ioException);
             }
         }
         return epdSearchRequests;
     }
-
 }

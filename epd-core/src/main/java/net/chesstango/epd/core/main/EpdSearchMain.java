@@ -19,15 +19,10 @@ import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 
 
 /**
- * Esta clase esta destinada a resolver test-positions
- * <p>
- * https://www.chessprogramming.org/Test-Positions
- *
  * @author Mauricio Coria
  */
 @Slf4j
 public class EpdSearchMain implements Runnable {
-
     /**
      * Parametros
      * 1. Depth
@@ -36,7 +31,12 @@ public class EpdSearchMain implements Runnable {
      * 4. Filtro de archivos
      * <p>
      * Ejemplo:
-     * 6 0 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * 6 0 true C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     *
+     * <p>
+     * Ejecutar VM con
+     * -Dlogback.configurationFile=./src/shade/logback.xml
+     * </p>
      *
      * @param args
      */
@@ -49,7 +49,7 @@ public class EpdSearchMain implements Runnable {
 
         String filePattern = args[3];
 
-        System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}\n", depth, timeOut, directory, filePattern);
+        System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
 
         Path suiteDirectory = Path.of(directory);
         if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
@@ -89,9 +89,11 @@ public class EpdSearchMain implements Runnable {
             try {
                 EPDDecoder reader = new EPDDecoder();
 
+                SearchSupplier searchSupplier = new SearchSupplier();
+
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-                List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(new SearchSupplier(), edpEntries);
+                List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, edpEntries);
 
                 String suiteName = epdFile.getFileName().toString();
 
