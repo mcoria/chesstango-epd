@@ -19,6 +19,7 @@ class EpdSearchWorker implements Function<EpdSearchRequest, EpdSearchResponse> {
     @Override
     public EpdSearchResponse apply(EpdSearchRequest epdSearchRequest) {
         log.info("[{}] Running EPD search entries={}, depth={}, timeOut={}", epdSearchRequest.getSessionId(), epdSearchRequest.getEpdList().size(), epdSearchRequest.getDepth(), epdSearchRequest.getTimeOut());
+
         EpdSearch epdSearch = new EpdSearch()
                 .setDepth(epdSearchRequest.getDepth());
 

@@ -1,0 +1,94 @@
+package net.chesstango.epd.core.search;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import net.chesstango.board.Game;
+import net.chesstango.board.moves.Move;
+import net.chesstango.board.representations.move.TangoMoveSupplier;
+import net.chesstango.gardel.epd.EPD;
+import net.chesstango.gardel.fen.FEN;
+import net.chesstango.gardel.move.SANDecoder;
+import net.chesstango.gardel.pgn.PGN;
+import net.chesstango.search.Search;
+import net.chesstango.search.SearchResult;
+import net.chesstango.search.visitors.SetMaxDepthVisitor;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Supplier;
+
+/**
+ * @author Mauricio Coria
+ */
+@Accessors(chain = true)
+@Slf4j
+public class PgnSearch {
+    private final EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
+
+    @Setter
+    @Getter(AccessLevel.PACKAGE)
+    private int depth;
+
+    @Setter
+    @Getter(AccessLevel.PACKAGE)
+    private Integer timeOut;
+
+    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, PGN pgn) {
+        List<EpdSearchResult> epdSearchResults = new LinkedList<>();
+
+        try {
+            Search search = searchSupplier.get();
+
+            // Resetting search object before using it
+            search.reset();
+
+            FEN fen = pgn.getFen() == null ? FEN.START_POSITION : pgn.getFen();
+
+            Game game = Game.from(fen);
+
+            SANDecoder<Move> sanDecoder = new SANDecoder<>(new TangoMoveSupplier(game));
+
+            pgn.toEPD().forEach(epd -> {
+                if (game.getState().getStatus().isInProgress()) {
+
+                    String moveStr = epd.getSuppliedMoveStr();
+
+                    Move move = sanDecoder.decode(moveStr, game.toFEN());
+
+                    if (move != null) {
+
+                        EpdSearchResult pgnSearchResult = search(search, epd, game);
+
+                        epdSearchResults.add(pgnSearchResult);
+
+                        move.executeMove();
+                    } else {
+                        throw new RuntimeException(String.format("[%s] %s is not in the list of legal moves for %s", pgn.getEvent(), moveStr, game.toFEN().toString()));
+                    }
+                }
+            });
+
+
+        } catch (RuntimeException e) {
+            e.printStackTrace(System.err);
+            log.error("Error processing: {}", pgn.toString());
+            throw e;
+        }
+
+        return epdSearchResults;
+    }
+
+    EpdSearchResult search(Search search, EPD epd, Game game) {
+        search.accept(new SetMaxDepthVisitor(depth));
+
+        SearchResult searchResult = search.startSearch(game);
+
+        searchResult.setId(epd.getId());
+
+        return epdSearchResultBuilder.apply(epd, searchResult);
+    }
+
+}

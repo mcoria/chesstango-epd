@@ -22,7 +22,7 @@ import static net.chesstango.epd.core.main.Common.SESSION_DATE;
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchMain implements Runnable {
+public class PgnSearchMain implements Runnable {
     /**
      * Parametros
      * 1. Depth
@@ -31,7 +31,7 @@ public class EpdSearchMain implements Runnable {
      * 4. Filtro de archivos
      * <p>
      * Ejemplo:
-     * 6 0 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * 6 0 true C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * <p>
      * Ejecutar VM con
@@ -60,7 +60,7 @@ public class EpdSearchMain implements Runnable {
 
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, depth);
 
-        new EpdSearchMain(epdFiles, depth, timeOut, sessionDirectory)
+        new PgnSearchMain(epdFiles, depth, timeOut, sessionDirectory)
                 .run();
     }
 
@@ -69,7 +69,7 @@ public class EpdSearchMain implements Runnable {
     private final int timeOut;
     private final EpdSearchReportSaver epdSearchReportSaver;
 
-    public EpdSearchMain(List<Path> epdFiles, int depth, int timeOut, Path sessionDirectory) {
+    public PgnSearchMain(List<Path> epdFiles, int depth, int timeOut, Path sessionDirectory) {
         this.epdFiles = epdFiles;
         this.depth = depth;
         this.timeOut = timeOut;

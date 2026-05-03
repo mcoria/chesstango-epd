@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.chesstango.gardel.epd.EPD;
+import net.chesstango.gardel.pgn.PGN;
 
 import java.io.*;
 import java.util.List;
@@ -22,10 +23,12 @@ public class EpdSearchRequest implements Serializable {
 
     private String sessionId;
     private String searchId;
+
     private int depth;
     private int timeOut;
 
     private List<EPD> epdList;
+    private PGN pgn;
 
     public static EpdSearchRequest decodeRequest(byte[] request) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(request);

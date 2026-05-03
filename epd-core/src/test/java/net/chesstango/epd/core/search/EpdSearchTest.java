@@ -1,9 +1,9 @@
 package net.chesstango.epd.core.search;
 
+import net.chesstango.epd.core.report.EpdAgregateReport;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.evaluation.evaluators.EvaluatorImp04;
 import net.chesstango.gardel.epd.EPD;
-import net.chesstango.reports.search.DetailsReport;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
 import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
@@ -11,10 +11,7 @@ import net.chesstango.search.smart.alphabeta.debug.model.DebugNode;
 import net.chesstango.search.smart.alphabeta.debug.traps.ComposedTrap;
 import net.chesstango.search.smart.alphabeta.debug.traps.actions.PrintForUnitTest;
 import net.chesstango.search.smart.alphabeta.debug.traps.predicates.NodeByZobrist;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
@@ -25,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Mauricio Coria
  */
 public class EpdSearchTest {
-    private static final boolean PRINT_REPORT = false;
+    private static final boolean PRINT_REPORT = true;
     private static EpdSearch epdSearch;
     private static DebugNodeTrap debugNodeTrap;
     private EpdSearchResult epdSearchResult;
@@ -36,20 +33,10 @@ public class EpdSearchTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    public void tearDown(TestInfo testInfo) {
         if (PRINT_REPORT) {
-            new DetailsReport()
-                    .withBoardReport()
-                    .withNodesDepthStatistics()
-                    .withNodesTypesStatistics()
-                    .withCutoffStatistics()
-                    .withEvaluationReport()
-                    .withEvaluationCacheReport()
-                    .withTranspositionReport()
-                    .withEvaluationIterationReport()
-                    .withPrincipalVariationReport()
-                    .withPrincipalVariationIterationReport()
-                    .withMoveResults(List.of(epdSearchResult.getSearchResult()))
+            new EpdAgregateReport()
+                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), List.of(epdSearchResult))
                     .printReport(System.out);
         }
     }
