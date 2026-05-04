@@ -44,16 +44,17 @@ public class PgnSearchTest {
     }
 
     @Test
-    public void test_WAC003() {
+    public void test_searchPGN() {
         PGN pgn = PGN.from("""
                 [Event "188c6255-5216-463a-bfc6-300b98a14ff9"]
                 [Site "LAPTOP-PTVVKHNB"]
                 [Date "2026.05.03"]
                 [Round "?"]
-                [White "Tango v1.7.0-SNAPSHOT"]
-                [Black "Tango v1.7.0-SNAPSHOT"]
+                [White "Tango"]
+                [Black "Oponent"]
                 [Result "0-1"]
                 [Termination "normal"]
+                [SearchRange "1:74"]
                 
                 1. Nf3 Nf6 2. d4 d5 3. e3 Bg4 4. Be2 Bxf3 5. Bxf3 e6
                 6. Nc3 Nc6 7. O-O Rc8 8. h3 Bd6 9. e4 dxe4 10. Bxe4 Nxe4
@@ -74,7 +75,7 @@ public class PgnSearchTest {
 
         pgnSearch.setDepth(5);
 
-        epdSearchResult = pgnSearch.run(buildSearchMove(new EvaluatorImp04()), pgn);
+        epdSearchResult = pgnSearch.run(buildSearchMove(Evaluator.createInstance()), pgn);
     }
 
 

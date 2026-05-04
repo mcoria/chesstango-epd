@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.board.Color;
 import net.chesstango.board.Game;
 import net.chesstango.board.moves.Move;
 import net.chesstango.board.representations.move.TangoMoveSupplier;
@@ -42,6 +43,16 @@ public class PgnSearch {
         try {
             Search search = searchSupplier.get();
 
+            Color playingColor = pgn.getWhite().contains("Tango") ? Color.WHITE : Color.BLACK;
+
+            String searchRange = pgn.getOtherTags().getOrDefault("SearchRange", "1:1");
+
+            String[] searchArray = searchRange.split(":");
+
+            int searchFrom = Integer.parseInt(searchArray[0]);
+
+            int searchTo = Integer.parseInt(searchArray[1]);
+
             // Resetting search object before using it
             search.reset();
 
@@ -60,9 +71,14 @@ public class PgnSearch {
 
                     if (move != null) {
 
-                        EpdSearchResult pgnSearchResult = search(search, epd, game);
+                        if (playingColor.equals(game.getPosition().getCurrentTurn()) &&
+                                searchFrom <= Integer.parseInt(epd.getFullMoveClock()) &&
+                                Integer.parseInt(epd.getFullMoveClock()) <= searchTo
+                        ) {
+                            EpdSearchResult pgnSearchResult = search(search, epd, game);
 
-                        epdSearchResults.add(pgnSearchResult);
+                            epdSearchResults.add(pgnSearchResult);
+                        }
 
                         move.executeMove();
                     } else {
