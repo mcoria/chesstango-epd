@@ -52,7 +52,7 @@ public class EpdSearchMain implements Runnable {
         System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
 
         Path suiteDirectory = Path.of(directory);
-        if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
+        if (!Files.isDirectory(suiteDirectory)) {
             throw new RuntimeException("Directory not found: " + directory);
         }
 

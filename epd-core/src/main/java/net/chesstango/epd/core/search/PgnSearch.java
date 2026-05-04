@@ -1,8 +1,5 @@
 package net.chesstango.epd.core.search;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.board.Color;
@@ -28,37 +25,28 @@ import java.util.function.Supplier;
 @Slf4j
 public class PgnSearch {
     private final EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
-
-    @Setter
-    @Getter(AccessLevel.PACKAGE)
+    private Color playingColor;
+    private int searchFrom;
+    private int searchTo;
     private int depth;
-
-    @Setter
-    @Getter(AccessLevel.PACKAGE)
-    private Integer timeOut;
+    private Game game;
 
     public List<EpdSearchResult> run(Supplier<Search> searchSupplier, PGN pgn) {
+
+        readParameters(pgn);
+
         List<EpdSearchResult> epdSearchResults = new LinkedList<>();
 
         try {
             Search search = searchSupplier.get();
 
-            Color playingColor = pgn.getWhite().contains("Tango") ? Color.WHITE : Color.BLACK;
-
-            String searchRange = pgn.getOtherTags().getOrDefault("SearchRange", "1:1");
-
-            String[] searchArray = searchRange.split(":");
-
-            int searchFrom = Integer.parseInt(searchArray[0]);
-
-            int searchTo = Integer.parseInt(searchArray[1]);
 
             // Resetting search object before using it
             search.reset();
 
             FEN fen = pgn.getFen() == null ? FEN.START_POSITION : pgn.getFen();
 
-            Game game = Game.from(fen);
+            this.game = Game.from(fen);
 
             SANDecoder<Move> sanDecoder = new SANDecoder<>(new TangoMoveSupplier(game));
 
@@ -75,7 +63,7 @@ public class PgnSearch {
                                 searchFrom <= Integer.parseInt(epd.getFullMoveClock()) &&
                                 Integer.parseInt(epd.getFullMoveClock()) <= searchTo
                         ) {
-                            EpdSearchResult pgnSearchResult = search(search, epd, game);
+                            EpdSearchResult pgnSearchResult = search(search, epd);
 
                             epdSearchResults.add(pgnSearchResult);
                         }
@@ -97,7 +85,27 @@ public class PgnSearch {
         return epdSearchResults;
     }
 
-    EpdSearchResult search(Search search, EPD epd, Game game) {
+    void readParameters(PGN pgn) {
+        if (pgn.getWhite().contains("Tango")) {
+            this.playingColor = Color.WHITE;
+        } else if (pgn.getBlack().contains("Tango")) {
+            this.playingColor = Color.BLACK;
+        } else {
+            throw new RuntimeException("Tango not found in white or black");
+        }
+
+        String searchRange = pgn.getOtherTags().getOrDefault("SearchRange", "1:1");
+
+        String[] searchArray = searchRange.split(":");
+
+        this.searchFrom = Integer.parseInt(searchArray[0]);
+
+        this.searchTo = Integer.parseInt(searchArray[1]);
+
+        this.depth = Integer.parseInt(pgn.getOtherTags().getOrDefault("SearchDepth", "1"));
+    }
+
+    EpdSearchResult search(Search search, EPD epd) {
         search.accept(new SetMaxDepthVisitor(depth));
 
         SearchResult searchResult = search.startSearch(game);

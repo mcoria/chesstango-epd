@@ -2,7 +2,6 @@ package net.chesstango.epd.core.search;
 
 import net.chesstango.epd.core.report.EpdAgregateReport;
 import net.chesstango.evaluation.Evaluator;
-import net.chesstango.evaluation.evaluators.EvaluatorImp04;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
@@ -50,11 +49,12 @@ public class PgnSearchTest {
                 [Site "LAPTOP-PTVVKHNB"]
                 [Date "2026.05.03"]
                 [Round "?"]
-                [White "Tango"]
-                [Black "Oponent"]
+                [White "Opponent"]
+                [Black "Tango"]
                 [Result "0-1"]
                 [Termination "normal"]
                 [SearchRange "1:74"]
+                [SearchDepth "5"]
                 
                 1. Nf3 Nf6 2. d4 d5 3. e3 Bg4 4. Be2 Bxf3 5. Bxf3 e6
                 6. Nc3 Nc6 7. O-O Rc8 8. h3 Bd6 9. e4 dxe4 10. Bxe4 Nxe4
@@ -72,8 +72,6 @@ public class PgnSearchTest {
                 66. Kd1 f3 67. gxf3+ Kxf3 68. Ke1 e2 69. Kd2 Kf2 70. b4 cxb3
                 71. Kc1 e1=Q+ 72. Kb2 Qd2+ 73. Kb1 Qc2+ 74. Ka1 Qc1# 0-1
                 """);
-
-        pgnSearch.setDepth(5);
 
         epdSearchResult = pgnSearch.run(buildSearchMove(Evaluator.createInstance()), pgn);
     }

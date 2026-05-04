@@ -2,11 +2,11 @@ package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.EpdSearchReportSaver;
-import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
+import net.chesstango.epd.core.search.PgnSearch;
 import net.chesstango.epd.core.search.SearchSupplier;
-import net.chesstango.gardel.epd.EPD;
-import net.chesstango.gardel.epd.EPDDecoder;
+import net.chesstango.gardel.pgn.PGN;
+import net.chesstango.gardel.pgn.PGNDecoder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,13 +25,10 @@ import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 public class PgnSearchMain implements Runnable {
     /**
      * Parametros
-     * 1. Depth
-     * 2. TimeOut in milliseconds
-     * 3. Directorio donde se encuentran los archivos de posicion
-     * 4. Filtro de archivos
+     * 1. Archivo PGN
      * <p>
      * Ejemplo:
-     * 6 0 true C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * C:\java\projects\chess\chess-utils\testing\EPD\database games.pgn
      *
      * <p>
      * Ejecutar VM con
@@ -41,61 +38,63 @@ public class PgnSearchMain implements Runnable {
      * @param args
      */
     public static void main(String[] args) {
-        int depth = Integer.parseInt(args[0]);
+        String directory = args[0];
 
-        int timeOut = Integer.parseInt(args[1]);
+        String fileName = args[1];
 
-        String directory = args[2];
+        System.out.printf("directory={%s}; file={%s}%n", directory, fileName);
 
-        String filePattern = args[3];
+        Path directoryPath = Path.of(directory);
 
-        System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
-
-        Path suiteDirectory = Path.of(directory);
-        if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
+        if (!Files.isDirectory(directoryPath)) {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
-        List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
+        Path pgnFilePath = directoryPath.resolve(fileName);
 
-        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, depth);
+        if (!Files.exists(pgnFilePath)) {
+            throw new RuntimeException("File not found: " + fileName);
+        }
 
-        new PgnSearchMain(epdFiles, depth, timeOut, sessionDirectory)
-                .run();
+        Path sessionDirectory = Common.createSessionDirectory(directoryPath, fileName);
+
+        PGNDecoder pgnDecoder = new PGNDecoder();
+
+        try (Stream<PGN> pgnStream = pgnDecoder.decodePGNs(pgnFilePath)) {
+
+            List<PGN> pgnList = pgnStream.toList();
+
+            new PgnSearchMain(pgnList, sessionDirectory)
+                    .run();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    private final List<Path> epdFiles;
-    private final int depth;
-    private final int timeOut;
+    private final List<PGN> pgnList;
+
     private final EpdSearchReportSaver epdSearchReportSaver;
 
-    public PgnSearchMain(List<Path> epdFiles, int depth, int timeOut, Path sessionDirectory) {
-        this.epdFiles = epdFiles;
-        this.depth = depth;
-        this.timeOut = timeOut;
+    public PgnSearchMain(List<PGN> pgnList, Path sessionDirectory) {
+        this.pgnList = pgnList;
         this.epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
     }
 
     @Override
     public void run() {
-        EpdSearch epdSearch = new EpdSearch()
-                .setDepth(depth);
+        PgnSearch epdSearch = new PgnSearch();
 
-        if (timeOut > 0) {
-            epdSearch.setTimeOut(timeOut);
-        }
+        for (PGN pgn : pgnList) {
 
-        for (Path epdFile : epdFiles) {
+            String suiteName = pgn.getEvent();
+
             try {
-                EPDDecoder reader = new EPDDecoder();
 
                 SearchSupplier searchSupplier = new SearchSupplier();
 
-                Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
-
-                List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, edpEntries);
-
-                String suiteName = epdFile.getFileName().toString();
+                List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
 
                 epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
 
@@ -114,8 +113,8 @@ public class PgnSearchMain implements Runnable {
                 log.info("Saving reports {}", suiteName);
 
                 combinedSave.join();
-            } catch (IOException ioException) {
-                log.error("Error reading file: {}", epdFile, ioException);
+            } catch (RuntimeException exception) {
+                log.error("Error searching: {}", suiteName, exception);
             }
         }
     }
