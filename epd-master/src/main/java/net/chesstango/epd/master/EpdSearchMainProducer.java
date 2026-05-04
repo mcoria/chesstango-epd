@@ -2,7 +2,7 @@ package net.chesstango.epd.master;
 
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.worker.EpdSearchRequest;
+import net.chesstango.epd.worker.SearchRequest;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
 
@@ -83,7 +83,7 @@ public class EpdSearchMainProducer implements Runnable {
     public void run() {
         log.info("Starting");
 
-        List<EpdSearchRequest> epdSearchRequests = createEpdSearchRequests();
+        List<SearchRequest> searchRequests = createEpdSearchRequests();
 
         try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
             ConnectionFactory factory = new ConnectionFactory();
@@ -91,7 +91,7 @@ public class EpdSearchMainProducer implements Runnable {
             factory.setSharedExecutor(executorService);
 
             try (EpdSearchProducer epdSearchProducer = new EpdSearchProducer(factory)) {
-                epdSearchRequests.forEach(epdSearchProducer::publish);
+                searchRequests.forEach(epdSearchProducer::publish);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -101,8 +101,8 @@ public class EpdSearchMainProducer implements Runnable {
     }
 
 
-    private List<EpdSearchRequest> createEpdSearchRequests() {
-        List<EpdSearchRequest> epdSearchRequests = new LinkedList<>();
+    private List<SearchRequest> createEpdSearchRequests() {
+        List<SearchRequest> searchRequests = new LinkedList<>();
 
         EPDDecoder reader = new EPDDecoder();
         for (Path epdFile : epdFiles) {
@@ -111,19 +111,19 @@ public class EpdSearchMainProducer implements Runnable {
 
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-                EpdSearchRequest epdSearchRequest = new EpdSearchRequest()
+                SearchRequest searchRequest = new SearchRequest()
                         .setSessionId(sessionId)
                         .setSearchId(epdFile.getFileName().toString())
                         .setEpdList(edpEntries.toList())
                         .setDepth(depth)
                         .setTimeOut(timeOut);
 
-                epdSearchRequests.add(epdSearchRequest);
+                searchRequests.add(searchRequest);
 
             } catch (IOException ioException) {
                 log.error("Error reading {}", epdFile.getFileName(), ioException);
             }
         }
-        return epdSearchRequests;
+        return searchRequests;
     }
 }

@@ -5,10 +5,8 @@ import com.rabbitmq.client.GetResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
-import static net.chesstango.epd.worker.EpdSearchRequest.EPD_REQUESTS_QUEUE_NAME;
+import static net.chesstango.epd.worker.SearchRequest.EPD_REQUESTS_QUEUE_NAME;
 
 /**
  * @author Mauricio Coria
@@ -23,11 +21,11 @@ class RequestConsumer {
     }
 
 
-    public EpdSearchRequest readMessage() throws IOException {
+    public SearchRequest readMessage() throws IOException {
         do {
             GetResponse response = channel.basicGet(EPD_REQUESTS_QUEUE_NAME, true);
             if (response != null) {
-                return EpdSearchRequest.decodeRequest(response.getBody());
+                return SearchRequest.decodeRequest(response.getBody());
             } else {
                 try {
                     log.info("Waiting for EpdSearchRequest");

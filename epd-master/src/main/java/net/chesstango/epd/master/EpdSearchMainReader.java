@@ -2,7 +2,7 @@ package net.chesstango.epd.master;
 
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.EpdSearchReportSaver;
-import net.chesstango.epd.worker.EpdSearchResponse;
+import net.chesstango.epd.worker.SearchResponse;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +22,7 @@ public class EpdSearchMainReader {
     public static void main(String[] args) {
         Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-6-2026-05-01-15-31-v1.7.0-SNAPSHOT");
 
-        Stream<EpdSearchResponse> epdSearchResponseStream = readEpdSearchResponses(sessionDirectory);
+        Stream<SearchResponse> epdSearchResponseStream = readEpdSearchResponses(sessionDirectory);
 
         epdSearchResponseStream
                 .parallel()
@@ -51,7 +51,7 @@ public class EpdSearchMainReader {
         log.info("Work completed");
     }
 
-    private static Stream<EpdSearchResponse> readEpdSearchResponses(Path sessionDirectory) {
+    private static Stream<SearchResponse> readEpdSearchResponses(Path sessionDirectory) {
         File directory = sessionDirectory.toFile();
 
         log.info("Loading EpdSearchResponse from {}", directory.getAbsolutePath());
@@ -67,7 +67,7 @@ public class EpdSearchMainReader {
                 .map(file -> {
                     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
                         log.info("Deserializing file: {}", file.getName());
-                        return (EpdSearchResponse) ois.readObject();
+                        return (SearchResponse) ois.readObject();
                     } catch (Exception e) {
                         log.error("Failed to deserialize file: " + file, e);
                         return null;

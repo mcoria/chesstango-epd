@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-import static net.chesstango.epd.worker.EpdSearchResponse.EPD_RESPONSES_QUEUE_NAME;
+import static net.chesstango.epd.worker.SearchResponse.EPD_RESPONSES_QUEUE_NAME;
 
 
 /**
@@ -21,12 +21,12 @@ public class ResponseProducer {
         channel.queueDeclare(EPD_RESPONSES_QUEUE_NAME, false, false, false, null);
     }
 
-    public void publish(EpdSearchResponse epdSearchResponse) {
+    public void publish(SearchResponse searchResponse) {
         try {
             AMQP.BasicProperties props = new AMQP.BasicProperties
                     .Builder()
                     .build();
-            byte[] message = epdSearchResponse.encodeResponse();
+            byte[] message = searchResponse.encodeResponse();
             channel.basicPublish("", EPD_RESPONSES_QUEUE_NAME, props, message);
         } catch (IOException e) {
             throw new RuntimeException(e);

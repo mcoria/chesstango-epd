@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 @Slf4j
 public class PgnSearch {
     private final EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
+
     private Color playingColor;
     private int searchFrom;
     private int searchTo;
