@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 import static net.chesstango.epd.core.main.Common.createSessionId;
 
 
@@ -63,19 +62,26 @@ public class EpdSearchMain implements Runnable {
 
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, sessionId);
 
-        new EpdSearchMain(epdFiles, depth, timeOut, sessionDirectory)
+        new EpdSearchMain(sessionId, sessionDirectory, epdFiles, depth, timeOut)
                 .run();
     }
 
+    private final String sessionId;
     private final List<Path> epdFiles;
     private final int depth;
     private final int timeOut;
+
+    private final EPDDecoder reader;
+    private final SearchSupplier searchSupplier;
     private final EpdSearchReportSaver epdSearchReportSaver;
 
-    public EpdSearchMain(List<Path> epdFiles, int depth, int timeOut, Path sessionDirectory) {
+    public EpdSearchMain(String sessionId, Path sessionDirectory, List<Path> epdFiles, int depth, int timeOut) {
+        this.sessionId = sessionId;
         this.epdFiles = epdFiles;
         this.depth = depth;
         this.timeOut = timeOut;
+        this.reader = new EPDDecoder();
+        this.searchSupplier = new SearchSupplier();
         this.epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
     }
 
@@ -90,17 +96,13 @@ public class EpdSearchMain implements Runnable {
 
         for (Path epdFile : epdFiles) {
             try {
-                EPDDecoder reader = new EPDDecoder();
-
-                SearchSupplier searchSupplier = new SearchSupplier();
-
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
                 List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, edpEntries);
 
                 String suiteName = epdFile.getFileName().toString();
 
-                epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
+                epdSearchReportSaver.loadModel(sessionId, epdSearchResults);
 
                 CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
                     epdSearchReportSaver.saveReport(suiteName);

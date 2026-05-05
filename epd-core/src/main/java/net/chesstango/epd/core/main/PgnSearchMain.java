@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import static net.chesstango.epd.core.main.Common.SESSION_DATE;
 import static net.chesstango.epd.core.main.Common.createSessionId;
 
 
@@ -67,20 +66,22 @@ public class PgnSearchMain implements Runnable {
 
             List<PGN> pgnList = pgnStream.toList();
 
-            new PgnSearchMain(pgnList, sessionDirectory)
+            new PgnSearchMain(sessionId, sessionDirectory, pgnList)
                     .run();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
+    private final String sessionId;
     private final List<PGN> pgnList;
 
     private final EpdSearchReportSaver epdSearchReportSaver;
+    private final SearchSupplier searchSupplier = new SearchSupplier();
 
-    public PgnSearchMain(List<PGN> pgnList, Path sessionDirectory) {
+    public PgnSearchMain(String sessionId, Path sessionDirectory, List<PGN> pgnList) {
+        this.sessionId = sessionId;
         this.pgnList = pgnList;
         this.epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
     }
@@ -90,16 +91,12 @@ public class PgnSearchMain implements Runnable {
         PgnSearch epdSearch = new PgnSearch();
 
         for (PGN pgn : pgnList) {
-
             String suiteName = pgn.getEvent();
-
             try {
-
-                SearchSupplier searchSupplier = new SearchSupplier();
 
                 List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
 
-                epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
+                epdSearchReportSaver.loadModel(sessionId, epdSearchResults);
 
                 CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
                     epdSearchReportSaver.saveReport(suiteName);
