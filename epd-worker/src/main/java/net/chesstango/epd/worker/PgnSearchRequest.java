@@ -22,7 +22,7 @@ public class PgnSearchRequest extends SearchRequest {
     private PGN pgn;
 
     @Override
-    public SearchResponse get() {
+    public SearchResponse call()  {
         log.info("[{}] Running PGN search={}", sessionId, pgn.toString());
 
         PgnSearch pgnSearch = new PgnSearch();

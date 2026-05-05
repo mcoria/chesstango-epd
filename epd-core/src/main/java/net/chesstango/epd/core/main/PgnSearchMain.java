@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static net.chesstango.epd.core.main.Common.SESSION_DATE;
+import static net.chesstango.epd.core.main.Common.createSessionId;
 
 
 /**
@@ -56,7 +57,9 @@ public class PgnSearchMain implements Runnable {
             throw new RuntimeException("File not found: " + fileName);
         }
 
-        Path sessionDirectory = Common.createSessionDirectory(directoryPath, fileName);
+        String sessionId = createSessionId(fileName);
+
+        Path sessionDirectory = Common.createSessionDirectory(directoryPath, sessionId);
 
         PGNDecoder pgnDecoder = new PGNDecoder();
 

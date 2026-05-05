@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * @author Mauricio Coria
  */
 public class PgnSearchTest {
-    private static final boolean PRINT_REPORT = true;
+    private static final boolean PRINT_REPORT = false;
     private static PgnSearch pgnSearch;
     private static DebugNodeTrap debugNodeTrap;
     private List<EpdSearchResult> epdSearchResult;

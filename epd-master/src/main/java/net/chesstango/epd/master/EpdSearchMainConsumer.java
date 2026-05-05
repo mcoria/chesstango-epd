@@ -2,6 +2,7 @@ package net.chesstango.epd.master;
 
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.epd.core.main.Common;
 import net.chesstango.epd.worker.SearchResponse;
 
 import java.io.FileOutputStream;
@@ -12,7 +13,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static net.chesstango.epd.master.Common.createSessionDirectory;
+
 
 
 /**

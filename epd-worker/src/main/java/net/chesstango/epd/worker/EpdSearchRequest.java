@@ -32,7 +32,7 @@ public class EpdSearchRequest extends SearchRequest {
 
 
     @Override
-    public SearchResponse get() {
+    public SearchResponse call()  {
         log.info("[{}] Running EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 
         EpdSearch epdSearch = new EpdSearch()

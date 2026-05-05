@@ -2,6 +2,7 @@ package net.chesstango.epd.master;
 
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.epd.worker.EpdSearchRequest;
 import net.chesstango.epd.worker.SearchRequest;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
@@ -15,8 +16,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-import static net.chesstango.epd.master.Common.createSessionId;
-import static net.chesstango.epd.master.Common.listEpdFiles;
+import static net.chesstango.epd.core.main.Common.createSessionId;
+import static net.chesstango.epd.core.main.Common.listEpdFiles;
+
 
 /**
  * @author Mauricio Coria
@@ -52,7 +54,7 @@ public class EpdSearchMainProducer implements Runnable {
         System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
 
         Path suiteDirectory = Path.of(directory);
-        if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
+        if (!Files.isDirectory(suiteDirectory)) {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
@@ -83,7 +85,7 @@ public class EpdSearchMainProducer implements Runnable {
     public void run() {
         log.info("Starting");
 
-        List<SearchRequest> searchRequests = createEpdSearchRequests();
+        List<SearchRequest> searchRequests = createSearchRequests();
 
         try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
             ConnectionFactory factory = new ConnectionFactory();
@@ -101,7 +103,7 @@ public class EpdSearchMainProducer implements Runnable {
     }
 
 
-    private List<SearchRequest> createEpdSearchRequests() {
+    private List<SearchRequest> createSearchRequests() {
         List<SearchRequest> searchRequests = new LinkedList<>();
 
         EPDDecoder reader = new EPDDecoder();
@@ -111,12 +113,12 @@ public class EpdSearchMainProducer implements Runnable {
 
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-                SearchRequest searchRequest = new SearchRequest()
-                        .setSessionId(sessionId)
-                        .setSearchId(epdFile.getFileName().toString())
+                SearchRequest searchRequest = new EpdSearchRequest()
                         .setEpdList(edpEntries.toList())
                         .setDepth(depth)
-                        .setTimeOut(timeOut);
+                        .setTimeOut(timeOut)
+                        .setSessionId(sessionId)
+                        .setSearchId(epdFile.getFileName().toString());
 
                 searchRequests.add(searchRequest);
 

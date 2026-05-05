@@ -5,9 +5,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 /**
  * @author Mauricio Coria
  */
@@ -51,21 +48,23 @@ public class SearchWorkerMain implements Runnable {
 
             ResponseProducer responseProducer = new ResponseProducer(channel);
 
-            SearchWorker searchWorker = new SearchWorker();
-
             log.info("Waiting for MatchRequest");
 
             do {
+
                 SearchRequest request = requestConsumer.readMessage();
-                log.info("[{}] Received EpdSearchRequest: {}", request.getSessionId(), request.getSearchId());
-                SearchResponse response = searchWorker.apply(request);
+
+                log.info("[{}] Received SearchRequest: {}", request.getSessionId(), request.getSearchId());
+
+                SearchResponse response = request.call();
+
                 responseProducer.publish(response);
+
             } while (true);
 
-        } catch (IOException | TimeoutException e) {
+        } catch (Exception e) {
             log.error("Error", e);
         }
-
         log.info("Done");
     }
 }

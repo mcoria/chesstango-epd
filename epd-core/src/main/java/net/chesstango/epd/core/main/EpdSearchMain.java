@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static net.chesstango.epd.core.main.Common.SESSION_DATE;
+import static net.chesstango.epd.core.main.Common.createSessionId;
 
 
 /**
@@ -58,7 +59,9 @@ public class EpdSearchMain implements Runnable {
 
         List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
 
-        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, depth);
+        String sessionId = createSessionId(depth);
+
+        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, sessionId);
 
         new EpdSearchMain(epdFiles, depth, timeOut, sessionDirectory)
                 .run();
