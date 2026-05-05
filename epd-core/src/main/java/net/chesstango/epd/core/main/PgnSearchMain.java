@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static net.chesstango.epd.core.main.Common.createSessionId;
@@ -74,16 +73,15 @@ public class PgnSearchMain implements Runnable {
         }
     }
 
-    private final String sessionId;
     private final List<PGN> pgnList;
 
     private final EpdSearchReportSaver epdSearchReportSaver;
-    private final SearchSupplier searchSupplier = new SearchSupplier();
+    private final SearchSupplier searchSupplier;
 
     public PgnSearchMain(String sessionId, Path sessionDirectory, List<PGN> pgnList) {
-        this.sessionId = sessionId;
         this.pgnList = pgnList;
-        this.epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
+        this.searchSupplier = new SearchSupplier();
+        this.epdSearchReportSaver = new EpdSearchReportSaver(sessionId, sessionDirectory);
     }
 
     @Override
@@ -92,30 +90,10 @@ public class PgnSearchMain implements Runnable {
 
         for (PGN pgn : pgnList) {
             String suiteName = pgn.getEvent();
-            try {
 
-                List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
+            List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
 
-                epdSearchReportSaver.loadModel(sessionId, epdSearchResults);
-
-                CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
-                    epdSearchReportSaver.saveReport(suiteName);
-                    return null;
-                });
-
-                CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
-                    epdSearchReportSaver.saveJson(suiteName);
-                    return null;
-                });
-
-                CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
-
-                log.info("Saving reports {}", suiteName);
-
-                combinedSave.join();
-            } catch (RuntimeException exception) {
-                log.error("Error searching: {}", suiteName, exception);
-            }
+            epdSearchReportSaver.accept(suiteName, epdSearchResults);
         }
     }
 }

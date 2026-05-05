@@ -35,8 +35,6 @@ public class EpdSearch {
         return new EpdSearchParallel(this).run(searchSupplier, edpEntries);
     }
 
-
-
     public EpdSearchResult run(Search search, EPD epd) {
         Game game = Game.from(epd);
 

@@ -41,7 +41,6 @@ public class PgnSearch {
         try {
             Search search = searchSupplier.get();
 
-
             // Resetting search object before using it
             search.reset();
 

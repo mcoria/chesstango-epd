@@ -10,42 +10,27 @@ import java.io.ObjectInputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchMainReader {
+public class SearchMainReader {
 
     public static void main(String[] args) {
-        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\PGN\\database\\depth-5-2026-05-05-08-10-v1.7.0-SNAPSHOT");
+        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-6-2026-05-01-15-31-v1.7.0-SNAPSHOT");
 
         Stream<SearchResponse> epdSearchResponseStream = readEpdSearchResponses(sessionDirectory);
 
         epdSearchResponseStream
                 .parallel()
                 .forEach(epdSearchResponse -> {
-                    EpdSearchReportSaver epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
 
-                    epdSearchReportSaver.loadModel(epdSearchResponse.getSessionId(), epdSearchResponse.getEpdSearchResults());
+                    EpdSearchReportSaver epdSearchReportSaver = new EpdSearchReportSaver(epdSearchResponse.getSessionId(), sessionDirectory);
 
-                    CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
-                        epdSearchReportSaver.saveReport(epdSearchResponse.getSearchId());
-                        return null;
-                    });
+                    epdSearchReportSaver.accept(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
 
-                    CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
-                        epdSearchReportSaver.saveJson(epdSearchResponse.getSearchId());
-                        return null;
-                    });
-
-                    CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
-
-                    log.info("Saving reports {}", epdSearchResponse.getSearchId());
-
-                    combinedSave.join();
                 });
 
         log.info("Work completed");
