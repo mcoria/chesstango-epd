@@ -1,7 +1,6 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.PgnSearch;
 import net.chesstango.epd.core.search.SearchSupplier;
@@ -75,13 +74,13 @@ public class PgnSearchMain implements Runnable {
 
     private final List<PGN> pgnList;
 
-    private final EpdSearchReportSaver epdSearchReportSaver;
+    private final SearchReportSaver searchReportSaver;
     private final SearchSupplier searchSupplier;
 
     public PgnSearchMain(String sessionId, Path sessionDirectory, List<PGN> pgnList) {
         this.pgnList = pgnList;
         this.searchSupplier = new SearchSupplier();
-        this.epdSearchReportSaver = new EpdSearchReportSaver(sessionId, sessionDirectory);
+        this.searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
     }
 
     @Override
@@ -93,7 +92,7 @@ public class PgnSearchMain implements Runnable {
 
             List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
 
-            epdSearchReportSaver.accept(suiteName, epdSearchResults);
+            searchReportSaver.accept(suiteName, epdSearchResults);
         }
     }
 }

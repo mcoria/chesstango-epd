@@ -1,7 +1,6 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.SearchSupplier;
@@ -71,7 +70,7 @@ public class EpdSearchMain implements Runnable {
 
     private final EPDDecoder reader;
     private final SearchSupplier searchSupplier;
-    private final EpdSearchReportSaver epdSearchReportSaver;
+    private final SearchReportSaver searchReportSaver;
 
     public EpdSearchMain(String sessionId, Path sessionDirectory, List<Path> epdFiles, int depth, int timeOut) {
         this.epdFiles = epdFiles;
@@ -79,7 +78,7 @@ public class EpdSearchMain implements Runnable {
         this.timeOut = timeOut;
         this.reader = new EPDDecoder();
         this.searchSupplier = new SearchSupplier();
-        this.epdSearchReportSaver = new EpdSearchReportSaver(sessionId, sessionDirectory);
+        this.searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class EpdSearchMain implements Runnable {
 
                 List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, edpEntries);
 
-                epdSearchReportSaver.accept(suiteName, epdSearchResults);
+                searchReportSaver.accept(suiteName, epdSearchResults);
 
             } catch (IOException ioException) {
                 log.error("Error reading file: {}", epdFile, ioException);

@@ -1,6 +1,10 @@
-package net.chesstango.epd.core.report;
+package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.epd.core.report.EpdAgregateModel;
+import net.chesstango.epd.core.report.EpdAgregateReport;
+import net.chesstango.epd.core.report.SummaryModel;
+import net.chesstango.epd.core.report.SummaryReport;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.ReportToFile;
 
@@ -13,7 +17,7 @@ import java.util.function.BiConsumer;
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchReportSaver implements BiConsumer<String, List<EpdSearchResult>> {
+public class SearchReportSaver implements BiConsumer<String, List<EpdSearchResult>> {
 
     private final String sessionId;
     private final Path directory;
@@ -21,7 +25,7 @@ public class EpdSearchReportSaver implements BiConsumer<String, List<EpdSearchRe
     private EpdAgregateModel epdAgregateModel;
     private SummaryModel summaryModel;
 
-    public EpdSearchReportSaver(String sessionId, Path directory) {
+    public SearchReportSaver(String sessionId, Path directory) {
         this.sessionId = sessionId;
         this.directory = directory;
     }
