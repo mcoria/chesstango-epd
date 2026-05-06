@@ -44,10 +44,6 @@ public class PgnSearch {
             // Resetting search object before using it
             search.reset();
 
-            FEN fen = pgn.getFen() == null ? FEN.START_POSITION : pgn.getFen();
-
-            this.game = Game.from(fen);
-
             SANDecoder<Move> sanDecoder = new SANDecoder<>(new TangoMoveSupplier(game));
 
             pgn.toEPD().forEach(epd -> {
@@ -85,6 +81,16 @@ public class PgnSearch {
         return epdSearchResults;
     }
 
+    EpdSearchResult search(Search search, EPD epd) {
+        search.accept(new SetMaxDepthVisitor(depth));
+
+        SearchResult searchResult = search.startSearch(game);
+
+        searchResult.setId(epd.getId());
+
+        return epdSearchResultBuilder.apply(epd, searchResult);
+    }
+
     void readParameters(PGN pgn) {
         if (pgn.getWhite().contains("Tango")) {
             this.playingColor = Color.WHITE;
@@ -103,16 +109,8 @@ public class PgnSearch {
         this.searchTo = Integer.parseInt(searchArray[1]);
 
         this.depth = Integer.parseInt(pgn.getOtherTags().getOrDefault("SearchDepth", "1"));
-    }
 
-    EpdSearchResult search(Search search, EPD epd) {
-        search.accept(new SetMaxDepthVisitor(depth));
-
-        SearchResult searchResult = search.startSearch(game);
-
-        searchResult.setId(epd.getId());
-
-        return epdSearchResultBuilder.apply(epd, searchResult);
+        this.game = Game.from(pgn.getFen() == null ? FEN.START_POSITION : pgn.getFen());
     }
 
 }

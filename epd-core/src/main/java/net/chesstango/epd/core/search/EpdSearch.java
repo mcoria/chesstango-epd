@@ -31,11 +31,13 @@ public class EpdSearch {
     @Getter(AccessLevel.PACKAGE)
     private Integer timeOut;
 
+    private final EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
+
     public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
-        return new EpdSearchParallel(this).run(searchSupplier, edpEntries);
+        return epdSearchParallel.run(searchSupplier, edpEntries);
     }
 
-    public EpdSearchResult run(Search search, EPD epd) {
+    EpdSearchResult run(Search search, EPD epd) {
         Game game = Game.from(epd);
 
         search.accept(new SetMaxDepthVisitor(depth));
