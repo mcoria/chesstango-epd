@@ -23,10 +23,10 @@ public class SearchComparatorMain {
     public static void main(String[] args) {
         printSummaryLegends();
 
-        Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
+        Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\PGN\\database");
 
-        SearchComparatorMain searchComparatorMain = new SearchComparatorMain(suiteParentDirectory, "depth-1-2026-05-05-08-32-v1.7.0-SNAPSHOT");
-        searchComparatorMain.addSession("depth-1-2026-03-31-08-18-v1.6.0");
+        SearchComparatorMain searchComparatorMain = new SearchComparatorMain(suiteParentDirectory, "depth-3-2026-05-25-09-21-v1.7.0-SNAPSHOT");
+        searchComparatorMain.addSession("depth-3-2026-05-25-09-29-v1.7.0-SNAPSHOT");
 
         searchComparatorMain.execute();
 
@@ -36,19 +36,23 @@ public class SearchComparatorMain {
     private static void printSummaryLegends() {
         String content = """
                 Metric description:
-                Duration     (ms): milliseconds spent in the search phase.
-                Searches         : number of searches performed.
-                Success       (%): percentage of successful moves.
-                Coincidences  (%): percentage of coincidences between evaluations.
-                Moves            : executed moves.
-                Evaluations      : evaluations performed.
-                 Collisions   (%): Different positions with same evaluation (Collisions).
-                Max  Level       : Max depth reached.
-                Vis  Nodes       : Visited nodes.
-                Cutoff        (%): Cutoff percentage.
-                PV Complete   (%): Principal variation complete percentage.
-                TT ReadHits   (%): TT read hits percentage.
-                TT OverWrites (%): TT overwrites percentage.
+                Duration         (ms): milliseconds spent in the search phase.
+                Searches             : number of searches performed.
+                Success           (%): percentage of successful moves (bestMove or suppliedMove).
+                Moves                : executed moves.
+                Max  Level           : Max depth reached.
+                Vis  Nodes           : Visited nodes.
+                Cutoff            (%): Cutoff percentage.
+                PV Complete       (%): Principal variation complete percentage.
+                Evaluations          : evaluations performed.
+                 Coincidences     (%): percentage of evaluations that are coincidences with baseline.
+                 Collisions       (%): Different positions with same evaluation (Collisions).
+                TT ReadHits          : TT reads.
+                TT Read NHits     (%): TT Node Reads.
+                TT Read CHits     (%): TT Comparator Reads.
+                TT Writes            : TT writes.
+                TT Updates        (%): TT overwrites percentage.
+                TT OverWrites     (%): TT overwrites percentage.
                 """;
         System.out.println(content);
     }

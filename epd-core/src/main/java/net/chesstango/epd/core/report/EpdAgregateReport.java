@@ -58,7 +58,6 @@ public class EpdAgregateReport implements Report {
 
         new EvaluationReport()
                 .setReportModel(epdAgregateModel.evaluationReportModel())
-                //.withExportEvaluations()
                 .withEvaluationsStatistics()
                 .printReport(out);
 

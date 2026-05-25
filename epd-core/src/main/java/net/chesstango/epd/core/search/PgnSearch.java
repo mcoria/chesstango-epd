@@ -73,8 +73,7 @@ public class PgnSearch {
 
 
         } catch (RuntimeException e) {
-            e.printStackTrace(System.err);
-            log.error("Error processing: {}", pgn.toString());
+            log.error("Error processing: {}", pgn);
             throw e;
         }
 

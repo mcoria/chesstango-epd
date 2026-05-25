@@ -13,7 +13,7 @@ public class SearchSupplier implements Supplier<Search> {
 
     @Override
     public Search get() {
-        return createDefault();
+        return createDefaultWithTranspositionStaleAge();
     }
 
     static Search createDefault() {
@@ -25,9 +25,8 @@ public class SearchSupplier implements Supplier<Search> {
     }
 
     static Search createNoTranspositionTable() {
-
         return new AlphaBetaBuilder()
-                .withGameEvaluator(Evaluator.createInstance())
+                // START createDefaultBuilderInstance() pero sin TT
                 .withGameEvaluatorCache()
 
                 .withQuiescence()
@@ -36,14 +35,27 @@ public class SearchSupplier implements Supplier<Search> {
                 .withRecaptureSorter()
                 .withMvvLvaSorter()
 
-                .withAspirationWindows()
+                //.withAspirationWindows()
 
-                .withIterativeDeepening()
+                //.withIterativeDeepening()
 
-                .withStopProcessingCatch()
+                //.withStopProcessingCatch()
+                // FIN
+
+                .withGameEvaluator(Evaluator.createInstance())
 
                 .withStatistics()
 
+                .build();
+    }
+
+
+    static Search createDefaultWithTranspositionStaleAge() {
+        return AlphaBetaBuilder
+                .createDefaultBuilderInstance()
+                .withGameEvaluator(Evaluator.createInstance())
+                .withTranspositionStaleAge(3)
+                .withStatistics()
                 .build();
     }
 
