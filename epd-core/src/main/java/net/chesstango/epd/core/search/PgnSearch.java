@@ -49,24 +49,25 @@ public class PgnSearch {
             pgn.toEPD().forEach(epd -> {
                 if (game.getState().getStatus().isInProgress()) {
 
-                    String moveStr = epd.getSuppliedMoveStr();
+                    String suppliedMoveStr = epd.getSuppliedMoveStr();
 
-                    Move move = sanDecoder.decode(moveStr, game.toFEN());
+                    Move move = sanDecoder.decode(suppliedMoveStr, game.toFEN());
 
                     if (move != null) {
 
                         if (playingColor.equals(game.getPosition().getCurrentTurn()) &&
                                 searchFrom <= Integer.parseInt(epd.getFullMoveClock()) &&
-                                Integer.parseInt(epd.getFullMoveClock()) <= searchTo
-                        ) {
+                                Integer.parseInt(epd.getFullMoveClock()) <= searchTo) {
+
                             EpdSearchResult pgnSearchResult = search(search, epd);
 
                             epdSearchResults.add(pgnSearchResult);
+
                         }
 
                         move.executeMove();
                     } else {
-                        throw new RuntimeException(String.format("[%s] %s is not in the list of legal moves for %s", pgn.getEvent(), moveStr, game.toFEN().toString()));
+                        throw new RuntimeException(String.format("[%s] %s is not in the list of legal moves for %s", pgn.getEvent(), suppliedMoveStr, game.toFEN().toString()));
                     }
                 }
             });
@@ -99,7 +100,7 @@ public class PgnSearch {
             throw new RuntimeException("Tango not found in white or black");
         }
 
-        String searchRange = pgn.getOtherTags().getOrDefault("SearchRange", "1:1");
+        String searchRange = pgn.getTag("SearchRange").orElse("1:1");
 
         String[] searchArray = searchRange.split(":");
 
@@ -107,7 +108,7 @@ public class PgnSearch {
 
         this.searchTo = Integer.parseInt(searchArray[1]);
 
-        this.depth = Integer.parseInt(pgn.getOtherTags().getOrDefault("SearchDepth", "1"));
+        this.depth = Integer.parseInt(pgn.getTag("SearchDepth").orElse("1"));
 
         this.game = Game.from(pgn.getFen() == null ? FEN.START_POSITION : pgn.getFen());
     }
