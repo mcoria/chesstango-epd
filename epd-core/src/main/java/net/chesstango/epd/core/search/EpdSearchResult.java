@@ -25,9 +25,6 @@ public class EpdSearchResult implements Serializable {
 
     private final SearchResult searchResult;
 
-    // Exactitud: de la lista de movimientos en profundidad, que movimientos son exitosos
-    private int depthAccuracyPct;
-
     public EpdSearchResult(EPD epd, SearchResult searchResult) {
         this.epd = epd;
         this.searchResult = searchResult;
@@ -46,7 +43,16 @@ public class EpdSearchResult implements Serializable {
         return bestMove.coordinateEncoding();
     }
 
-    public boolean isSearchSuccess() {
+    public boolean isMoveSuccess() {
         return epd.isMoveSuccess(getBestMove());
+    }
+
+
+    public Integer getBestEvaluation() {
+        return searchResult.getBestEvaluation();
+    }
+
+    public boolean isEvaluationSuccess() {
+        return epd.isEvaluationSuccess(getBestEvaluation().toString());
     }
 }

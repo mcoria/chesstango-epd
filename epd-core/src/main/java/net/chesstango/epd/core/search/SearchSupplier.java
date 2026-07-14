@@ -13,7 +13,7 @@ public class SearchSupplier implements Supplier<Search> {
 
     @Override
     public Search get() {
-        return createDefaultWithTranspositionStaleAge();
+        return createNoTranspositionTable();
     }
 
     static Search createDefault() {
@@ -35,10 +35,8 @@ public class SearchSupplier implements Supplier<Search> {
                 .withRecaptureSorter()
                 .withMvvLvaSorter()
 
-                //.withAspirationWindows()
-
+                .withAspirationWindows()
                 //.withIterativeDeepening()
-
                 //.withStopProcessingCatch()
                 // FIN
 

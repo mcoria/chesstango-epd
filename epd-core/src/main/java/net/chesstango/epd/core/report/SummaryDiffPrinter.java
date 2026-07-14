@@ -82,9 +82,15 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
-        tmp.add("Success");
-        tmp.add(String.format(successRateFmt, baseLineSearchSummary.successRate));
-        searchSummaryPairs.stream().map(pair -> String.format(successRateFmt, pair.searchSummary().successRate)).forEach(tmp::add);
+        tmp.add("MoveSuccess");
+        tmp.add(String.format(successRateFmt, baseLineSearchSummary.moveSuccessPct));
+        searchSummaryPairs.stream().map(pair -> String.format(successRateFmt, pair.searchSummary().moveSuccessPct)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add("EvalSuccess");
+        tmp.add(String.format(successRateFmt, baseLineSearchSummary.evaluationSuccessPct));
+        searchSummaryPairs.stream().map(pair -> String.format(successRateFmt, pair.searchSummary().evaluationSuccessPct)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

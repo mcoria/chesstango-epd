@@ -33,11 +33,17 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("searches")
     int searches;
 
-    @JsonProperty("success")
-    int success;
+    @JsonProperty("moveSuccess")
+    int moveSuccess;
 
-    @JsonProperty("successRate")
-    int successRate;
+    @JsonProperty("moveSuccessPct")
+    int moveSuccessPct;
+
+    @JsonProperty("evaluationSuccess")
+    int evaluationSuccess;
+
+    @JsonProperty("evaluationSuccessPct")
+    int evaluationSuccessPct;
 
     @JsonProperty("executedMovesTotal")
     long executedMovesTotal;
@@ -100,23 +106,23 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         @JsonProperty("move")
         public String move;
 
-        @JsonProperty("success")
-        public boolean success;
+        @JsonProperty("moveSuccess")
+        public boolean moveSuccess;
+
+        @JsonProperty("evaluation")
+        public int evaluation;
+
+        @JsonProperty("evaluationSuccess")
+        public boolean evaluationSuccess;
 
         @JsonProperty("depthMoves")
         public String depthMoves;
-
-        @JsonProperty("depthAccuracyPercentage")
-        public int depthAccuracyPercentage;
 
         @JsonProperty("pv")
         public String pv;
 
         @JsonProperty("pvComplete")
         public boolean pvComplete;
-
-        @JsonProperty("evaluation")
-        public int evaluation;
     }
 
 
@@ -135,8 +141,11 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.duration = epdSearchModel.duration;
         this.searches = epdSearchModel.searches;
 
-        this.success = epdSearchModel.success;
-        this.successRate = epdSearchModel.successRate;
+        this.moveSuccess = epdSearchModel.moveSuccess;
+        this.moveSuccessPct = epdSearchModel.moveSuccessPct;
+
+        this.evaluationSuccess = epdSearchModel.evaluationSuccess;
+        this.evaluationSuccessPct = epdSearchModel.evaluationSuccessPct;
 
         this.executedMovesTotal = boardModel.executedMovesTotal;
         this.exploredDepthAvg = boardModel.exploredDepthAvg;
@@ -174,13 +183,17 @@ public class SummaryModel implements Model<EpdAgregateModel> {
                     PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.getEpd().getId());
 
                     searchSummaryModeDetail.id = epdSearchResult.getEpd().getId();
+
                     searchSummaryModeDetail.move = epdSearchResult.getBestMove();
-                    searchSummaryModeDetail.success = epdSearchResult.isSearchSuccess();
+                    searchSummaryModeDetail.moveSuccess = epdSearchResult.isMoveSuccess();
+
+                    searchSummaryModeDetail.evaluation = epdSearchResult.getBestEvaluation();
+                    searchSummaryModeDetail.evaluationSuccess = epdSearchResult.isEvaluationSuccess();
+
                     searchSummaryModeDetail.depthMoves = searchResult.getSearchResultByDepths().stream().map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode).toList().toString();
-                    searchSummaryModeDetail.depthAccuracyPercentage = epdSearchResult.getDepthAccuracyPct();
                     searchSummaryModeDetail.pv = pvDetail.principalVariation;
                     searchSummaryModeDetail.pvComplete = pvDetail.pvComplete;
-                    searchSummaryModeDetail.evaluation = searchResult.getBestEvaluation();
+
                     return searchSummaryModeDetail;
                 })
                 .forEach(this.searchDetailList::add);

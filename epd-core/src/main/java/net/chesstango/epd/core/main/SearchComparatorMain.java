@@ -25,12 +25,11 @@ public class SearchComparatorMain {
 
         Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\PGN\\database");
 
-        SearchComparatorMain searchComparatorMain = new SearchComparatorMain(suiteParentDirectory, "depth-3-2026-05-25-09-21-v1.7.0-SNAPSHOT");
-        searchComparatorMain.addSession("depth-3-2026-05-25-09-29-v1.7.0-SNAPSHOT");
-
-        searchComparatorMain.execute();
+        SearchComparatorMain searchComparatorMain = new SearchComparatorMain(suiteParentDirectory, "depth-5-2026-07-13-00-51-v1.7.0-SNAPSHOT");
+        searchComparatorMain.addSession("depth-5-2026-07-13-01-26-v1.7.0-SNAPSHOT");
 
         //
+        searchComparatorMain.execute();
     }
 
     private static void printSummaryLegends() {
@@ -38,7 +37,9 @@ public class SearchComparatorMain {
                 Metric description:
                 Duration         (ms): milliseconds spent in the search phase.
                 Searches             : number of searches performed.
-                Success           (%): percentage of successful moves (bestMove or suppliedMove).
+                MoveSuccess       (%): percentage of successful moves.
+                EvalSuccess       (%): percentage of successful evaluations.
+                DepthAvg             : average depth reached.
                 Moves                : executed moves.
                 Max  Level           : Max depth reached.
                 Vis  Nodes           : Visited nodes.
@@ -51,7 +52,7 @@ public class SearchComparatorMain {
                 TT Read NHits     (%): TT Node Reads.
                 TT Read CHits     (%): TT Comparator Reads.
                 TT Writes            : TT writes.
-                TT Updates        (%): TT overwrites percentage.
+                TT Updates        (%): TT updates percentage.
                 TT OverWrites     (%): TT overwrites percentage.
                 """;
         System.out.println(content);

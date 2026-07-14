@@ -32,7 +32,8 @@ public class EpdSearchPrinter implements Printer {
         out.printf("EpdSearchReport: %s%n%n", reportModel.reportTitle);
 
         out.printf("Searches        : %d%n", reportModel.searches);
-        out.printf("Success rate    : %d%%%n", reportModel.successRate);
+        out.printf("Move success    : %d%%%n", reportModel.moveSuccessPct);
+        out.printf("Eval success    : %d%%%n", reportModel.evaluationSuccessPct);
         out.printf("Time (ms)       : %d%n%n", reportModel.duration);
 
         if (reportModel.failedEntries.isEmpty()) {

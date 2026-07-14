@@ -14,8 +14,13 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     String reportTitle;
 
     int searches;
-    int success;
-    int successRate;
+
+    int moveSuccess;
+    int moveSuccessPct;
+
+    int evaluationSuccess;
+    int evaluationSuccessPct;
+
     List<String> failedEntries;
 
     long duration;
@@ -29,16 +34,24 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
 
         this.searches = epdEntries.size();
 
-        this.success = (int) epdEntries.stream().filter(EpdSearchResult::isSearchSuccess).count();
+        this.moveSuccess = (int) epdEntries
+                .stream()
+                .filter(EpdSearchResult::isMoveSuccess)
+                .count();
+        this.moveSuccessPct = ((100 * this.moveSuccess) / this.searches);
 
-        this.successRate = ((100 * this.success) / this.searches);
+        this.evaluationSuccess = (int) epdEntries
+                .stream()
+                .filter(EpdSearchResult::isEvaluationSuccess)
+                .count();
+        this.evaluationSuccessPct = ((100 * this.evaluationSuccess) / this.searches);
 
         this.duration = searchResults.stream().mapToLong(SearchResult::getTimeSearching).sum();
 
         this.failedEntries = new ArrayList<>();
 
         epdEntries.stream()
-                .filter(edpEntry -> !edpEntry.isSearchSuccess())
+                .filter(edpEntry -> !edpEntry.isMoveSuccess() || !edpEntry.isEvaluationSuccess())
                 .forEach(edpEntry ->
                         this.failedEntries.add(
                                 String.format("Fail [%s] - best move found %s",
