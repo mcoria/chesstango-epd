@@ -30,10 +30,6 @@ public class EpdSearchResult implements Serializable {
         this.searchResult = searchResult;
     }
 
-    public String getEPDText() {
-        return epd.getText();
-    }
-
     public int getBottomMoveCounter() {
         return searchResult.getBottomMoveCounter();
     }

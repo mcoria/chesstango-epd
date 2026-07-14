@@ -37,8 +37,8 @@ public class SearchComparatorMain {
                 Metric description:
                 Duration         (ms): milliseconds spent in the search phase.
                 Searches             : number of searches performed.
-                MoveSuccess       (%): percentage of successful moves.
-                EvalSuccess       (%): percentage of successful evaluations.
+                Moves Success     (%): percentage of successful moves.
+                Evals Success     (%): percentage of successful evaluations.
                 DepthAvg             : average depth reached.
                 Moves                : executed moves.
                 Max  Level           : Max depth reached.
