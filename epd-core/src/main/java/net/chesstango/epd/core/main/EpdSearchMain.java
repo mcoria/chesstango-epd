@@ -1,7 +1,6 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.report.EpdSearchReportSaver;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.SearchSupplier;
@@ -12,10 +11,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import static net.chesstango.epd.core.main.Common.SESSION_DATE;
+import static net.chesstango.epd.core.main.Common.createSessionId;
 
 
 /**
@@ -31,7 +29,7 @@ public class EpdSearchMain implements Runnable {
      * 4. Filtro de archivos
      * <p>
      * Ejemplo:
-     * 6 0 true C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * 6 0 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * <p>
      * Ejecutar VM con
@@ -52,28 +50,35 @@ public class EpdSearchMain implements Runnable {
         System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
 
         Path suiteDirectory = Path.of(directory);
-        if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
+        if (!Files.isDirectory(suiteDirectory)) {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
         List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
 
-        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, depth);
+        String sessionId = createSessionId(depth);
 
-        new EpdSearchMain(epdFiles, depth, timeOut, sessionDirectory)
+        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, sessionId);
+
+        new EpdSearchMain(sessionId, sessionDirectory, epdFiles, depth, timeOut)
                 .run();
     }
 
     private final List<Path> epdFiles;
     private final int depth;
     private final int timeOut;
-    private final EpdSearchReportSaver epdSearchReportSaver;
 
-    public EpdSearchMain(List<Path> epdFiles, int depth, int timeOut, Path sessionDirectory) {
+    private final EPDDecoder reader;
+    private final SearchSupplier searchSupplier;
+    private final SearchReportSaver searchReportSaver;
+
+    public EpdSearchMain(String sessionId, Path sessionDirectory, List<Path> epdFiles, int depth, int timeOut) {
         this.epdFiles = epdFiles;
         this.depth = depth;
         this.timeOut = timeOut;
-        this.epdSearchReportSaver = new EpdSearchReportSaver(sessionDirectory);
+        this.reader = new EPDDecoder();
+        this.searchSupplier = new SearchSupplier();
+        this.searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
     }
 
     @Override
@@ -87,33 +92,14 @@ public class EpdSearchMain implements Runnable {
 
         for (Path epdFile : epdFiles) {
             try {
-                EPDDecoder reader = new EPDDecoder();
-
-                SearchSupplier searchSupplier = new SearchSupplier();
+                String suiteName = epdFile.getFileName().toString();
 
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
                 List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, edpEntries);
 
-                String suiteName = epdFile.getFileName().toString();
+                searchReportSaver.accept(suiteName, epdSearchResults);
 
-                epdSearchReportSaver.loadModel(SESSION_DATE, epdSearchResults);
-
-                CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
-                    epdSearchReportSaver.saveReport(suiteName);
-                    return null;
-                });
-
-                CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
-                    epdSearchReportSaver.saveJson(suiteName);
-                    return null;
-                });
-
-                CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
-
-                log.info("Saving reports {}", suiteName);
-
-                combinedSave.join();
             } catch (IOException ioException) {
                 log.error("Error reading file: {}", epdFile, ioException);
             }

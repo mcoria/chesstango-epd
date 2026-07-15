@@ -48,10 +48,6 @@ public class EpdAgregateReport implements Report {
                 .setReportModel(epdAgregateModel.nodesTypesModel())
                 .printReport(out);
 
-        new EvaluationIterationReport()
-                .setReportModel(epdAgregateModel.evaluationIterationModel())
-                .printReport(out);
-
         new PrincipalVariationReport()
                 .setReportModel(epdAgregateModel.principalVariationReportModel())
                 .printReport(out);
@@ -62,8 +58,11 @@ public class EpdAgregateReport implements Report {
 
         new EvaluationReport()
                 .setReportModel(epdAgregateModel.evaluationReportModel())
-                //.withExportEvaluations()
                 .withEvaluationsStatistics()
+                .printReport(out);
+
+        new EvaluationIterationReport()
+                .setReportModel(epdAgregateModel.evaluationIterationModel())
                 .printReport(out);
 
         new TranspositionReport()

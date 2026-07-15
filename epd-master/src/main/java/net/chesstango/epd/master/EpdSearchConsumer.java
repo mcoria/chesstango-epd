@@ -4,7 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.worker.EpdSearchResponse;
+import net.chesstango.epd.worker.SearchResponse;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -38,11 +38,11 @@ public class EpdSearchConsumer implements AutoCloseable {
     }
 
 
-    public void setupQueueConsumer(Consumer<EpdSearchResponse> epdSearchResponseConsumer) {
+    public void setupQueueConsumer(Consumer<SearchResponse> epdSearchResponseConsumer) {
         try {
-            cTag = channel.basicConsume(EpdSearchResponse.EPD_RESPONSES_QUEUE_NAME, false, (consumerTag, delivery) -> {
+            cTag = channel.basicConsume(SearchResponse.EPD_RESPONSES_QUEUE_NAME, false, (consumerTag, delivery) -> {
 
-                EpdSearchResponse response = EpdSearchResponse.decodeResponse(delivery.getBody());
+                SearchResponse response = SearchResponse.decodeResponse(delivery.getBody());
 
                 epdSearchResponseConsumer.accept(response);
 

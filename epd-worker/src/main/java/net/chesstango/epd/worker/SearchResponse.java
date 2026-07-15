@@ -14,7 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Getter
 @Setter
-public class EpdSearchResponse implements Serializable {
+public class SearchResponse implements Serializable {
     public final static String EPD_RESPONSES_QUEUE_NAME = "epd_responses";
 
     @Serial
@@ -25,10 +25,10 @@ public class EpdSearchResponse implements Serializable {
 
     private List<EpdSearchResult> epdSearchResults;
 
-    public static EpdSearchResponse decodeResponse(byte[] request) {
+    public static SearchResponse decodeResponse(byte[] request) {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(request);
              ObjectInputStream ois = new ObjectInputStream(bis);) {
-            return (EpdSearchResponse) ois.readObject();
+            return (SearchResponse) ois.readObject();
         } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }

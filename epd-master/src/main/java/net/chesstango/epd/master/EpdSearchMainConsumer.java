@@ -2,7 +2,8 @@ package net.chesstango.epd.master;
 
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.worker.EpdSearchResponse;
+import net.chesstango.epd.core.main.Common;
+import net.chesstango.epd.worker.SearchResponse;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static net.chesstango.epd.master.Common.createSessionDirectory;
+
 
 
 /**
@@ -77,17 +78,17 @@ public class EpdSearchMainConsumer implements Runnable {
     }
 
 
-    public synchronized void accept(EpdSearchResponse epdSearchResponse) {
-        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, epdSearchResponse.getSessionId());
+    public synchronized void accept(SearchResponse searchResponse) {
+        Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, searchResponse.getSessionId());
 
-        log.info("Saving EpdSearchResponse for {}", epdSearchResponse.getSessionId());
+        log.info("Saving EpdSearchResponse for {}", searchResponse.getSessionId());
 
-        String filename = String.format("epdSearchResponse_%s.ser", epdSearchResponse.getSearchId());
+        String filename = String.format("epdSearchResponse_%s.ser", searchResponse.getSearchId());
 
         Path filePath = sessionDirectory.resolve(filename);
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath.toFile()))) {
-            oos.writeObject(epdSearchResponse);
+            oos.writeObject(searchResponse);
             log.info("Response serialized to file: {}", filePath);
         } catch (IOException e) {
             log.error("Failed to serialize response", e);

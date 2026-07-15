@@ -21,13 +21,13 @@ public class Common {
 
     public static final String SESSION_DATE = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm"));
 
-    public static String createSessionId(int depth) {
-        return String.format("depth-%d-%s-%s", depth, SESSION_DATE, Tango.ENGINE_VERSION);
+    public static String createSessionId(String pgn) {
+        pgn = pgn.replace(".pgn", "");
+        return String.format("%s-%s-%s", pgn, SESSION_DATE, Tango.ENGINE_VERSION);
     }
 
-    public static Path createSessionDirectory(Path suiteDirectory, int depth) {
-        String sessionId = createSessionId(depth);
-        return createSessionDirectory(suiteDirectory, sessionId);
+    public static String createSessionId(int depth) {
+        return String.format("depth-%d-%s-%s", depth, SESSION_DATE, Tango.ENGINE_VERSION);
     }
 
     public static Path createSessionDirectory(Path suiteDirectory, String sessionId) {

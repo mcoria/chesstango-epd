@@ -4,7 +4,6 @@ import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.search.SearchResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,38 +13,56 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     String reportTitle;
 
     int searches;
-    int success;
-    int successRate;
+
+    int moveSuccess;
+    int moveSuccessPct;
+
+    int evaluationSuccess;
+    int evaluationSuccessPct;
+
     List<String> failedEntries;
 
     long duration;
 
 
     @Override
-    public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdEntries) {
-        List<SearchResult> searchResults = epdEntries.stream().map(EpdSearchResult::getSearchResult).toList();
+    public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdSearchResults) {
+        List<SearchResult> searchResults = epdSearchResults
+                .stream()
+                .map(EpdSearchResult::getSearchResult)
+                .toList();
 
         this.reportTitle = reportTitle;
 
-        this.searches = epdEntries.size();
+        this.searches = epdSearchResults.size();
 
-        this.success = (int) epdEntries.stream().filter(EpdSearchResult::isSearchSuccess).count();
+        this.moveSuccess = (int) epdSearchResults
+                .stream()
+                .filter(EpdSearchResult::isMoveSuccess)
+                .count();
+        this.moveSuccessPct = ((100 * this.moveSuccess) / this.searches);
 
-        this.successRate = ((100 * this.success) / this.searches);
+        this.evaluationSuccess = (int) epdSearchResults
+                .stream()
+                .filter(EpdSearchResult::isEvaluationSuccess)
+                .count();
+        this.evaluationSuccessPct = ((100 * this.evaluationSuccess) / this.searches);
 
-        this.duration = searchResults.stream().mapToLong(SearchResult::getTimeSearching).sum();
+        this.duration = searchResults
+                .stream()
+                .mapToLong(SearchResult::getTimeSearching)
+                .sum();
 
-        this.failedEntries = new ArrayList<>();
-
-        epdEntries.stream()
-                .filter(edpEntry -> !edpEntry.isSearchSuccess())
-                .forEach(edpEntry ->
-                        this.failedEntries.add(
-                                String.format("Fail [%s] - best move found %s",
-                                        edpEntry.getEPDText(),
-                                        edpEntry.getBestMove()
-                                )
-                        ));
+        this.failedEntries = epdSearchResults
+                .stream()
+                .filter(epdSearchResult -> !epdSearchResult.isMoveSuccess() || !epdSearchResult.isEvaluationSuccess())
+                .map(epdSearchResult ->
+                        String.format("Fail [%s] - best move found %s and evaluation %d",
+                                epdSearchResult.getEpd().toString(),
+                                epdSearchResult.getBestMove(),
+                                epdSearchResult.getBestEvaluation())
+                )
+                .toList();
 
         return this;
     }
