@@ -18,18 +18,18 @@ import java.util.stream.Stream;
 /**
  * @author Mauricio Coria
  */
-public class SearchComparatorMain {
+public class ComparatorMain {
 
     public static void main(String[] args) {
         printSummaryLegends();
 
-        Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\PGN\\database");
+        Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        SearchComparatorMain searchComparatorMain = new SearchComparatorMain(suiteParentDirectory, "depth-5-2026-07-13-00-51-v1.7.0-SNAPSHOT");
-        searchComparatorMain.addSession("depth-5-2026-07-13-01-26-v1.7.0-SNAPSHOT");
+        ComparatorMain comparatorMain = new ComparatorMain(suiteParentDirectory, "depth-1-2026-03-31-08-18-v1.6.0");
+        comparatorMain.addSession("depth-1-2026-07-18-19-19-v1.7.0-SNAPSHOT");
 
         //
-        searchComparatorMain.execute();
+        comparatorMain.execute();
     }
 
     private static void printSummaryLegends() {
@@ -55,6 +55,7 @@ public class SearchComparatorMain {
                 TT Updates        (%): TT updates percentage.
                 TT OverWrites     (%): TT overwrites percentage.
                 """;
+
         System.out.println(content);
     }
 
@@ -68,7 +69,7 @@ public class SearchComparatorMain {
     private SummaryModel baseLineSearchSummary;
     private List<SummaryModel> searchSummaryList;
 
-    public SearchComparatorMain(Path suiteParentDirectory, String baseLineSessionID) {
+    public ComparatorMain(Path suiteParentDirectory, String baseLineSessionID) {
         this.suiteParentDirectory = suiteParentDirectory;
         this.baseLineSessionID = baseLineSessionID;
     }

@@ -33,16 +33,16 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("searches")
     int searches;
 
-    @JsonProperty("moveSuccess")
+    @JsonProperty("movesSuccess")
     int moveSuccess;
 
-    @JsonProperty("moveSuccessPct")
+    @JsonProperty("movesSuccessPct")
     int moveSuccessPct;
 
-    @JsonProperty("evaluationSuccess")
+    @JsonProperty("evaluationsSuccess")
     int evaluationSuccess;
 
-    @JsonProperty("evaluationSuccessPct")
+    @JsonProperty("evaluationsSuccessPct")
     int evaluationSuccessPct;
 
     @JsonProperty("executedMovesTotal")
