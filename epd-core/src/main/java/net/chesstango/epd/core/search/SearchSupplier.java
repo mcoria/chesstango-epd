@@ -13,7 +13,7 @@ public class SearchSupplier implements Supplier<Search> {
 
     @Override
     public Search get() {
-        return createNoTranspositionTable();
+        return createDefault();
     }
 
     static Search createDefault() {

@@ -53,9 +53,10 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
                 .mapToLong(SearchResult::getTimeSearching)
                 .sum();
 
+        // No coincide el movimiento ni la evaluacion
         this.failedEntries = epdSearchResults
                 .stream()
-                .filter(epdSearchResult -> !epdSearchResult.isMoveSuccess() || !epdSearchResult.isEvaluationSuccess())
+                .filter(epdSearchResult -> !epdSearchResult.isMoveSuccess() && !epdSearchResult.isEvaluationSuccess())
                 .map(epdSearchResult ->
                         String.format("Fail [%s] - best move found %s and evaluation %d",
                                 epdSearchResult.getEpd().toString(),
