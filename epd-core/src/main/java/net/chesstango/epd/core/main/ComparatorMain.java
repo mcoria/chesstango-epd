@@ -1,10 +1,12 @@
 package net.chesstango.epd.core.main;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.chesstango.epd.core.report.SummaryDiffModel;
 import net.chesstango.epd.core.report.SummaryDiffModelInput;
 import net.chesstango.epd.core.report.SummaryDiffReport;
 import net.chesstango.epd.core.report.SummaryModel;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -66,7 +68,7 @@ public class ComparatorMain {
     private final String baseLineSessionID;
     private final List<String> searchSessions = new ArrayList<>();
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     private String suiteName;
     private SummaryModel baseLineSearchSummary;
@@ -125,11 +127,7 @@ public class ComparatorMain {
             return null;
         }
 
-        try {
-            return objectMapper.readValue(searchSummaryPath.toFile(), SummaryModel.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return objectMapper.readValue(searchSummaryPath.toFile(), SummaryModel.class);
     }
 
     private void printReport(PrintStream out) {

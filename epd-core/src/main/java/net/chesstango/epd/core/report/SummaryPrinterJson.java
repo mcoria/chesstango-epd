@@ -1,10 +1,12 @@
 package net.chesstango.epd.core.report;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.chesstango.reports.Printer;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -43,12 +45,8 @@ public class SummaryPrinterJson implements Printer {
      */
     @Override
     public SummaryPrinterJson print() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(out, reportModel);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ObjectMapper objectMapper = JsonMapper.builder().build();
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(out, reportModel);
         return this;
     }
 }

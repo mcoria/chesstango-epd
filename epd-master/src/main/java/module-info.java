@@ -14,7 +14,7 @@ module net.chesstango.epd.master {
     requires net.chesstango.epd.core;
 
     requires org.apache.commons.cli;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires org.slf4j;
 
     requires com.rabbitmq.client;

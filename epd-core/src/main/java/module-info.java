@@ -12,7 +12,7 @@ module net.chesstango.epd.core {
 
     requires org.slf4j;
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
 
     requires static lombok;
 
