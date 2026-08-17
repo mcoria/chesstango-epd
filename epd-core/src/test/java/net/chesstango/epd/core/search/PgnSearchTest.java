@@ -6,10 +6,6 @@ import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
 import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
-import net.chesstango.search.smart.alphabeta.debug.model.DebugNode;
-import net.chesstango.search.smart.alphabeta.debug.traps.ComposedTrap;
-import net.chesstango.search.smart.alphabeta.debug.traps.actions.PrintForUnitTest;
-import net.chesstango.search.smart.alphabeta.debug.traps.predicates.NodeByZobrist;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -76,6 +72,7 @@ public class PgnSearchTest {
         epdSearchResult = pgnSearch.run(buildSearchMove(Evaluator.createInstance()), pgn);
     }
 
+    /*
 
     private void trapNodeByZobristAndPrintForUT() {
         NodeByZobrist nodeByZobrist = new NodeByZobrist()
@@ -85,6 +82,7 @@ public class PgnSearchTest {
                 .setBeta(-59722);
         debugNodeTrap = new ComposedTrap(nodeByZobrist, new PrintForUnitTest());
     }
+     */
 
 
     private static Supplier<Search> buildSearchMove(Evaluator evaluator) {

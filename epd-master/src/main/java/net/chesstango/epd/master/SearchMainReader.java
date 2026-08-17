@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class SearchMainReader {
 
     public static void main(String[] args) {
-        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-5-2026-08-06-17-30-v1.7.1-SNAPSHOT");
+        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-7-2026-08-17-07-06-v1.8.0-SNAPSHOT");
 
         Stream<SearchResponse> epdSearchResponseStream = readEpdSearchResponses(sessionDirectory);
 

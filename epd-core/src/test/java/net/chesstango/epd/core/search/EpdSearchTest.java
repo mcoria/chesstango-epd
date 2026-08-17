@@ -9,7 +9,6 @@ import net.chesstango.search.builders.AlphaBetaBuilder;
 import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
 import net.chesstango.search.smart.alphabeta.debug.model.DebugNode;
 import net.chesstango.search.smart.alphabeta.debug.traps.ComposedTrap;
-import net.chesstango.search.smart.alphabeta.debug.traps.actions.PrintForUnitTest;
 import net.chesstango.search.smart.alphabeta.debug.traps.predicates.NodeByZobrist;
 import org.junit.jupiter.api.*;
 
@@ -303,6 +302,7 @@ public class EpdSearchTest {
         assertTrue(epdSearchResult.isMoveSuccess());
     }
 
+    /*
     private void trapNodeByZobristAndPrintForUT() {
         NodeByZobrist nodeByZobrist = new NodeByZobrist()
                 .setZobristHash(0x0CE7DD3862149D3EL)
@@ -311,6 +311,7 @@ public class EpdSearchTest {
                 .setBeta(-59722);
         debugNodeTrap = new ComposedTrap(nodeByZobrist, new PrintForUnitTest());
     }
+     */
 
 
     private static Search buildSearchMove(Evaluator evaluator) {
