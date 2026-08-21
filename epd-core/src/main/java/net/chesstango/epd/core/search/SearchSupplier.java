@@ -28,6 +28,7 @@ public class SearchSupplier implements Supplier<Search> {
         return new AlphaBetaBuilder()
                 // START createDefaultBuilderInstance() pero sin TT
                 .withGameEvaluatorCache()
+                .withGameEvaluator(Evaluator.createInstance())
 
                 .withQuiescence()
 
@@ -36,11 +37,9 @@ public class SearchSupplier implements Supplier<Search> {
                 .withMvvLvaSorter()
 
                 .withAspirationWindows()
-                //.withIterativeDeepening()
+                .withIterativeDeepening()
                 //.withStopProcessingCatch()
                 // FIN
-
-                .withGameEvaluator(Evaluator.createInstance())
 
                 .withStatistics()
 

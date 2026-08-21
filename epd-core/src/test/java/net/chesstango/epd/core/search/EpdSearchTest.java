@@ -6,10 +6,10 @@ import net.chesstango.evaluation.evaluators.EvaluatorImp04;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
-import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
-import net.chesstango.search.smart.alphabeta.debug.model.DebugNode;
-import net.chesstango.search.smart.alphabeta.debug.traps.ComposedTrap;
-import net.chesstango.search.smart.alphabeta.debug.traps.predicates.NodeByZobrist;
+import net.chesstango.search.smart.debug.DebugNodeTrap;
+import net.chesstango.search.smart.debug.model.DebugNode;
+import net.chesstango.search.smart.debug.traps.ComposedTrap;
+import net.chesstango.search.smart.debug.traps.predicates.NodeByZobrist;
 import org.junit.jupiter.api.*;
 
 import java.util.List;

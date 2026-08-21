@@ -30,10 +30,6 @@ public class EpdSearchResult implements Serializable {
         this.searchResult = searchResult;
     }
 
-    public int getBottomMoveCounter() {
-        return searchResult.getBottomMoveCounter();
-    }
-
     public String getBestMove() {
         Move bestMove = searchResult.getBestMove();
         return bestMove.coordinateEncoding();

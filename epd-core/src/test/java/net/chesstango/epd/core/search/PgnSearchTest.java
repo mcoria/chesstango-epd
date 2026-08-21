@@ -5,7 +5,7 @@ import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
-import net.chesstango.search.smart.alphabeta.debug.DebugNodeTrap;
+import net.chesstango.search.smart.debug.DebugNodeTrap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

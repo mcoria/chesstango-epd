@@ -190,7 +190,13 @@ public class SummaryModel implements Model<EpdAgregateModel> {
                     searchSummaryModeDetail.evaluation = epdSearchResult.getBestEvaluation();
                     searchSummaryModeDetail.evaluationSuccess = epdSearchResult.isEvaluationSuccess();
 
-                    searchSummaryModeDetail.depthMoves = searchResult.getSearchResultByDepths().stream().map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode).toList().toString();
+                    searchSummaryModeDetail.depthMoves = searchResult
+                            .getSearchResultByDepths()
+                            .stream()
+                            .map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode)
+                            .toList()
+                            .toString();
+
                     searchSummaryModeDetail.pv = pvDetail.principalVariation;
                     searchSummaryModeDetail.pvComplete = pvDetail.pvComplete;
 
