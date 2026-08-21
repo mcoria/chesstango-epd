@@ -30,9 +30,9 @@ public class ComparatorMain {
         ComparatorMain comparatorMain = new ComparatorMain(suiteParentDirectory, "depth-5-2026-03-31-08-20-v1.6.0");
         //comparatorMain.addSession("depth-7-2026-08-09-22-38-v1.7.1");
         //comparatorMain.addSession("depth-7-2026-08-18-13-35-v1.8.0-SNAPSHOT");
-        comparatorMain.addSession("depth-5-2026-08-18-10-38-v1.8.0-SNAPSHOT");
-        comparatorMain.addSession("depth-5-2026-08-20-08-12-v1.8.0-SNAPSHOT");
-        comparatorMain.addSession("depth-5-2026-08-20-10-19-v1.8.0-SNAPSHOT");
+        comparatorMain.addSession("depth-5-2026-07-19-21-47-v1.7.0");
+        comparatorMain.addSession("depth-5-2026-08-09-22-27-v1.7.1");
+        comparatorMain.addSession("depth-5-2026-08-20-22-06-v1.8.0");
         //
 
         //
