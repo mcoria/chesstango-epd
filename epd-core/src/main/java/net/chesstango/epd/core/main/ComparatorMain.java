@@ -27,14 +27,13 @@ public class ComparatorMain {
 
         Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        ComparatorMain comparatorMain = new ComparatorMain(suiteParentDirectory, "depth-7-2026-03-31-08-37-v1.6.0");
-        //comparatorMain.addSession("depth-7-2026-08-09-22-38-v1.7.1");
-        comparatorMain.addSession("depth-7-2026-08-20-22-06-v1.8.0");
-        comparatorMain.addSession("depth-7-2026-09-05-13-33-v1.9.0-SNAPSHOT");
+        new ComparatorMain(suiteParentDirectory, "depth-7-2026-03-31-08-37-v1.6.0")
+        .addSession("depth-7-2026-08-20-22-06-v1.8.0")
+        .addSession("depth-7-2026-09-06-21-41-v1.9.0")
         //
         //
         //
-        comparatorMain.execute();
+        .execute();
     }
 
     private static void printSummaryLegends() {
@@ -79,8 +78,9 @@ public class ComparatorMain {
         this.baseLineSessionID = baseLineSessionID;
     }
 
-    public void addSession(String sessionId) {
+    public ComparatorMain addSession(String sessionId) {
         searchSessions.add(sessionId);
+        return this;
     }
 
     public void execute() {

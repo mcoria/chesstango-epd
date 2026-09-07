@@ -7,8 +7,10 @@ import net.chesstango.epd.worker.SearchResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -19,15 +21,27 @@ import java.util.stream.Stream;
 public class SearchMainReader {
 
     public static void main(String[] args) {
-        Path sessionDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database\\depth-7-2026-09-05-13-33-v1.9.0-SNAPSHOT");
+        Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        Stream<SearchResponse> epdSearchResponseStream = readEpdSearchResponses(sessionDirectory);
+        List<String> sessionDirectories = List.of("depth-4-2026-09-06-21-41-v1.9.0",
+                "depth-5-2026-09-06-21-41-v1.9.0",
+                "depth-6-2026-09-06-21-41-v1.9.0",
+                "depth-7-2026-09-06-21-41-v1.9.0");
 
-        epdSearchResponseStream
-                .parallel()
-                .forEach(epdSearchResponse -> {
-                    SearchReportSaver searchReportSaver = new SearchReportSaver(epdSearchResponse.getSessionId(), sessionDirectory);
-                    searchReportSaver.accept(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
+        sessionDirectories
+                .stream()
+                .map(baseDirectory::resolve)
+                .filter(Files::isDirectory)
+                .forEach(sessionDirectory -> {
+
+                    Stream<SearchResponse> epdSearchResponses = readEpdSearchResponses(sessionDirectory);
+
+                    epdSearchResponses
+                            .parallel()
+                            .forEach(epdSearchResponse -> {
+                                SearchReportSaver searchReportSaver = new SearchReportSaver(epdSearchResponse.getSessionId(), sessionDirectory);
+                                searchReportSaver.accept(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
+                            });
                 });
 
         log.info("Work completed");
