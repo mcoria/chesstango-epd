@@ -2,10 +2,11 @@ package net.chesstango.epd.core.report;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.chesstango.board.representations.move.SimpleMoveEncoder;
+import net.chesstango.board.moves.Move;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
+import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
@@ -96,6 +97,12 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("ttOverWritesPercentageTotal")
     int ttOverWritesPercentageTotal;
 
+    @JsonProperty("evalCacheReadNodeHitsPercentageTotal")
+    int evalCacheReadNodeHitsPercentageTotal;
+
+    @JsonProperty("evalCacheReadComparatorHitsPercentageTotal")
+    int evalCacheReadComparatorHitsPercentageTotal;
+
     @JsonProperty("searchDetail")
     List<SearchSummaryModeDetail> searchDetailList = new LinkedList<>();
 
@@ -115,14 +122,14 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         @JsonProperty("evaluationSuccess")
         public boolean evaluationSuccess;
 
-        @JsonProperty("depthMoves")
-        public String depthMoves;
-
         @JsonProperty("pv")
         public String pv;
 
         @JsonProperty("pvComplete")
         public boolean pvComplete;
+
+        @JsonProperty("depthMoves")
+        public String depthMoves;
     }
 
 
@@ -136,6 +143,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
         TranspositionModel transpositionModel = input.transpositionModel();
         BoardModel boardModel = input.boardModel();
+        EvaluationCacheModel evaluationCacheModel = input.evaluationCacheModel();
 
         this.sessionid = sessionId;
         this.duration = epdSearchModel.duration;
@@ -170,10 +178,11 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.ttUpdatesPercentageTotal = transpositionModel.updatesPercentageTotal;
         this.ttOverWritesPercentageTotal = transpositionModel.overWritesPercentageTotal;
 
+        this.evalCacheReadNodeHitsPercentageTotal = evaluationCacheModel.readNodeHitsPercentageTotal;
+        this.evalCacheReadComparatorHitsPercentageTotal = evaluationCacheModel.readComparatorHitsPercentageTotal;
+
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));
-
-        SimpleMoveEncoder simpleMoveEncoder = new SimpleMoveEncoder();
 
         epdSearchResults
                 .stream()
@@ -193,7 +202,8 @@ public class SummaryModel implements Model<EpdAgregateModel> {
                     searchSummaryModeDetail.depthMoves = searchResult
                             .getSearchResultByDepths()
                             .stream()
-                            .map(SearchResultByDepth::getBestMove).map(simpleMoveEncoder::encode)
+                            .map(SearchResultByDepth::getBestMove)
+                            .map(Move::coordinateEncoding)
                             .toList()
                             .toString();
 

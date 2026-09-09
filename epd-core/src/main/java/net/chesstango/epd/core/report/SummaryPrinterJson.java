@@ -46,7 +46,9 @@ public class SummaryPrinterJson implements Printer {
     @Override
     public SummaryPrinterJson print() {
         ObjectMapper objectMapper = JsonMapper.builder().build();
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(out, reportModel);
+        objectMapper
+                .writerWithDefaultPrettyPrinter()
+                .writeValue(out, reportModel);
         return this;
     }
 }

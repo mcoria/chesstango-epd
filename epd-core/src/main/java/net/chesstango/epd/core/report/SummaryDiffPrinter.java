@@ -214,6 +214,26 @@ public class SummaryDiffPrinter implements Printer {
         searchSummaryPairs.stream().map(pair -> String.format(ttOverWritesFmt, pair.searchSummary().ttOverWritesPercentageTotal)).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
+        tmp.clear();
+        tmp.add("EvalCache");
+        tmp.add("");
+        for (int i = 0; i < searchSummaryPairs.size(); i++) {
+            tmp.add("");
+        }
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add(" Reads NHits");
+        tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.evalCacheReadNodeHitsPercentageTotal));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().evalCacheReadNodeHitsPercentageTotal)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
+        tmp.add(" Reads CHits");
+        tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.evalCacheReadComparatorHitsPercentageTotal));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().evalCacheReadComparatorHitsPercentageTotal)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
         printerTxtTable.print();
 
         return this;
