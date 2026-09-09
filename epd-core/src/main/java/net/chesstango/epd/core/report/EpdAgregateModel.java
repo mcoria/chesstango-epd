@@ -2,6 +2,7 @@ package net.chesstango.epd.core.report;
 
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.search.board.BoardModel;
+import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.evaluation.iteration.EvaluationIterationModel;
 import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
@@ -20,13 +21,18 @@ import java.util.List;
 public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                                EpdSearchModel epdSearchModel,
                                BoardModel boardModel,
+
                                NodesDepthModel nodesDepthModel,
                                NodesTypesModel nodesTypesModel,
-                               EvaluationIterationModel evaluationIterationModel,
+
                                PrincipalVariationModel principalVariationReportModel,
                                PrincipalVariationIterationModel principalVariationIterationReportModel,
+
                                EvaluationModel evaluationReportModel,
-                               TranspositionModel transpositionModel) {
+                               EvaluationIterationModel evaluationIterationModel,
+
+                               TranspositionModel transpositionModel,
+                               EvaluationCacheModel evaluationCacheModel) {
     public static EpdAgregateModel load(String suiteName, List<EpdSearchResult> epdSearchResults) {
         EpdSearchModel epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
 
@@ -35,12 +41,26 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
         BoardModel boardModel = new BoardModel().collectStatistics(suiteName, searchResults);
         NodesDepthModel nodesDepthModel = new NodesDepthModel().collectStatistics(suiteName, searchResults);
         NodesTypesModel nodesTypesModel = new NodesTypesModel().collectStatistics(suiteName, searchResults);
-        EvaluationIterationModel iterationEvaluationModel = new EvaluationIterationModel().collectStatistics(suiteName, searchResults);
+
         EvaluationModel evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, searchResults);
+        EvaluationIterationModel iterationEvaluationModel = new EvaluationIterationModel().collectStatistics(suiteName, searchResults);
+
         PrincipalVariationModel principalVariationReportModel = new PrincipalVariationModel().collectStatistics(suiteName, searchResults);
         PrincipalVariationIterationModel principalVariationIterationReportModel = new PrincipalVariationIterationModel().collectStatistics(suiteName, searchResults);
+
         TranspositionModel transpositionReportModel = new TranspositionModel().collectStatistics(suiteName, searchResults);
 
-        return new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, iterationEvaluationModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, transpositionReportModel);
+        EvaluationCacheModel evaluationCacheModel = new EvaluationCacheModel().collectStatistics(suiteName, searchResults);
+
+        return new EpdAgregateModel(
+                epdSearchResults,
+                epdSearchModel,
+                boardModel,
+                nodesDepthModel, nodesTypesModel,
+                principalVariationReportModel, principalVariationIterationReportModel,
+                evaluationReportModel, iterationEvaluationModel,
+                transpositionReportModel,
+                evaluationCacheModel
+        );
     }
 }

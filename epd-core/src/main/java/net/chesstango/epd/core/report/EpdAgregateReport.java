@@ -7,6 +7,7 @@ import net.chesstango.engine.Tango;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardReport;
+import net.chesstango.reports.search.evalcache.EvaluationCacheReport;
 import net.chesstango.reports.search.evaluation.EvaluationReport;
 import net.chesstango.reports.search.evaluation.iteration.EvaluationIterationReport;
 import net.chesstango.reports.search.nodes.depth.NodesDepthReport;
@@ -67,6 +68,10 @@ public class EpdAgregateReport implements Report {
 
         new TranspositionReport()
                 .setTranspositionModel(epdAgregateModel.transpositionModel())
+                .printReport(out);
+
+        new EvaluationCacheReport()
+                .setReportModel(epdAgregateModel.evaluationCacheModel())
                 .printReport(out);
 
         return this;

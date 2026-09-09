@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardModel;
+import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.evaluation.iteration.EvaluationIterationModel;
 import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
@@ -42,13 +43,17 @@ public class SummaryReport implements Report {
                                               BoardModel boardModel,
                                               NodesDepthModel nodesDepthModel,
                                               NodesTypesModel nodesTypesModel,
-                                              EvaluationIterationModel evaluationIterationModel,
+
                                               EvaluationModel evaluationReportModel,
+                                              EvaluationIterationModel evaluationIterationModel,
+
                                               PrincipalVariationModel principalVariationReportModel,
                                               PrincipalVariationIterationModel principalVariationIterationReportModel,
-                                              TranspositionModel transpositionModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, evaluationIterationModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, transpositionModel));
+                                              TranspositionModel transpositionModel,
+                                              EvaluationCacheModel evaluationCacheModel) {
+
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, evaluationIterationModel, transpositionModel, evaluationCacheModel));
 
         return this;
     }
