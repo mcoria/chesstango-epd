@@ -21,7 +21,7 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
             int nodesPercentage = (int) ((searchSummary.nodes * 100) / baseLineSearchSummary.nodes);
             int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
             int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
-            int ttReadsPercentage = baseLineSearchSummary.ttReadsTotal != 0 ? (int) ((searchSummary.ttReadsTotal * 100) / baseLineSearchSummary.ttReadsTotal) : 100;
+            int ttReadsPercentage = baseLineSearchSummary.ttReadsNodeTotal != 0 ? (int) ((searchSummary.ttReadsNodeTotal * 100) / baseLineSearchSummary.ttReadsNodeTotal) : 100;
             int ttWritesPercentage = baseLineSearchSummary.ttWritesTotal != 0 ? (int) ((searchSummary.ttWritesTotal * 100) / baseLineSearchSummary.ttWritesTotal) : 100;
 
             int evaluationCoincidences = 0;

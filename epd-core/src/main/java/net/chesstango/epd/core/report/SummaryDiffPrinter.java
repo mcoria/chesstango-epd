@@ -180,8 +180,8 @@ public class SummaryDiffPrinter implements Printer {
 
         tmp.clear();
         tmp.add(" Reads");
-        tmp.add(String.format(ttReadFmt, baseLineSearchSummary.ttReadsTotal, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().ttReadsTotal, pair.searchSummaryDiff().ttReadsPercentage())).forEach(tmp::add);
+        tmp.add(String.format(ttReadFmt, baseLineSearchSummary.ttReadsNodeTotal, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().ttReadsNodeTotal, pair.searchSummaryDiff().ttReadsPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

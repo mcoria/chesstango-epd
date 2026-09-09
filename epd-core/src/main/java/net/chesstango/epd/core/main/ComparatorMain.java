@@ -27,7 +27,7 @@ public class ComparatorMain {
 
         Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        new ComparatorMain(suiteParentDirectory, "depth-6-2026-09-09-08-51-v1.10.0-SNAPSHOT")
+        new ComparatorMain(suiteParentDirectory, "depth-3-2026-09-09-18-18-v1.10.0-SNAPSHOT")
                 //.addSession("depth-4-2026-09-06-21-41-v1.9.0")
                 //
                 //

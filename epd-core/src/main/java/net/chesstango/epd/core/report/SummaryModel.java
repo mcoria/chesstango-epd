@@ -79,11 +79,14 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("pvCompletePercentageAvg")
     int pvCompletePercentageAvg;
 
-    @JsonProperty("ttReadsTotal")
-    long ttReadsTotal;
+    @JsonProperty("ttReadsNodeTotal")
+    long ttReadsNodeTotal;
 
     @JsonProperty("ttReadNodeHitPercentageTotal")
     int ttReadNodeHitPercentageTotal;
+
+    @JsonProperty("ttReadComparatorTotal")
+    long ttReadComparatorTotal;
 
     @JsonProperty("ttReadComparatorHitPercentage")
     int ttReadComparatorHitPercentage;
@@ -170,13 +173,15 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.evaluationCollisionPercentageTotal = evaluationReportModel.evaluationCollisionPercentageTotal;
         this.pvCompletePercentageAvg = principalVariationReportModel.pvCompletePercentageAvg;
 
-        this.ttReadsTotal = transpositionModel.readsTotal;
+        this.ttReadsNodeTotal = transpositionModel.readsNodeTotal;
         this.ttReadNodeHitPercentageTotal = transpositionModel.readNodeHitPercentageTotal;
-        this.ttReadComparatorHitPercentage = transpositionModel.readComparatorHitPercentageTotal;
 
         this.ttWritesTotal = transpositionModel.writesTotal;
         this.ttUpdatesPercentageTotal = transpositionModel.updatesPercentageTotal;
         this.ttOverWritesPercentageTotal = transpositionModel.overWritesPercentageTotal;
+
+        this.ttReadComparatorTotal = transpositionModel.readComparatorTotal;
+        this.ttReadComparatorHitPercentage = transpositionModel.readComparatorHitPercentageTotal;
 
         this.evalCacheReadNodeHitsPercentageTotal = evaluationCacheModel.readNodeHitsPercentageTotal;
         this.evalCacheReadComparatorHitsPercentageTotal = evaluationCacheModel.readComparatorHitsPercentageTotal;
