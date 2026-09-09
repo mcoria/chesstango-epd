@@ -27,13 +27,13 @@ public class ComparatorMain {
 
         Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        new ComparatorMain(suiteParentDirectory, "depth-7-2026-03-31-08-37-v1.6.0")
-        .addSession("depth-7-2026-08-20-22-06-v1.8.0")
-        .addSession("depth-7-2026-09-06-21-41-v1.9.0")
-        //
-        //
-        //
-        .execute();
+        new ComparatorMain(suiteParentDirectory, "depth-5-2026-09-06-21-41-v1.9.0")
+                .addSession("depth-5-2026-09-08-14-22-v1.10.0-SNAPSHOT")
+                .addSession("depth-5-2026-09-08-17-33-v1.10.0-SNAPSHOT")
+                //
+                //
+                //
+                .execute();
     }
 
     private static void printSummaryLegends() {

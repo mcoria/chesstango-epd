@@ -23,10 +23,7 @@ public class SearchMainReader {
     public static void main(String[] args) {
         Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        List<String> sessionDirectories = List.of("depth-4-2026-09-06-21-41-v1.9.0",
-                "depth-5-2026-09-06-21-41-v1.9.0",
-                "depth-6-2026-09-06-21-41-v1.9.0",
-                "depth-7-2026-09-06-21-41-v1.9.0");
+        List<String> sessionDirectories = List.of("depth-5-2026-09-08-17-33-v1.10.0-SNAPSHOT");
 
         sessionDirectories
                 .stream()
