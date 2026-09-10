@@ -14,7 +14,8 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                                     int evaluatedGamesPercentage,
                                     int executedMovesPercentage,
                                     int ttReadsPercentage,
-                                    int ttWritesPercentage
+                                    int ttWritesPercentage,
+                                    int ttComparatorPercentage
     ) {
         static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
             int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
@@ -23,6 +24,7 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
             int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
             int ttReadsPercentage = baseLineSearchSummary.ttReadsNodeTotal != 0 ? (int) ((searchSummary.ttReadsNodeTotal * 100) / baseLineSearchSummary.ttReadsNodeTotal) : 100;
             int ttWritesPercentage = baseLineSearchSummary.ttWritesTotal != 0 ? (int) ((searchSummary.ttWritesTotal * 100) / baseLineSearchSummary.ttWritesTotal) : 100;
+            int ttComparatorPercentage = baseLineSearchSummary.ttReadComparatorTotal != 0 ? (int) ((searchSummary.ttReadComparatorTotal * 100) / baseLineSearchSummary.ttReadComparatorTotal) : 100;
 
             int evaluationCoincidences = 0;
             List<SummaryModel.SearchSummaryModeDetail> baseLineSummaryModeDetailListModeDetail = baseLineSearchSummary.searchDetailList;
@@ -47,7 +49,8 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                     evaluatedGamesPercentage,
                     executedMovesPercentage,
                     ttReadsPercentage,
-                    ttWritesPercentage);
+                    ttWritesPercentage,
+                    ttComparatorPercentage);
         }
     }
 

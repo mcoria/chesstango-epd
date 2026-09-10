@@ -51,12 +51,15 @@ public class ComparatorMain {
                 Evaluations          : evaluations performed.
                  Coincidences     (%): percentage of evaluations that are coincidences with baseline.
                  Collisions       (%): Different positions with same evaluation (Collisions).
-                TT ReadHits          : TT reads.
-                TT Read NHits     (%): TT Node Reads.
-                TT Read CHits     (%): TT Comparator Reads.
-                TT Writes            : TT writes.
-                TT Updates        (%): TT updates percentage.
-                TT OverWrites     (%): TT overwrites percentage.
+                TT Node              : Transposition Table Node statistics.
+                   Reads             : TT reads.
+                   Read NHits     (%): TT read hits.
+                   Writes            : TT writes.
+                   Updates        (%): TT updates percentage.
+                   OverWrites     (%): TT overwrites percentage.
+                TT Comparator        : Transposition Table Comparator statistics
+                   Reads             : TT reads.
+                   Read CHits     (%): TT read hits.
                 """;
 
         System.out.println(content);
