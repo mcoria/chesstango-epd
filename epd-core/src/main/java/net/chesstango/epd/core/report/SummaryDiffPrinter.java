@@ -237,9 +237,22 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();
+        tmp.add(" Reads Nodes");
+        tmp.add(String.format(ttReadFmt, baseLineSearchSummary.evalCacheReadNodeTotal, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().evalCacheReadNodeTotal, pair.searchSummaryDiff().evalCacheReadNodesPercentage())).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+        tmp.clear();
         tmp.add(" Reads NHits");
         tmp.add(String.format(ttReadHitsFmt, baseLineSearchSummary.evalCacheReadNodeHitsPercentageTotal));
         searchSummaryPairs.stream().map(pair -> String.format(ttReadHitsFmt, pair.searchSummary().evalCacheReadNodeHitsPercentageTotal)).forEach(tmp::add);
+        printerTxtTable.addRow(tmp.toArray(new String[0]));
+
+
+        tmp.clear();
+        tmp.add(" Reads Comparator");
+        tmp.add(String.format(ttReadFmt, baseLineSearchSummary.evalCacheReadComparatorsTotal, 100));
+        searchSummaryPairs.stream().map(pair -> String.format(ttReadFmt, pair.searchSummary().evalCacheReadComparatorsTotal, pair.searchSummaryDiff().evalCacheReadComparatorsPercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         tmp.clear();

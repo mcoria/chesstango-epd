@@ -44,22 +44,29 @@ public class ComparatorMain {
                 Evals Success     (%): percentage of successful evaluations.
                 DepthAvg             : average depth reached.
                 Moves                : executed moves.
-                Max  Level           : Max depth reached.
-                Vis  Nodes           : Visited nodes.
+                Nodes                : visited nodes.
+                 Internal            : visited internal nodes.
+                 Quiescence          : visited quiescence nodes.
+                 Leaf                : visited leaf nodes.
                 Cutoff            (%): Cutoff percentage.
                 PV Complete       (%): Principal variation complete percentage.
                 Evaluations          : evaluations performed.
                  Coincidences     (%): percentage of evaluations that are coincidences with baseline.
                  Collisions       (%): Different positions with same evaluation (Collisions).
                 TT Node              : Transposition Table Node statistics.
-                   Reads             : TT reads.
-                   Read NHits     (%): TT read hits.
-                   Writes            : TT writes.
-                   Updates        (%): TT updates percentage.
-                   OverWrites     (%): TT overwrites percentage.
+                 Reads               : TT reads.
+                 Read NHits       (%): TT read hits.
+                 Writes              : TT writes.
+                 Updates          (%): TT updates percentage.
+                 OverWrites       (%): TT overwrites percentage.
                 TT Comparator        : Transposition Table Comparator statistics
-                   Reads             : TT reads.
-                   Read CHits     (%): TT read hits.
+                 Reads               : TT reads.
+                 Read CHits       (%): TT read hits.
+                EvalCache            : EvalCache statistics
+                 Reads Nodes         : Node reads
+                 Reads NHits      (%): Node reads
+                 Reads Comparator    : comparator reads.
+                 Reads CHits      (%): comparator read hits.
                 """;
 
         System.out.println(content);

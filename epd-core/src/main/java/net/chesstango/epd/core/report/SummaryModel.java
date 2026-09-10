@@ -100,8 +100,16 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("ttOverWritesPercentageTotal")
     int ttOverWritesPercentageTotal;
 
+
+    @JsonProperty("evalCacheReadNodeTotal")
+    long evalCacheReadNodeTotal;
+
     @JsonProperty("evalCacheReadNodeHitsPercentageTotal")
     int evalCacheReadNodeHitsPercentageTotal;
+
+
+    @JsonProperty("evalCacheReadComparatorsTotal")
+    long evalCacheReadComparatorsTotal;
 
     @JsonProperty("evalCacheReadComparatorHitsPercentageTotal")
     int evalCacheReadComparatorHitsPercentageTotal;
@@ -183,7 +191,10 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.ttReadComparatorTotal = transpositionModel.readComparatorTotal;
         this.ttReadComparatorHitPercentage = transpositionModel.readComparatorHitPercentageTotal;
 
+        this.evalCacheReadNodeTotal = evaluationCacheModel.readNodesTotal;
         this.evalCacheReadNodeHitsPercentageTotal = evaluationCacheModel.readNodeHitsPercentageTotal;
+
+        this.evalCacheReadComparatorsTotal = evaluationCacheModel.readComparatorsTotal;
         this.evalCacheReadComparatorHitsPercentageTotal = evaluationCacheModel.readComparatorHitsPercentageTotal;
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();

@@ -15,7 +15,9 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                                     int executedMovesPercentage,
                                     int ttReadsPercentage,
                                     int ttWritesPercentage,
-                                    int ttComparatorPercentage
+                                    int ttComparatorPercentage,
+                                    int evalCacheReadNodesPercentage,
+                                    int evalCacheReadComparatorsPercentage
     ) {
         static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
             int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
@@ -25,6 +27,8 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
             int ttReadsPercentage = baseLineSearchSummary.ttReadsNodeTotal != 0 ? (int) ((searchSummary.ttReadsNodeTotal * 100) / baseLineSearchSummary.ttReadsNodeTotal) : 100;
             int ttWritesPercentage = baseLineSearchSummary.ttWritesTotal != 0 ? (int) ((searchSummary.ttWritesTotal * 100) / baseLineSearchSummary.ttWritesTotal) : 100;
             int ttComparatorPercentage = baseLineSearchSummary.ttReadComparatorTotal != 0 ? (int) ((searchSummary.ttReadComparatorTotal * 100) / baseLineSearchSummary.ttReadComparatorTotal) : 100;
+            int evalCacheReadNodesPercentage = baseLineSearchSummary.evalCacheReadNodeTotal != 0 ? (int) ((searchSummary.evalCacheReadNodeTotal * 100) / baseLineSearchSummary.evalCacheReadNodeTotal) : 100;
+            int evalCacheReadComparatorsPercentage = baseLineSearchSummary.evalCacheReadComparatorsTotal != 0 ? (int) ((searchSummary.evalCacheReadComparatorsTotal * 100) / baseLineSearchSummary.evalCacheReadComparatorsTotal) : 100;
 
             int evaluationCoincidences = 0;
             List<SummaryModel.SearchSummaryModeDetail> baseLineSummaryModeDetailListModeDetail = baseLineSearchSummary.searchDetailList;
@@ -50,7 +54,10 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
                     executedMovesPercentage,
                     ttReadsPercentage,
                     ttWritesPercentage,
-                    ttComparatorPercentage);
+                    ttComparatorPercentage,
+                    evalCacheReadNodesPercentage,
+                    evalCacheReadComparatorsPercentage
+            );
         }
     }
 
