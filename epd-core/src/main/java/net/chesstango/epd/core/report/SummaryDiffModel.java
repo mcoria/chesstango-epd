@@ -1,5 +1,6 @@
 package net.chesstango.epd.core.report;
 
+import lombok.Getter;
 import net.chesstango.reports.Model;
 
 import java.util.List;
@@ -7,67 +8,13 @@ import java.util.List;
 /**
  * @author Mauricio Coria
  */
+@Getter
 public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
-    public record SearchSummaryDiff(int durationPercentage,
-                                    int evaluationCoincidencePercentage,
-                                    int nodesPercentage,
-                                    int evaluatedGamesPercentage,
-                                    int executedMovesPercentage,
-                                    int ttReadsPercentage,
-                                    int ttWritesPercentage,
-                                    int ttComparatorPercentage,
-                                    int evalCacheReadNodesPercentage,
-                                    int evalCacheReadComparatorsPercentage
-    ) {
-        static SearchSummaryDiff calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
-            int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
-            int nodesPercentage = (int) ((searchSummary.nodes * 100) / baseLineSearchSummary.nodes);
-            int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
-            int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
-            int ttReadsPercentage = baseLineSearchSummary.ttReadsNodeTotal != 0 ? (int) ((searchSummary.ttReadsNodeTotal * 100) / baseLineSearchSummary.ttReadsNodeTotal) : 100;
-            int ttWritesPercentage = baseLineSearchSummary.ttWritesTotal != 0 ? (int) ((searchSummary.ttWritesTotal * 100) / baseLineSearchSummary.ttWritesTotal) : 100;
-            int ttComparatorPercentage = baseLineSearchSummary.ttReadComparatorTotal != 0 ? (int) ((searchSummary.ttReadComparatorTotal * 100) / baseLineSearchSummary.ttReadComparatorTotal) : 100;
-            int evalCacheReadNodesPercentage = baseLineSearchSummary.evalCacheReadNodeTotal != 0 ? (int) ((searchSummary.evalCacheReadNodeTotal * 100) / baseLineSearchSummary.evalCacheReadNodeTotal) : 100;
-            int evalCacheReadComparatorsPercentage = baseLineSearchSummary.evalCacheReadComparatorsTotal != 0 ? (int) ((searchSummary.evalCacheReadComparatorsTotal * 100) / baseLineSearchSummary.evalCacheReadComparatorsTotal) : 100;
 
-            int evaluationCoincidences = 0;
-            List<SummaryModel.SearchSummaryModeDetail> baseLineSummaryModeDetailListModeDetail = baseLineSearchSummary.searchDetailList;
-            List<SummaryModel.SearchSummaryModeDetail> summaryModeDetailListModeDetail = searchSummary.searchDetailList;
-            int baseLineSearches = baseLineSummaryModeDetailListModeDetail.size();
-            int searches = summaryModeDetailListModeDetail.size();
-
-            for (int i = 0; i < Math.min(baseLineSearches, searches); i++) {
-                SummaryModel.SearchSummaryModeDetail baseMoveDetail = baseLineSummaryModeDetailListModeDetail.get(i);
-                SummaryModel.SearchSummaryModeDetail moveDetail = summaryModeDetailListModeDetail.get(i);
-
-                if (baseMoveDetail.evaluation == moveDetail.evaluation) {
-                    evaluationCoincidences++;
-                }
-            }
-
-            int evaluationCoincidencePercentage = (evaluationCoincidences * 100) / baseLineSearches;
-
-            return new SearchSummaryDiff(durationPercentage,
-                    evaluationCoincidencePercentage,
-                    nodesPercentage,
-                    evaluatedGamesPercentage,
-                    executedMovesPercentage,
-                    ttReadsPercentage,
-                    ttWritesPercentage,
-                    ttComparatorPercentage,
-                    evalCacheReadNodesPercentage,
-                    evalCacheReadComparatorsPercentage
-            );
-        }
-    }
-
-    record SummaryDiffPair(SummaryModel searchSummary, SearchSummaryDiff searchSummaryDiff) {
-    }
-
-    String suiteName;
-    int elements;
-    SummaryModel baseLineSearchSummary;
-    List<SummaryDiffPair> searchSummaryPairs;
+    private String suiteName;
+    private int elements;
+    private SummaryModel baseLineSearchSummary;
+    private List<SummaryDiffPair> searchSummaryPairs;
 
     @Override
     public SummaryDiffModel collectStatistics(String suiteName, SummaryDiffModelInput input) {
@@ -80,7 +27,7 @@ public class SummaryDiffModel implements Model<SummaryDiffModelInput> {
         reportModel.baseLineSearchSummary = baseLineSearchSummary;
         reportModel.searchSummaryPairs = searchSummaryList
                 .stream()
-                .map(searchSummary -> new SummaryDiffPair(searchSummary, SearchSummaryDiff.calculateDiff(baseLineSearchSummary, searchSummary)))
+                .map(searchSummary -> new SummaryDiffPair(searchSummary, SummaryDiffPercentages.calculateDiff(baseLineSearchSummary, searchSummary)))
                 .toList();
 
         return reportModel;

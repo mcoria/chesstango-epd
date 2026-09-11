@@ -38,8 +38,6 @@ public class SummaryDiffPrinter implements Printer {
     private static final String ttFillAvgFmt = "%3d%%";
 
 
-
-
     @Setter
     @Accessors(chain = true)
     private SummaryDiffModel reportModel;
@@ -53,24 +51,23 @@ public class SummaryDiffPrinter implements Printer {
     @Override
     public SummaryDiffPrinter print() {
         List<String> tmp = new LinkedList<>();
-        SummaryModel baseLineSearchSummary = reportModel.baseLineSearchSummary;
-        List<SummaryDiffModel.SummaryDiffPair> searchSummaryPairs = reportModel.searchSummaryPairs;
+        List<SummaryDiffPair> searchSummaryPairs = reportModel.getSearchSummaryPairs();
 
-        out.printf("Suite: %s%n", reportModel.suiteName);
+        out.printf("Suite: %s%n", reportModel.getSuiteName());
 
-        PrinterTxtTable printerTxtTable = new PrinterTxtTable(2 + reportModel.elements).setOut(out);
+        PrinterTxtTable printerTxtTable = new PrinterTxtTable(2 + reportModel.getElements()).setOut(out);
 
-        PrinterTxtTable.TextAlignment[] alignments = new PrinterTxtTable.TextAlignment[2 + reportModel.elements];
+        PrinterTxtTable.TextAlignment[] alignments = new PrinterTxtTable.TextAlignment[2 + reportModel.getElements()];
         alignments[0] = LEFT;
         alignments[1] = RIGHT;
-        for (int i = 2; i < 2 + reportModel.elements; i++) {
+        for (int i = 2; i < 2 + reportModel.getElements(); i++) {
             alignments[i] = RIGHT;
         }
         printerTxtTable.setTextAlignment(alignments);
 
         printerTxtTable.setTitles(createStringRow("Metric", "%s", summaryModel -> summaryModel.sessionid));
 
-        printerTxtTable.addRow(createPercentageRow("Duration", durationFmt, SummaryModel::getDuration, SummaryDiffModel.SearchSummaryDiff::durationPercentage));
+        printerTxtTable.addRow(createPercentageRow("Duration", durationFmt, SummaryModel::getDuration, SummaryDiffPercentages::durationPercentage));
 
         printerTxtTable.addRow(createStringRow("Searches", searchesFmt, summaryModel -> summaryModel.searches));
 
@@ -82,9 +79,9 @@ public class SummaryDiffPrinter implements Printer {
 
         printerTxtTable.addRow(createStringRow("DepthAvg", exploredDepthAvgFmt, summaryModel -> summaryModel.exploredDepthAvg));
 
-        printerTxtTable.addRow(createPercentageRow("Moves", executedMovesFmt, SummaryModel::getExecutedMovesTotal, SummaryDiffModel.SearchSummaryDiff::executedMovesPercentage));
+        printerTxtTable.addRow(createPercentageRow("Moves", executedMovesFmt, SummaryModel::getExecutedMovesTotal, SummaryDiffPercentages::executedMovesPercentage));
 
-        printerTxtTable.addRow(createPercentageRow("Nodes", nodesFmt, SummaryModel::getNodes, SummaryDiffModel.SearchSummaryDiff::nodesPercentage));
+        printerTxtTable.addRow(createPercentageRow("Nodes", nodesFmt, SummaryModel::getNodes, SummaryDiffPercentages::nodesPercentage));
 
         printerTxtTable.addRow(createStringRow(" Internal", nodesPercentageFmt, summaryModel -> summaryModel.interiorNodeCounterPercentage));
 
@@ -96,23 +93,23 @@ public class SummaryDiffPrinter implements Printer {
 
         printerTxtTable.addRow(createStringRow("PV complete", pvCompleteFmt, summaryModel -> summaryModel.pvCompletePercentageAvg));
 
-        printerTxtTable.addRow(createPercentageRow("Evaluations", evaluatedGamesFmt, SummaryModel::getEvaluationCounterTotal, SummaryDiffModel.SearchSummaryDiff::evaluatedGamesPercentage));
+        printerTxtTable.addRow(createPercentageRow("Evaluations", evaluatedGamesFmt, SummaryModel::getEvaluationCounterTotal, SummaryDiffPercentages::evaluatedGamesPercentage));
 
         tmp.clear();
         tmp.add(" Coincidences");
         tmp.add(String.format(evaluationCoincidencesFmt, 100));
-        searchSummaryPairs.stream().map(pair -> String.format(evaluationCoincidencesFmt, pair.searchSummaryDiff().evaluationCoincidencePercentage())).forEach(tmp::add);
+        searchSummaryPairs.stream().map(pair -> String.format(evaluationCoincidencesFmt, pair.summaryDiffPercentages().evaluationCoincidencePercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
         printerTxtTable.addRow(createStringRow(" Collisions", cutoffFmt, SummaryModel::getEvaluationCollisionPercentageTotal));
 
         printerTxtTable.addRow(createStringRow("TT Node", "%s", _ -> ""));
 
-        printerTxtTable.addRow(createPercentageRow(" Reads", ttReadFmt, SummaryModel::getTtReadsNodeTotal, SummaryDiffModel.SearchSummaryDiff::ttReadsPercentage));
+        printerTxtTable.addRow(createPercentageRow(" Reads", ttReadFmt, SummaryModel::getTtReadsNodeTotal, SummaryDiffPercentages::ttReadsPercentage));
 
         printerTxtTable.addRow(createStringRow(" Reads NHits", ttReadHitsFmt, SummaryModel::getTtReadNodeHitPercentageTotal));
 
-        printerTxtTable.addRow(createPercentageRow(" Writes", ttWritesFmt, SummaryModel::getTtWritesTotal, SummaryDiffModel.SearchSummaryDiff::ttWritesPercentage));
+        printerTxtTable.addRow(createPercentageRow(" Writes", ttWritesFmt, SummaryModel::getTtWritesTotal, SummaryDiffPercentages::ttWritesPercentage));
 
         printerTxtTable.addRow(createStringRow(" Updates", ttUpdatesFmt, SummaryModel::getTtUpdatesPercentageTotal));
 
@@ -122,17 +119,17 @@ public class SummaryDiffPrinter implements Printer {
 
         printerTxtTable.addRow(createStringRow("TT Comparator", "%s", _ -> ""));
 
-        printerTxtTable.addRow(createPercentageRow(" Reads", ttReadFmt, SummaryModel::getTtReadComparatorTotal, SummaryDiffModel.SearchSummaryDiff::ttComparatorPercentage));
+        printerTxtTable.addRow(createPercentageRow(" Reads", ttReadFmt, SummaryModel::getTtReadComparatorTotal, SummaryDiffPercentages::ttComparatorPercentage));
 
         printerTxtTable.addRow(createStringRow(" Reads CHits", ttReadHitsFmt, SummaryModel::getTtReadComparatorHitPercentage));
 
         printerTxtTable.addRow(createStringRow("EvalCache", "%s", _ -> ""));
 
-        printerTxtTable.addRow(createPercentageRow(" Reads Nodes", ttReadFmt, SummaryModel::getEvalCacheReadNodeTotal, SummaryDiffModel.SearchSummaryDiff::evalCacheReadNodesPercentage));
+        printerTxtTable.addRow(createPercentageRow(" Reads Nodes", ttReadFmt, SummaryModel::getEvalCacheReadNodeTotal, SummaryDiffPercentages::evalCacheReadNodesPercentage));
 
         printerTxtTable.addRow(createStringRow(" Reads NHits", ttReadHitsFmt, SummaryModel::getEvalCacheReadNodeHitsPercentageTotal));
 
-        printerTxtTable.addRow(createPercentageRow(" Reads Comparator", ttReadFmt, SummaryModel::getEvalCacheReadComparatorsTotal, SummaryDiffModel.SearchSummaryDiff::evalCacheReadComparatorsPercentage));
+        printerTxtTable.addRow(createPercentageRow(" Reads Comparator", ttReadFmt, SummaryModel::getEvalCacheReadComparatorsTotal, SummaryDiffPercentages::evalCacheReadComparatorsPercentage));
 
         printerTxtTable.addRow(createStringRow(" Reads CHits", ttReadHitsFmt, SummaryModel::getEvalCacheReadComparatorHitsPercentageTotal));
 
@@ -144,31 +141,31 @@ public class SummaryDiffPrinter implements Printer {
     }
 
     String[] createStringRow(String metric, String format, Function<SummaryModel, Object> smToStr) {
-        SummaryModel baseLineSearchSummary = reportModel.baseLineSearchSummary;
-        List<SummaryDiffModel.SummaryDiffPair> searchSummaryPairs = reportModel.searchSummaryPairs;
+        SummaryModel baseLineSearchSummary = reportModel.getBaseLineSearchSummary();
+        List<SummaryDiffPair> searchSummaryPairs = reportModel.getSearchSummaryPairs();
 
         List<String> tmp = new LinkedList<>();
         tmp.add(metric);
         tmp.add(String.format(format, smToStr.apply(baseLineSearchSummary)));
         searchSummaryPairs
                 .stream()
-                .map(SummaryDiffModel.SummaryDiffPair::searchSummary)
+                .map(SummaryDiffPair::searchSummary)
                 .map(summary -> String.format(format, smToStr.apply(summary)))
                 .forEach(tmp::add);
 
         return tmp.toArray(new String[0]);
     }
 
-    String[] createPercentageRow(String metric, String format, Function<SummaryModel, Number> smToNumber, Function<SummaryDiffModel.SearchSummaryDiff, Number> sdToNumber) {
-        SummaryModel baseLineSearchSummary = reportModel.baseLineSearchSummary;
-        List<SummaryDiffModel.SummaryDiffPair> searchSummaryPairs = reportModel.searchSummaryPairs;
+    String[] createPercentageRow(String metric, String format, Function<SummaryModel, Number> smToNumber, Function<SummaryDiffPercentages, Number> sdToNumber) {
+        SummaryModel baseLineSearchSummary = reportModel.getBaseLineSearchSummary();
+        List<SummaryDiffPair> searchSummaryPairs = reportModel.getSearchSummaryPairs();
 
         List<String> tmp = new LinkedList<>();
         tmp.add(metric);
         tmp.add(String.format(format, smToNumber.apply(baseLineSearchSummary), 100));
         searchSummaryPairs
                 .stream()
-                .map(pair -> String.format(format, smToNumber.apply(pair.searchSummary()), sdToNumber.apply(pair.searchSummaryDiff())))
+                .map(pair -> String.format(format, smToNumber.apply(pair.searchSummary()), sdToNumber.apply(pair.summaryDiffPercentages())))
                 .forEach(tmp::add);
 
         return tmp.toArray(new String[0]);

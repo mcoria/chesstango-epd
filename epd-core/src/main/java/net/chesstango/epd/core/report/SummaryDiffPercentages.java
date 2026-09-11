@@ -1,0 +1,59 @@
+package net.chesstango.epd.core.report;
+
+import java.util.List;
+
+/**
+ * @author Mauricio Coria
+ */
+public record SummaryDiffPercentages(int durationPercentage,
+                                     int evaluationCoincidencePercentage,
+                                     int nodesPercentage,
+                                     int evaluatedGamesPercentage,
+                                     int executedMovesPercentage,
+                                     int ttReadsPercentage,
+                                     int ttWritesPercentage,
+                                     int ttComparatorPercentage,
+                                     int evalCacheReadNodesPercentage,
+                                     int evalCacheReadComparatorsPercentage
+) {
+    static SummaryDiffPercentages calculateDiff(SummaryModel baseLineSearchSummary, SummaryModel searchSummary) {
+        int durationPercentage = (int) ((searchSummary.duration * 100) / baseLineSearchSummary.duration);
+        int nodesPercentage = (int) ((searchSummary.nodes * 100) / baseLineSearchSummary.nodes);
+        int evaluatedGamesPercentage = (int) ((searchSummary.evaluationCounterTotal * 100) / baseLineSearchSummary.evaluationCounterTotal);
+        int executedMovesPercentage = (int) ((searchSummary.executedMovesTotal * 100) / baseLineSearchSummary.executedMovesTotal);
+        int ttReadsPercentage = baseLineSearchSummary.ttReadsNodeTotal != 0 ? (int) ((searchSummary.ttReadsNodeTotal * 100) / baseLineSearchSummary.ttReadsNodeTotal) : 100;
+        int ttWritesPercentage = baseLineSearchSummary.ttWritesTotal != 0 ? (int) ((searchSummary.ttWritesTotal * 100) / baseLineSearchSummary.ttWritesTotal) : 100;
+        int ttComparatorPercentage = baseLineSearchSummary.ttReadComparatorTotal != 0 ? (int) ((searchSummary.ttReadComparatorTotal * 100) / baseLineSearchSummary.ttReadComparatorTotal) : 100;
+        int evalCacheReadNodesPercentage = baseLineSearchSummary.evalCacheReadNodeTotal != 0 ? (int) ((searchSummary.evalCacheReadNodeTotal * 100) / baseLineSearchSummary.evalCacheReadNodeTotal) : 100;
+        int evalCacheReadComparatorsPercentage = baseLineSearchSummary.evalCacheReadComparatorsTotal != 0 ? (int) ((searchSummary.evalCacheReadComparatorsTotal * 100) / baseLineSearchSummary.evalCacheReadComparatorsTotal) : 100;
+
+        int evaluationCoincidences = 0;
+        List<SummaryModel.SearchSummaryModeDetail> baseLineSummaryModeDetailListModeDetail = baseLineSearchSummary.searchDetailList;
+        List<SummaryModel.SearchSummaryModeDetail> summaryModeDetailListModeDetail = searchSummary.searchDetailList;
+        int baseLineSearches = baseLineSummaryModeDetailListModeDetail.size();
+        int searches = summaryModeDetailListModeDetail.size();
+
+        for (int i = 0; i < Math.min(baseLineSearches, searches); i++) {
+            SummaryModel.SearchSummaryModeDetail baseMoveDetail = baseLineSummaryModeDetailListModeDetail.get(i);
+            SummaryModel.SearchSummaryModeDetail moveDetail = summaryModeDetailListModeDetail.get(i);
+
+            if (baseMoveDetail.evaluation == moveDetail.evaluation) {
+                evaluationCoincidences++;
+            }
+        }
+
+        int evaluationCoincidencePercentage = (evaluationCoincidences * 100) / baseLineSearches;
+
+        return new SummaryDiffPercentages(durationPercentage,
+                evaluationCoincidencePercentage,
+                nodesPercentage,
+                evaluatedGamesPercentage,
+                executedMovesPercentage,
+                ttReadsPercentage,
+                ttWritesPercentage,
+                ttComparatorPercentage,
+                evalCacheReadNodesPercentage,
+                evalCacheReadComparatorsPercentage
+        );
+    }
+}
