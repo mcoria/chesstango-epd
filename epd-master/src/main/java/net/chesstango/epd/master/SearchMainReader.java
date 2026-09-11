@@ -23,16 +23,19 @@ public class SearchMainReader {
     public static void main(String[] args) {
         Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        List<String> sessionDirectories = List.of("depth-3-2026-09-09-18-18-v1.10.0-SNAPSHOT");
+        List<String> sessionDirectories = List.of("depth-3-2026-09-10-08-25-v1.10.0-SNAPSHOT",
+                "depth-4-2026-09-10-08-25-v1.10.0-SNAPSHOT",
+                "depth-5-2026-09-10-08-25-v1.10.0-SNAPSHOT",
+                "depth-6-2026-09-10-08-25-v1.10.0-SNAPSHOT",
+                "depth-7-2026-09-10-08-25-v1.10.0-SNAPSHOT"
+        );
 
         sessionDirectories
                 .stream()
                 .map(baseDirectory::resolve)
                 .filter(Files::isDirectory)
                 .forEach(sessionDirectory -> {
-
                     Stream<SearchResponse> epdSearchResponses = readEpdSearchResponses(sessionDirectory);
-
                     epdSearchResponses
                             .parallel()
                             .forEach(epdSearchResponse -> {

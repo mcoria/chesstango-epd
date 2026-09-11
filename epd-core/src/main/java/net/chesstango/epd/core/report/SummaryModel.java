@@ -2,6 +2,7 @@ package net.chesstango.epd.core.report;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import net.chesstango.board.moves.Move;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * @author Mauricio Coria
  */
+@Getter
 public class SummaryModel implements Model<EpdAgregateModel> {
 
     @JsonProperty("sessionid")
@@ -100,6 +102,8 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("ttOverWritesPercentageTotal")
     int ttOverWritesPercentageTotal;
 
+    @JsonProperty("ttMapFillPercentageAvg")
+    int ttMapFillPercentageAvg;
 
     @JsonProperty("evalCacheReadNodeTotal")
     long evalCacheReadNodeTotal;
@@ -190,6 +194,8 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         this.ttReadComparatorTotal = transpositionModel.readComparatorTotal;
         this.ttReadComparatorHitPercentage = transpositionModel.readComparatorHitPercentageTotal;
+
+        this.ttMapFillPercentageAvg = transpositionModel.mapFillPercentageAvg;
 
         this.evalCacheReadNodeTotal = evaluationCacheModel.readNodesTotal;
         this.evalCacheReadNodeHitsPercentageTotal = evaluationCacheModel.readNodeHitsPercentageTotal;

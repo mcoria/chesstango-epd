@@ -27,10 +27,11 @@ public class ComparatorMain {
 
         Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        new ComparatorMain(suiteParentDirectory, "depth-3-2026-09-09-18-18-v1.10.0-SNAPSHOT")
-                //.addSession("depth-4-2026-09-06-21-41-v1.9.0")
-                //
-                //
+        new ComparatorMain(suiteParentDirectory, "depth-3-2026-09-10-08-25-v1.10.0-SNAPSHOT")
+                .addSession("depth-4-2026-09-10-08-25-v1.10.0-SNAPSHOT")
+                .addSession("depth-5-2026-09-10-08-25-v1.10.0-SNAPSHOT")
+                .addSession("depth-6-2026-09-10-08-25-v1.10.0-SNAPSHOT")
+                .addSession("depth-7-2026-09-10-08-25-v1.10.0-SNAPSHOT")
                 //
                 .execute();
     }
@@ -49,7 +50,7 @@ public class ComparatorMain {
                  Quiescence          : visited quiescence nodes.
                  Leaf                : visited leaf nodes.
                 Cutoff            (%): Cutoff percentage.
-                PV Complete       (%): Principal variation complete percentage.
+                PV complete       (%): Principal variation complete percentage.
                 Evaluations          : evaluations performed.
                  Coincidences     (%): percentage of evaluations that are coincidences with baseline.
                  Collisions       (%): Different positions with same evaluation (Collisions).
