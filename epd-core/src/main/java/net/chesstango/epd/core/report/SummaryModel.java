@@ -111,12 +111,14 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("evalCacheReadNodeHitsPercentageTotal")
     int evalCacheReadNodeHitsPercentageTotal;
 
-
     @JsonProperty("evalCacheReadComparatorsTotal")
     long evalCacheReadComparatorsTotal;
 
     @JsonProperty("evalCacheReadComparatorHitsPercentageTotal")
     int evalCacheReadComparatorHitsPercentageTotal;
+
+    @JsonProperty("evalCacheReadFillPercentageAvg")
+    int evalCacheReadFillPercentageAvg;
 
     @JsonProperty("searchDetail")
     List<SearchSummaryModeDetail> searchDetailList = new LinkedList<>();
@@ -202,6 +204,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         this.evalCacheReadComparatorsTotal = evaluationCacheModel.readComparatorsTotal;
         this.evalCacheReadComparatorHitsPercentageTotal = evaluationCacheModel.readComparatorHitsPercentageTotal;
+        this.evalCacheReadFillPercentageAvg = evaluationCacheModel.fillPercentageAvg;
 
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));

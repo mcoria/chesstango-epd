@@ -118,7 +118,7 @@ public class SummaryDiffPrinter implements Printer {
 
         printerTxtTable.addRow(createStringRow(" OverWrites", ttOverWritesFmt, SummaryModel::getTtOverWritesPercentageTotal));
 
-        printerTxtTable.addRow(createStringRow(" Fill", ttFillAvgFmt, SummaryModel::getTtMapFillPercentageAvg));
+        printerTxtTable.addRow(createStringRow(" Fill Avg", ttFillAvgFmt, SummaryModel::getTtMapFillPercentageAvg));
 
         printerTxtTable.addRow(createStringRow("TT Comparator", "%s", _ -> ""));
 
@@ -135,6 +135,8 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(createPercentageRow(" Reads Comparator", ttReadFmt, SummaryModel::getEvalCacheReadComparatorsTotal, SummaryDiffModel.SearchSummaryDiff::evalCacheReadComparatorsPercentage));
 
         printerTxtTable.addRow(createStringRow(" Reads CHits", ttReadHitsFmt, SummaryModel::getEvalCacheReadComparatorHitsPercentageTotal));
+
+        printerTxtTable.addRow(createStringRow(" Fill Avg", ttFillAvgFmt, SummaryModel::getEvalCacheReadFillPercentageAvg));
 
         printerTxtTable.print();
 
