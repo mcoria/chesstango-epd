@@ -5,9 +5,8 @@ import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.evaluation.iteration.EvaluationIterationModel;
-import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
-
+import net.chesstango.reports.search.nodes.visited.VisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.pv.iteration.PrincipalVariationIterationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
@@ -22,7 +21,7 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                                EpdSearchModel epdSearchModel,
                                BoardModel boardModel,
 
-                               NodesDepthModel nodesDepthModel,
+                               VisitedModel nodesVisitedModel,
                                NodesTypesModel nodesTypesModel,
 
                                PrincipalVariationModel principalVariationReportModel,
@@ -39,7 +38,7 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
         List<SearchResult> searchResults = epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList();
 
         BoardModel boardModel = new BoardModel().collectStatistics(suiteName, searchResults);
-        NodesDepthModel nodesDepthModel = new NodesDepthModel().collectStatistics(suiteName, searchResults);
+        VisitedModel visitedModel = new VisitedModel().collectStatistics(suiteName, searchResults);
         NodesTypesModel nodesTypesModel = new NodesTypesModel().collectStatistics(suiteName, searchResults);
 
         EvaluationModel evaluationReportModel = new EvaluationModel().collectStatistics(suiteName, searchResults);
@@ -56,7 +55,7 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                 epdSearchResults,
                 epdSearchModel,
                 boardModel,
-                nodesDepthModel, nodesTypesModel,
+                visitedModel, nodesTypesModel,
                 principalVariationReportModel, principalVariationIterationReportModel,
                 evaluationReportModel, iterationEvaluationModel,
                 transpositionReportModel,

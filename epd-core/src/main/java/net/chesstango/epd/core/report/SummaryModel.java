@@ -9,7 +9,7 @@ import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
-import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
+import net.chesstango.reports.search.nodes.visited.VisitedModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
@@ -69,8 +69,8 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("nodes")
     long nodes;
 
-    @JsonProperty("cutoffPercentageTotal")
-    int cutoffPercentageTotal;
+    @JsonProperty("visitedPercentageTotal")
+    int visitedPercentageTotal;
 
     @JsonProperty("evaluationCounterTotal")
     long evaluationCounterTotal;
@@ -154,7 +154,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     public SummaryModel collectStatistics(String sessionId, EpdAgregateModel input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
-        NodesDepthModel nodesDepthModel = input.nodesDepthModel();
+        VisitedModel nodesDepthModel = input.nodesVisitedModel();
         NodesTypesModel nodesTypesModel = input.nodesTypesModel();
         EvaluationModel evaluationReportModel = input.evaluationReportModel();
         PrincipalVariationModel principalVariationReportModel = input.principalVariationReportModel();
@@ -176,7 +176,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         this.exploredDepthAvg = boardModel.exploredDepthAvg;
 
         this.nodes = nodesDepthModel.visitedNodesTotal;
-        this.cutoffPercentageTotal = nodesDepthModel.cutoffPercentageTotal;
+        this.visitedPercentageTotal = nodesDepthModel.visitedPercentageTotal;
 
         this.interiorNodeCounterPercentage = nodesTypesModel.interiorNodeCounterPercentage;
         this.quiescenceNodeCounterPercentage = nodesTypesModel.quiescenceNodeCounterPercentage;

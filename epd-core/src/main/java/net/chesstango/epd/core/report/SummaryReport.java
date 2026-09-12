@@ -8,9 +8,8 @@ import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
 import net.chesstango.reports.search.evaluation.iteration.EvaluationIterationModel;
-import net.chesstango.reports.search.nodes.depth.NodesDepthModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
-
+import net.chesstango.reports.search.nodes.visited.VisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.pv.iteration.PrincipalVariationIterationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
@@ -41,7 +40,7 @@ public class SummaryReport implements Report {
     public SummaryReport withEpdSearchResults(List<EpdSearchResult> epdSearchResults,
                                               EpdSearchModel epdSearchModel,
                                               BoardModel boardModel,
-                                              NodesDepthModel nodesDepthModel,
+                                              VisitedModel nodesVisitedModel,
                                               NodesTypesModel nodesTypesModel,
 
                                               EvaluationModel evaluationReportModel,
@@ -53,7 +52,7 @@ public class SummaryReport implements Report {
                                               TranspositionModel transpositionModel,
                                               EvaluationCacheModel evaluationCacheModel) {
 
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesDepthModel, nodesTypesModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, evaluationIterationModel, transpositionModel, evaluationCacheModel));
+        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, evaluationIterationModel, transpositionModel, evaluationCacheModel));
 
         return this;
     }

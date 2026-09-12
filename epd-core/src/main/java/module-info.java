@@ -6,9 +6,9 @@ module net.chesstango.epd.core {
     requires net.chesstango.gardel;
     requires net.chesstango.search;
     requires net.chesstango.board;
-    requires net.chesstango.reports;
     requires net.chesstango.evaluation;
     requires net.chesstango.engine;
+    requires net.chesstango.reports;
 
     requires org.slf4j;
     requires com.fasterxml.jackson.annotation;

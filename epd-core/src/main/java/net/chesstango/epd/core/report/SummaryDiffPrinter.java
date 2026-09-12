@@ -26,7 +26,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String nodesFmt = "%d (%3d%%)";
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
-    private static final String cutoffFmt = "%d%%";
+    private static final String visitedPercentageFmt = "%d%%";
     private static final String pvCompleteFmt = "%d%%";
 
     private static final String ttReadFmt = "%d (%3d%%)";
@@ -89,7 +89,7 @@ public class SummaryDiffPrinter implements Printer {
 
         printerTxtTable.addRow(createStringRow(" Leaf", nodesPercentageFmt, summaryModel -> summaryModel.leafNodeCounterPercentage));
 
-        printerTxtTable.addRow(createStringRow("Cutoff", cutoffFmt, summaryModel -> summaryModel.cutoffPercentageTotal));
+        printerTxtTable.addRow(createStringRow("Visited %", visitedPercentageFmt, summaryModel -> summaryModel.visitedPercentageTotal));
 
         printerTxtTable.addRow(createStringRow("PV complete", pvCompleteFmt, summaryModel -> summaryModel.pvCompletePercentageAvg));
 
@@ -101,7 +101,7 @@ public class SummaryDiffPrinter implements Printer {
         searchSummaryPairs.stream().map(pair -> String.format(evaluationCoincidencesFmt, pair.summaryDiffPercentages().evaluationCoincidencePercentage())).forEach(tmp::add);
         printerTxtTable.addRow(tmp.toArray(new String[0]));
 
-        printerTxtTable.addRow(createStringRow(" Collisions", cutoffFmt, SummaryModel::getEvaluationCollisionPercentageTotal));
+        printerTxtTable.addRow(createStringRow(" Collisions", visitedPercentageFmt, SummaryModel::getEvaluationCollisionPercentageTotal));
 
         printerTxtTable.addRow(createStringRow("TT Node", "%s", _ -> ""));
 
