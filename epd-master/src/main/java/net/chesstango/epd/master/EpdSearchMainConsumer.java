@@ -3,6 +3,7 @@ package net.chesstango.epd.master;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.main.Common;
+import net.chesstango.epd.core.main.SearchReportSaver;
 import net.chesstango.epd.worker.SearchResponse;
 
 import java.io.FileOutputStream;
@@ -10,8 +11,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @author Mauricio Coria
@@ -49,42 +50,60 @@ public class EpdSearchMainConsumer implements Runnable {
     public void run() {
         log.info("To exit press CTRL+C");
 
-        try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
-            ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(rabbitHost);
-            factory.setUsername("guest");
-            factory.setPassword("guest");
-            factory.setSharedExecutor(executorService);
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(rabbitHost);
+        factory.setUsername("guest");
+        factory.setPassword("guest");
+        factory.setSharedExecutor(ForkJoinPool.commonPool());
 
-            log.info("Connecting to RabbitMQ");
-            try (EpdSearchConsumer epdSearchConsumer = new EpdSearchConsumer(factory)) {
+        log.info("Connecting to RabbitMQ");
+        try (EpdSearchConsumer epdSearchConsumer = new EpdSearchConsumer(factory)) {
 
-                log.info("Connected to RabbitMQ");
+            log.info("Connected to RabbitMQ");
 
-                epdSearchConsumer.setupQueueConsumer(this::accept);
+            epdSearchConsumer.setupQueueConsumer(this::accept);
 
-                log.info("Waiting for EpdSearchRequest");
+            log.info("Waiting for EpdSearchRequest");
 
-                Thread.sleep(Long.MAX_VALUE);
+            Thread.sleep(Long.MAX_VALUE);
 
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
         log.info("Done");
     }
 
 
-    public synchronized void accept(SearchResponse searchResponse) {
+    public void accept(SearchResponse searchResponse) {
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, searchResponse.getSessionId());
 
-        log.info("Saving EpdSearchResponse for {}", searchResponse.getSessionId());
+        // Task 1
+        CompletableFuture<Void> task1 = CompletableFuture.runAsync(() -> {
+            saveResponse(sessionDirectory, searchResponse);
+        });
 
+        // Task 2
+        CompletableFuture<Void> task2 = CompletableFuture.runAsync(() -> {
+            saveReport(sessionDirectory, searchResponse);
+        });
+
+        // Wait for both to finish (join blocks the main thread)
+        CompletableFuture.allOf(task1, task2).join();
+    }
+
+    private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
+        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory);
+        searchReportSaver.accept(searchResponse.getSearchId(), searchResponse.getEpdSearchResults());
+    }
+
+    private void saveResponse(Path sessionDirectory, SearchResponse searchResponse) {
         String filename = String.format("epdSearchResponse_%s.ser", searchResponse.getSearchId());
 
         Path filePath = sessionDirectory.resolve(filename);
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath.toFile()))) {
+            log.info("Saving {} {}", searchResponse.getSessionId(), searchResponse.getSearchId());
             oos.writeObject(searchResponse);
             log.info("Response serialized to file: {}", filePath);
         } catch (IOException e) {

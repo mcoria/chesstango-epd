@@ -30,7 +30,7 @@ public class Common {
         return String.format("depth-%d-%s-%s", depth, SESSION_DATE, Tango.ENGINE_VERSION);
     }
 
-    public static Path createSessionDirectory(Path suiteDirectory, String sessionId) {
+    public static synchronized Path createSessionDirectory(Path suiteDirectory, String sessionId) {
         Path sessionDirectory = suiteDirectory.resolve(sessionId);
 
         if (Files.exists(sessionDirectory)) {
