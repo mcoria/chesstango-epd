@@ -27,6 +27,7 @@ public class SummaryDiffPrinter implements Printer {
     private static final String evaluatedGamesFmt = "%d (%3d%%)";
     private static final String executedMovesFmt = "%d (%3d%%)";
     private static final String visitedPercentageFmt = "%d%%";
+    private static final String failHighPercentageFmt = "%d%%";
     private static final String pvCompleteFmt = "%d%%";
 
     private static final String ttReadFmt = "%d (%3d%%)";
@@ -90,6 +91,8 @@ public class SummaryDiffPrinter implements Printer {
         printerTxtTable.addRow(createStringRow(" Leaf", nodesPercentageFmt, summaryModel -> summaryModel.leafNodeCounterPercentage));
 
         printerTxtTable.addRow(createStringRow("Visited %", visitedPercentageFmt, summaryModel -> summaryModel.visitedPercentageTotal));
+
+        printerTxtTable.addRow(createStringRow("Fail High %", failHighPercentageFmt, summaryModel -> summaryModel.failHighPercentageAvg));
 
         printerTxtTable.addRow(createStringRow("PV complete", pvCompleteFmt, summaryModel -> summaryModel.pvCompletePercentageAvg));
 

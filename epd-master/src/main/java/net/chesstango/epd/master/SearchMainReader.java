@@ -24,9 +24,9 @@ public class SearchMainReader {
         Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
         List<String> sessionDirectories = List.of(
-                "depth-5-2026-09-12-20-12-v1.10.0-SNAPSHOT"
-                //"depth-5-2026-09-11-08-41-v1.10.0-SNAPSHOT"
-                //"depth-4-2026-09-10-08-25-v1.10.0-SNAPSHOT",
+                "depth-5-2026-09-14-09-36-v1.10.0-SNAPSHOT",
+                "depth-6-2026-09-14-09-43-v1.10.0-SNAPSHOT",
+                "depth-7-2026-09-14-09-44-v1.10.0-SNAPSHOT"
                 //"depth-5-2026-09-10-08-25-v1.10.0-SNAPSHOT",
                 //"depth-6-2026-09-10-08-25-v1.10.0-SNAPSHOT",
                 //"depth-7-2026-09-10-08-25-v1.10.0-SNAPSHOT"
