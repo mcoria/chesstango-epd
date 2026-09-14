@@ -81,6 +81,9 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     @JsonProperty("pvCompletePercentageAvg")
     int pvCompletePercentageAvg;
 
+    @JsonProperty("failHighPercentageAvg")
+    int failHighPercentageAvg;
+
     @JsonProperty("ttReadsNodeTotal")
     long ttReadsNodeTotal;
 
@@ -174,6 +177,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         this.executedMovesTotal = boardModel.executedMovesTotal;
         this.exploredDepthAvg = boardModel.exploredDepthAvg;
+        this.failHighPercentageAvg = boardModel.failHighPercentageAvg;
 
         this.nodes = nodesDepthModel.visitedNodesTotal;
         this.visitedPercentageTotal = nodesDepthModel.visitedPercentageTotal;
