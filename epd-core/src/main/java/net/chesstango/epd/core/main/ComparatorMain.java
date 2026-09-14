@@ -48,6 +48,7 @@ public class ComparatorMain {
                  Quiescence          : visited quiescence nodes.
                  Leaf                : visited leaf nodes.
                 Visited           (%): visited / expected percentage.
+                Fail High         (%): percentage of internal nodes that fail high in the first move.
                 PV complete       (%): Principal variation complete percentage.
                 Evaluations          : evaluations performed.
                  Coincidences     (%): percentage of evaluations that are coincidences with baseline.
