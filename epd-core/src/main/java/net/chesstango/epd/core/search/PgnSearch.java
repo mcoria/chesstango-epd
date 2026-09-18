@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 @Slf4j
 public class PgnSearch {
-    private final EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
-
     private Color playingColor;
     private int searchFrom;
     private int searchTo;
@@ -88,7 +86,7 @@ public class PgnSearch {
 
         searchResult.setId(epd.getId());
 
-        return epdSearchResultBuilder.apply(epd, searchResult);
+        return new EpdSearchResult(epd, searchResult);
     }
 
     void readParameters(PGN pgn) {

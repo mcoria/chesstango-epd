@@ -1,5 +1,6 @@
 package net.chesstango.epd.core.report;
 
+import net.chesstango.epd.core.report.interpret.EpdSearchResultSuccess;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.search.SearchResult;
@@ -29,22 +30,27 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdSearchResults) {
         List<SearchResult> searchResults = epdSearchResults
                 .stream()
-                .map(EpdSearchResult::getSearchResult)
+                .map(EpdSearchResult::searchResult)
+                .toList();
+
+        List<EpdSearchResultSuccess> epdSearchResultSuccesses = epdSearchResults
+                .stream()
+                .map(EpdSearchResultSuccess::from)
                 .toList();
 
         this.reportTitle = reportTitle;
 
         this.searches = epdSearchResults.size();
 
-        this.moveSuccess = (int) epdSearchResults
+        this.moveSuccess = (int) epdSearchResultSuccesses
                 .stream()
-                .filter(EpdSearchResult::isMoveSuccess)
+                .filter(EpdSearchResultSuccess::isMoveSuccess)
                 .count();
         this.moveSuccessPct = ((100 * this.moveSuccess) / this.searches);
 
-        this.evaluationSuccess = (int) epdSearchResults
+        this.evaluationSuccess = (int) epdSearchResultSuccesses
                 .stream()
-                .filter(EpdSearchResult::isEvaluationSuccess)
+                .filter(EpdSearchResultSuccess::isEvaluationSuccess)
                 .count();
         this.evaluationSuccessPct = ((100 * this.evaluationSuccess) / this.searches);
 
@@ -54,12 +60,12 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
                 .sum();
 
         // No coincide el movimiento ni la evaluacion
-        this.failedEntries = epdSearchResults
+        this.failedEntries = epdSearchResultSuccesses
                 .stream()
                 .filter(epdSearchResult -> !epdSearchResult.isMoveSuccess() && !epdSearchResult.isEvaluationSuccess())
                 .map(epdSearchResult ->
                         String.format("Fail [%s] - best move found %s and evaluation %d",
-                                epdSearchResult.getEpd().toString(),
+                                epdSearchResult.epd().toString(),
                                 epdSearchResult.getBestMove(),
                                 epdSearchResult.getBestEvaluation())
                 )

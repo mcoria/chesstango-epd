@@ -35,7 +35,7 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
     public static EpdAgregateModel load(String suiteName, List<EpdSearchResult> epdSearchResults) {
         EpdSearchModel epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
 
-        List<SearchResult> searchResults = epdSearchResults.stream().map(EpdSearchResult::getSearchResult).toList();
+        List<SearchResult> searchResults = epdSearchResults.stream().map(EpdSearchResult::searchResult).toList();
 
         BoardModel boardModel = new BoardModel().collectStatistics(suiteName, searchResults);
         VisitedModel visitedModel = new VisitedModel().collectStatistics(suiteName, searchResults);
