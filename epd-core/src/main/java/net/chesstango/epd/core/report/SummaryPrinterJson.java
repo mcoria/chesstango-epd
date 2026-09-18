@@ -8,7 +8,6 @@ import net.chesstango.reports.Printer;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.io.PrintStream;
 
 /**
