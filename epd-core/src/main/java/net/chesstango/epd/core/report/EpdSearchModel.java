@@ -29,7 +29,7 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdSearchResults) {
         List<SearchResult> searchResults = epdSearchResults
                 .stream()
-                .map(EpdSearchResult::getSearchResult)
+                .map(EpdSearchResult::searchResult)
                 .toList();
 
         this.reportTitle = reportTitle;
@@ -59,7 +59,7 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
                 .filter(epdSearchResult -> !epdSearchResult.isMoveSuccess() && !epdSearchResult.isEvaluationSuccess())
                 .map(epdSearchResult ->
                         String.format("Fail [%s] - best move found %s and evaluation %d",
-                                epdSearchResult.getEpd().toString(),
+                                epdSearchResult.epd().toString(),
                                 epdSearchResult.getBestMove(),
                                 epdSearchResult.getBestEvaluation())
                 )

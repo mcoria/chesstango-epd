@@ -217,10 +217,10 @@ public class SummaryModel implements Model<EpdAgregateModel> {
                 .stream()
                 .map(epdSearchResult -> {
                     SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
-                    SearchResult searchResult = epdSearchResult.getSearchResult();
-                    PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.getEpd().getId());
+                    SearchResult searchResult = epdSearchResult.searchResult();
+                    PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.epd().getId());
 
-                    searchSummaryModeDetail.id = epdSearchResult.getEpd().getId();
+                    searchSummaryModeDetail.id = epdSearchResult.epd().getId();
 
                     searchSummaryModeDetail.move = epdSearchResult.getBestMove();
                     searchSummaryModeDetail.moveSuccess = epdSearchResult.isMoveSuccess();

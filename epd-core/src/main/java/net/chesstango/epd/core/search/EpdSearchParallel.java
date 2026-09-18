@@ -76,7 +76,7 @@ class EpdSearchParallel {
             throw new RuntimeException("No edp entry was processed");
         }
 
-        epdSearchResults.sort(Comparator.comparing(o -> o.getEpd().getId()));
+        epdSearchResults.sort(Comparator.comparing(o -> o.epd().getId()));
 
         return epdSearchResults;
     }

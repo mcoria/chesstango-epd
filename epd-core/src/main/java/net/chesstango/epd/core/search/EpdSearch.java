@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 @Accessors(chain = true)
 @Slf4j
 public class EpdSearch {
-    private final EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
+
 
     @Setter
     @Getter(AccessLevel.PACKAGE)
@@ -46,7 +46,7 @@ public class EpdSearch {
 
         searchResult.setId(epd.getId());
 
-        return epdSearchResultBuilder.apply(epd, searchResult);
+        return new EpdSearchResult(epd, searchResult);
     }
 
 }
