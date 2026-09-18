@@ -96,7 +96,7 @@ public class EpdSearchMain implements Runnable {
 
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-                List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, edpEntries);
+                List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(searchSupplier, edpEntries);
 
                 searchReportSaver.accept(suiteName, epdSearchResults);
 

@@ -46,7 +46,7 @@ public class EpdSearchRequest extends SearchRequest {
 
         Stream<EPD> epdStream = epdList.stream();
 
-        List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, epdStream);
+        List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(searchSupplier, epdStream);
 
         log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 

@@ -10,8 +10,13 @@ import net.chesstango.gardel.epd.EPD;
 import net.chesstango.search.Search;
 import net.chesstango.search.SearchResult;
 import net.chesstango.search.visitors.SetMaxDepthVisitor;
+import net.chesstango.search.visitors.SetSearchByDepthListenerVisitor;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -30,13 +35,26 @@ public class EpdSearch {
     @Getter(AccessLevel.PACKAGE)
     private Integer timeOut;
 
-    private final EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
-
-    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
+    public List<EpdSearchResult> runParallel(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
+        EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
         return epdSearchParallel.run(searchSupplier, edpEntries);
     }
 
-    EpdSearchResult run(Search search, EPD epd) {
+    public EpdSearchResult run(Search search, EPD epd) {
+        return timeOut == null ? runNow(search, epd) : runTimeOut(search, epd);
+    }
+
+    EpdSearchResult runTimeOut(Search search, EPD epd) {
+        CompletableFuture<Void> stopTask = getStopTask(search);
+
+        EpdSearchResult result = runNow(search, epd);
+
+        stopTask.join();
+
+        return result;
+    }
+
+    EpdSearchResult runNow(Search search, EPD epd) {
         Game game = Game.from(epd);
 
         search.accept(new SetMaxDepthVisitor(depth));
@@ -46,6 +64,23 @@ public class EpdSearch {
         searchResult.setId(epd.getId());
 
         return new EpdSearchResult(epd, searchResult);
+    }
+
+    private CompletableFuture<Void> getStopTask(Search search) {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        search.accept(new SetSearchByDepthListenerVisitor(_ -> countDownLatch.countDown()));
+
+        Executor delayed = CompletableFuture.delayedExecutor(timeOut + 1, TimeUnit.SECONDS);
+
+        return CompletableFuture.runAsync(() -> {
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            search.stopSearch();
+        }, delayed);
     }
 
 }

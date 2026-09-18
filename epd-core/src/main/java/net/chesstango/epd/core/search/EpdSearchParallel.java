@@ -61,7 +61,7 @@ class EpdSearchParallel {
                         activeJobs.forEach(searchJob -> {
                             if (searchJob.elapsedMillis() >= epdSearch.getTimeOut()) {
                                 throw new RuntimeException(String.format("Cambiarme %s", epdSearch.getTimeOut()));
-                                //searchJob.search.stopSearching();
+                                //searchJob.search.stopSearch();
                             }
                         });
                     }
