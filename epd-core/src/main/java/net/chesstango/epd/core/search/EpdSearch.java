@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 @Slf4j
 public class EpdSearch {
 
-
     @Setter
     @Getter(AccessLevel.PACKAGE)
     private int depth;

@@ -2,6 +2,7 @@ module net.chesstango.epd.core {
     exports net.chesstango.epd.core.report;
     exports net.chesstango.epd.core.search;
     exports net.chesstango.epd.core.main;
+    exports net.chesstango.epd.core.report.interpret;
 
     requires net.chesstango.gardel;
     requires net.chesstango.search;
