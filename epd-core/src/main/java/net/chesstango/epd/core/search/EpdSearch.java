@@ -35,8 +35,9 @@ public class EpdSearch {
     @Getter(AccessLevel.PACKAGE)
     private Integer timeOut;
 
+    private final EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
+
     public List<EpdSearchResult> runParallel(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
-        EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
         return epdSearchParallel.run(searchSupplier, edpEntries);
     }
 
