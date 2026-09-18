@@ -24,9 +24,9 @@ public class SearchMainReader {
         Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
         List<String> sessionDirectories = List.of(
-                "depth-5-2026-09-14-09-36-v1.10.0-SNAPSHOT",
-                "depth-6-2026-09-14-09-43-v1.10.0-SNAPSHOT",
-                "depth-7-2026-09-14-09-44-v1.10.0-SNAPSHOT"
+                "depth-5-2026-09-17-09-11-v1.11.0-SNAPSHOT"
+                //"depth-6-2026-09-14-09-43-v1.10.0-SNAPSHOT",
+                //"depth-7-2026-09-14-09-44-v1.10.0-SNAPSHOT"
                 //"depth-5-2026-09-10-08-25-v1.10.0-SNAPSHOT",
                 //"depth-6-2026-09-10-08-25-v1.10.0-SNAPSHOT",
                 //"depth-7-2026-09-10-08-25-v1.10.0-SNAPSHOT"
@@ -37,9 +37,10 @@ public class SearchMainReader {
                 .map(baseDirectory::resolve)
                 .filter(Files::isDirectory)
                 .forEach(sessionDirectory -> {
-                    Stream<SearchResponse> searchResponses = readEpdSearchResponses(sessionDirectory);
-                    searchResponses
+                    readSerFiles(sessionDirectory)
                             .parallel()
+                            .map(SearchMainReader::readEpdSearchResponse)
+                            .filter(Objects::nonNull)
                             .forEach(epdSearchResponse -> {
                                 SearchReportSaver searchReportSaver = new SearchReportSaver(epdSearchResponse.getSessionId(), sessionDirectory);
                                 searchReportSaver.accept(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
@@ -49,7 +50,7 @@ public class SearchMainReader {
         log.info("Work completed");
     }
 
-    private static Stream<SearchResponse> readEpdSearchResponses(Path sessionDirectory) {
+    private static Stream<File> readSerFiles(Path sessionDirectory) {
         File directory = sessionDirectory.toFile();
 
         log.info("Loading EpdSearchResponse from {}", directory.getAbsolutePath());
@@ -61,15 +62,16 @@ public class SearchMainReader {
         assert files != null;
 
         return Stream
-                .of(files)
-                .map(file -> {
-                    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                        log.info("Deserializing file: {}", file.getName());
-                        return (SearchResponse) ois.readObject();
-                    } catch (Exception e) {
-                        log.error("Failed to deserialize file: " + file, e);
-                        return null;
-                    }
-                }).filter(Objects::nonNull);
+                .of(files);
+    }
+
+    private static SearchResponse readEpdSearchResponse(File file) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            log.info("Deserializing file: {}", file.getName());
+            return (SearchResponse) ois.readObject();
+        } catch (Exception e) {
+            log.error("Failed to deserialize file: " + file, e);
+            return null;
+        }
     }
 }

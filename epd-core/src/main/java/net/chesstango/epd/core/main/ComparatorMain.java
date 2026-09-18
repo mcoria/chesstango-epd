@@ -27,8 +27,8 @@ public class ComparatorMain {
 
         Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        new ComparatorMain(suiteParentDirectory, "depth-5-2026-09-14-09-36-v1.10.0-SNAPSHOT")
-                //.addSession("depth-5-2026-09-11-08-41-v1.10.0-SNAPSHOT")
+        new ComparatorMain(suiteParentDirectory, "depth-5-2026-09-15-00-05-v1.10.0")
+                .addSession("depth-5-2026-09-17-09-11-v1.11.0-SNAPSHOT")
                 //
                 //
                 .execute();
@@ -140,7 +140,8 @@ public class ComparatorMain {
     }
 
     private void printReport(PrintStream out) {
-        SummaryDiffModel reportModel = new SummaryDiffModel().collectStatistics(suiteName, new SummaryDiffModelInput(baseLineSearchSummary, searchSummaryList));
+        SummaryDiffModel reportModel = new SummaryDiffModel()
+                .collectStatistics(suiteName, new SummaryDiffModelInput(baseLineSearchSummary, searchSummaryList));
 
         new SummaryDiffReport()
                 .withSummaryDiffReportModel(reportModel)

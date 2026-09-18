@@ -1,11 +1,9 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.report.EpdAgregateModel;
-import net.chesstango.epd.core.report.EpdAgregateReport;
-import net.chesstango.epd.core.report.SummaryModel;
-import net.chesstango.epd.core.report.SummaryReport;
+import net.chesstango.epd.core.report.*;
 import net.chesstango.epd.core.search.EpdSearchResult;
+import net.chesstango.reports.Report;
 import net.chesstango.reports.ReportToFile;
 
 import java.nio.file.Path;
@@ -22,9 +20,6 @@ public class SearchReportSaver implements BiConsumer<String, List<EpdSearchResul
     private final String sessionId;
     private final Path directory;
 
-    private EpdAgregateModel epdAgregateModel;
-    private SummaryModel summaryModel;
-
     public SearchReportSaver(String sessionId, Path directory) {
         this.sessionId = sessionId;
         this.directory = directory;
@@ -33,19 +28,26 @@ public class SearchReportSaver implements BiConsumer<String, List<EpdSearchResul
     @Override
     public void accept(String suiteName, List<EpdSearchResult> epdSearchResults) {
         try {
-            loadModel(epdSearchResults);
+            EpdAgregateModel epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults);
 
             CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
-                saveAgregateReport(suiteName);
+                saveAgregateReport(suiteName, epdAgregateModel);
                 return null;
             });
 
             CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
-                saveSummaryJson(suiteName);
+                SummaryModel summaryModel = new SummaryModel().collectStatistics(sessionId, epdAgregateModel);
+                saveSummaryJson(suiteName, summaryModel);
                 return null;
             });
 
-            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson);
+            CompletableFuture<Void> epdRebase = CompletableFuture.supplyAsync(() -> {
+                EpdRebaseModel epdRebaseModel = new EpdRebaseModel().collectStatistics(sessionId, epdSearchResults);
+                saveEpdRebase(suiteName, epdRebaseModel);
+                return null;
+            });
+
+            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson, epdRebase);
 
             log.info("Saving reports {}", suiteName);
 
@@ -55,23 +57,29 @@ public class SearchReportSaver implements BiConsumer<String, List<EpdSearchResul
         }
     }
 
-    void loadModel(List<EpdSearchResult> epdSearchResults) {
-        this.epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults);
-        this.summaryModel = new SummaryModel().collectStatistics(sessionId, epdAgregateModel);
+
+    void saveAgregateReport(String suiteName, EpdAgregateModel epdAgregateModel) {
+        Report report = new EpdAgregateReport()
+                .setEpdAgregateModel(epdAgregateModel);
+
+        ReportToFile reportToFile = new ReportToFile(directory)
+                .save(String.format("%s-report.txt", suiteName), report);
     }
 
-    void saveAgregateReport(String suiteName) {
-        ReportToFile reportToFile = new ReportToFile(directory);
-        reportToFile.save(String.format("%s-report.txt", suiteName), new EpdAgregateReport()
-                .setEpdAgregateModel(epdAgregateModel)
-        );
+    void saveSummaryJson(String suiteName, SummaryModel summaryModel) {
+        Report report = new SummaryReport()
+                .setReportModel(summaryModel);
+
+        ReportToFile reportToFile = new ReportToFile(directory)
+                .save(String.format("%s.json", suiteName), report);
     }
 
-    void saveSummaryJson(String suiteName) {
-        ReportToFile reportToFile = new ReportToFile(directory);
-        reportToFile.save(String.format("%s.json", suiteName), new SummaryReport()
-                .setReportModel(summaryModel)
-        );
+    void saveEpdRebase(String suiteName, EpdRebaseModel epdRebaseModel) {
+        Report report = new EpdRebaseReport()
+                .setEpdRebaseModel(epdRebaseModel);
+
+        ReportToFile reportToFile = new ReportToFile(directory)
+                .save(String.format("%s", suiteName), report);
     }
 
 }
