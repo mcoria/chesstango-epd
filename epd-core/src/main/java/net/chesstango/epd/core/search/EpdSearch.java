@@ -12,13 +12,8 @@ import net.chesstango.search.SearchResult;
 import net.chesstango.search.visitors.SetMaxDepthVisitor;
 import net.chesstango.search.visitors.SetSearchByDepthListenerVisitor;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
@@ -41,7 +36,7 @@ public class EpdSearch {
     }
 
     EpdSearchResult runTimeOut(Search search, EPD epd) {
-        CompletableFuture<Void> stopTask = getStopTask(search);
+        CompletableFuture<Void> stopTask = stopTask(search);
 
         EpdSearchResult result = runNow(search, epd);
 
@@ -62,21 +57,23 @@ public class EpdSearch {
         return new EpdSearchResult(epd, searchResult);
     }
 
-    private CompletableFuture<Void> getStopTask(Search search) {
+    private CompletableFuture<Void> stopTask(Search search) {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
         search.accept(new SetSearchByDepthListenerVisitor(_ -> countDownLatch.countDown()));
 
-        Executor delayed = CompletableFuture.delayedExecutor(timeOut + 1, TimeUnit.SECONDS);
-
         return CompletableFuture.runAsync(() -> {
             try {
                 countDownLatch.await();
+
+                Thread.sleep(timeOut * 1000L);
+
+                // Stopping search after depth 1 completes
+                search.stopSearch();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            search.stopSearch();
-        }, delayed);
+        });
     }
 
 }
