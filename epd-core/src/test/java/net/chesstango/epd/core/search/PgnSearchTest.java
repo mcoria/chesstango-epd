@@ -4,15 +4,14 @@ import net.chesstango.epd.core.report.EpdAgregateReport;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
-import net.chesstango.search.builders.AlphaBetaBuilder;
 import net.chesstango.search.alphabeta.debug.DebugNodeTrap;
+import net.chesstango.search.builders.AlphaBetaBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 
 /**
@@ -85,25 +84,24 @@ public class PgnSearchTest {
      */
 
 
-    private static Supplier<Search> buildSearchMove(Evaluator evaluator) {
-        return () -> {
-            AlphaBetaBuilder builder = AlphaBetaBuilder
-                    .createDefaultBuilderInstance()
-                    .withGameEvaluator(evaluator)
+    private static Search buildSearchMove(Evaluator evaluator) {
+        AlphaBetaBuilder builder = AlphaBetaBuilder
+                .createDefaultBuilderInstance()
+                .withGameEvaluator(evaluator)
 
-                    //.withStopProcessingCatch()
-                    //.withPrintChain()
-                    //.withZobristTracker()
-                    //.withTrackEvaluations() // Consume demasiada memoria
-                    //.withDebugSearchTree(false, false, true)
-                    ;
+                //.withStopProcessingCatch()
+                //.withPrintChain()
+                //.withZobristTracker()
+                //.withTrackEvaluations() // Consume demasiada memoria
+                //.withDebugSearchTree(false, false, true)
+                ;
 
-            if (PRINT_REPORT) {
-                builder.withStatistics();
-                //.withTrackEvaluations();
-            }
+        if (PRINT_REPORT) {
+            builder.withStatistics();
+            //.withTrackEvaluations();
+        }
 
-            return builder.build();
-        };
+        return builder.build();
     }
+
 }

@@ -22,14 +22,14 @@ public class PgnSearchRequest extends SearchRequest {
     private PGN pgn;
 
     @Override
-    public SearchResponse call()  {
+    public SearchResponse call() {
         log.info("[{}] Running PGN search={}", sessionId, pgn.toString());
 
         PgnSearch pgnSearch = new PgnSearch();
 
         SearchSupplier searchSupplier = new SearchSupplier();
 
-        List<EpdSearchResult> epdSearchResults = pgnSearch.run(searchSupplier, pgn);
+        List<EpdSearchResult> epdSearchResults = pgnSearch.run(searchSupplier.get(), pgn);
 
         log.info("[{}] Completed PGN search entries={}", sessionId, epdSearchResults.size());
 

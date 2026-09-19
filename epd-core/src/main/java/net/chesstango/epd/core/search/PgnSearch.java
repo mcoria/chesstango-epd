@@ -11,12 +11,9 @@ import net.chesstango.gardel.fen.FEN;
 import net.chesstango.gardel.move.SANDecoder;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
-import net.chesstango.search.SearchResult;
-import net.chesstango.search.visitors.SetMaxDepthVisitor;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * @author Mauricio Coria
@@ -24,69 +21,57 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 @Slf4j
 public class PgnSearch {
+    private final EpdSearch epdSearch;
+
     private Color playingColor;
     private int searchFrom;
     private int searchTo;
     private int depth;
     private Game game;
 
-    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, PGN pgn) {
-
-        readParameters(pgn);
-
-        List<EpdSearchResult> epdSearchResults = new LinkedList<>();
-
-        try {
-            Search search = searchSupplier.get();
-
-            // Resetting search object before using it
-            search.reset();
-
-            SANDecoder<Move> sanDecoder = new SANDecoder<>(new TangoMoveSupplier(game));
-
-            pgn.toEPD().forEach(epd -> {
-                if (game.getState().getStatus().isInProgress()) {
-
-                    String suppliedMoveStr = epd.getSuppliedMoveStr();
-
-                    Move move = sanDecoder.decode(suppliedMoveStr, game.toFEN());
-
-                    if (move != null) {
-
-                        if (playingColor.equals(game.getPosition().getCurrentTurn()) &&
-                                searchFrom <= Integer.parseInt(epd.getFullMoveClock()) &&
-                                Integer.parseInt(epd.getFullMoveClock()) <= searchTo) {
-
-                            EpdSearchResult pgnSearchResult = search(search, epd);
-
-                            epdSearchResults.add(pgnSearchResult);
-
-                        }
-
-                        move.executeMove();
-                    } else {
-                        throw new RuntimeException(String.format("[%s] %s is not in the list of legal moves for %s", pgn.getEvent(), suppliedMoveStr, game.toFEN().toString()));
-                    }
-                }
-            });
-
-
-        } catch (RuntimeException e) {
-            log.error("Error processing: {}", pgn);
-            throw e;
-        }
-
-        return epdSearchResults;
+    public PgnSearch() {
+        epdSearch = new EpdSearch();
     }
 
-    EpdSearchResult search(Search search, EPD epd) {
-        search.accept(new SetMaxDepthVisitor(depth));
+    public List<EpdSearchResult> run(Search search, PGN pgn) {
 
-        SearchResult searchResult = search.startSearch(game);
+        // Read parameters
+        readParameters(pgn);
 
-        searchResult.setId(epd.getId());
+        // Set depth
+        epdSearch.setDepth(depth);
 
-        return new EpdSearchResult(epd, searchResult);
+        // Resetting search object before using it
+        search.reset();
+
+        return pgnToFilteredEpd(pgn)
+                .stream()
+                .map(epd -> epdSearch.runNow(search, epd))
+                .toList();
+    }
+
+    List<EPD> pgnToFilteredEpd(PGN pgn) {
+        List<EPD> epdList = new ArrayList<>();
+        SANDecoder<Move> sanDecoder = new SANDecoder<>(new TangoMoveSupplier(game));
+        pgn
+                .toEPD()
+                .forEach(epd -> {
+                    if (game.getState().getStatus().isInProgress()) {
+                        String suppliedMoveStr = epd.getSuppliedMoveStr();
+                        Move move = sanDecoder.decode(suppliedMoveStr, game.toFEN());
+                        if (move != null) {
+                            if (playingColor.equals(game.getPosition().getCurrentTurn()) &&
+                                    searchFrom <= Integer.parseInt(epd.getFullMoveClock()) &&
+                                    Integer.parseInt(epd.getFullMoveClock()) <= searchTo) {
+                                epdList.add(epd);
+                            }
+                            move.executeMove();
+                        } else {
+                            throw new RuntimeException(String.format("[%s] %s is not in the list of legal moves for %s", pgn.getEvent(), suppliedMoveStr, game.toFEN().toString()));
+                        }
+                    }
+                });
+        return epdList;
     }
 
     void readParameters(PGN pgn) {

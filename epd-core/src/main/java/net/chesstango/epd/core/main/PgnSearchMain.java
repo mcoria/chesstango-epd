@@ -6,6 +6,7 @@ import net.chesstango.epd.core.search.PgnSearch;
 import net.chesstango.epd.core.search.SearchSupplier;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.gardel.pgn.PGNDecoder;
+import net.chesstango.search.Search;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -73,7 +74,6 @@ public class PgnSearchMain implements Runnable {
     }
 
     private final List<PGN> pgnList;
-
     private final SearchReportSaver searchReportSaver;
     private final SearchSupplier searchSupplier;
 
@@ -87,10 +87,12 @@ public class PgnSearchMain implements Runnable {
     public void run() {
         PgnSearch epdSearch = new PgnSearch();
 
+        Search search = searchSupplier.get();
+
         for (PGN pgn : pgnList) {
             String suiteName = pgn.getEvent();
 
-            List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
+            List<EpdSearchResult> epdSearchResults = epdSearch.run(search, pgn);
 
             searchReportSaver.accept(suiteName, epdSearchResults);
         }
