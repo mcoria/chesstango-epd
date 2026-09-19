@@ -4,29 +4,28 @@ import net.chesstango.epd.core.report.EpdAgregateReport;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
-import net.chesstango.search.builders.AlphaBetaBuilder;
 import net.chesstango.search.alphabeta.debug.DebugNodeTrap;
+import net.chesstango.search.builders.AlphaBetaBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 
 /**
  * @author Mauricio Coria
  */
-public class PgnSearchTest {
+public class EpdSearchSerialTest {
     private static final boolean PRINT_REPORT = false;
-    private static PgnSearch pgnSearch;
+    private static EpdSearchSerial epdSearchSerial;
     private static DebugNodeTrap debugNodeTrap;
     private List<EpdSearchResult> epdSearchResult;
 
     @BeforeAll
     public static void setup() {
-        pgnSearch = new PgnSearch();
+        epdSearchSerial = new EpdSearchSerial();
     }
 
     @AfterEach
@@ -50,7 +49,7 @@ public class PgnSearchTest {
                 [Result "0-1"]
                 [Termination "normal"]
                 [SearchRange "1:74"]
-                [SearchDepth "5"]
+                [SearchDepth "2"]
                 
                 1. Nf3 Nf6 2. d4 d5 3. e3 Bg4 4. Be2 Bxf3 5. Bxf3 e6
                 6. Nc3 Nc6 7. O-O Rc8 8. h3 Bd6 9. e4 dxe4 10. Bxe4 Nxe4
@@ -69,41 +68,37 @@ public class PgnSearchTest {
                 71. Kc1 e1=Q+ 72. Kb2 Qd2+ 73. Kb1 Qc2+ 74. Ka1 Qc1# 0-1
                 """);
 
-        epdSearchResult = pgnSearch.run(buildSearchMove(Evaluator.createInstance()), pgn);
+        PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
+
+        EpdSearch epdSearch = new EpdSearch();
+        epdSearch.setDepth(pgnSearchParams.getDepth());
+
+        EpdSearchSerial epdSearchSerial = new EpdSearchSerial();
+        epdSearchSerial.setSearch(buildSearchMove(Evaluator.createInstance()));
+        epdSearchSerial.setEpdSearch(epdSearch);
+
+        epdSearchResult = epdSearchSerial.run(pgnSearchParams.getEPDs());
     }
 
-    /*
 
-    private void trapNodeByZobristAndPrintForUT() {
-        NodeByZobrist nodeByZobrist = new NodeByZobrist()
-                .setZobristHash(0x0CE7DD3862149D3EL)
-                .setTopology(DebugNode.NodeTopology.INTERIOR)
-                .setAlpha(-61290)
-                .setBeta(-59722);
-        debugNodeTrap = new ComposedTrap(nodeByZobrist, new PrintForUnitTest());
+    private static Search buildSearchMove(Evaluator evaluator) {
+        AlphaBetaBuilder builder = AlphaBetaBuilder
+                .createDefaultBuilderInstance()
+                .withGameEvaluator(evaluator)
+
+                //.withStopProcessingCatch()
+                //.withPrintChain()
+                //.withZobristTracker()
+                //.withTrackEvaluations() // Consume demasiada memoria
+                //.withDebugSearchTree(false, false, true)
+                ;
+
+        if (PRINT_REPORT) {
+            builder.withStatistics();
+            //.withTrackEvaluations();
+        }
+
+        return builder.build();
     }
-     */
 
-
-    private static Supplier<Search> buildSearchMove(Evaluator evaluator) {
-        return () -> {
-            AlphaBetaBuilder builder = AlphaBetaBuilder
-                    .createDefaultBuilderInstance()
-                    .withGameEvaluator(evaluator)
-
-                    //.withStopProcessingCatch()
-                    //.withPrintChain()
-                    //.withZobristTracker()
-                    //.withTrackEvaluations() // Consume demasiada memoria
-                    //.withDebugSearchTree(false, false, true)
-                    ;
-
-            if (PRINT_REPORT) {
-                builder.withStatistics();
-                //.withTrackEvaluations();
-            }
-
-            return builder.build();
-        };
-    }
 }
