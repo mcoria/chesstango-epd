@@ -1,9 +1,7 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.PgnSearch;
-import net.chesstango.epd.core.search.SearchSupplier;
+import net.chesstango.epd.core.search.*;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.gardel.pgn.PGNDecoder;
 import net.chesstango.search.Search;
@@ -85,15 +83,21 @@ public class PgnSearchMain implements Runnable {
 
     @Override
     public void run() {
+        EpdSearch epdSearch = new EpdSearch();
         Search search = searchSupplier.get();
 
-        PgnSearch epdSearch = new PgnSearch();
-        epdSearch.setSearch(search);
+        EpdSearchSerial epdSearchSerial = new EpdSearchSerial();
+        epdSearchSerial.setSearch(search);
+        epdSearchSerial.setEpdSearch(epdSearch);
 
         for (PGN pgn : pgnList) {
             String suiteName = pgn.getEvent();
 
-            List<EpdSearchResult> epdSearchResults = epdSearch.run(pgn);
+            PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
+
+            epdSearch.setDepth(pgnSearchParams.getDepth());
+
+            List<EpdSearchResult> epdSearchResults = epdSearchSerial.run(pgnSearchParams.getEPDs());
 
             searchReportSaver.accept(suiteName, epdSearchResults);
         }

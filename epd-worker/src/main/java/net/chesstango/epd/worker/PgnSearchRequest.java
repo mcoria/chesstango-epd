@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.PgnSearch;
+import net.chesstango.epd.core.search.EpdSearchSerial;
+import net.chesstango.epd.core.search.PgnSearchParams;
 import net.chesstango.gardel.pgn.PGN;
 
 import java.util.List;
@@ -20,18 +22,25 @@ import java.util.List;
 public class PgnSearchRequest extends SearchRequest {
     private PGN pgn;
 
-    private transient PgnSearch pgnSearch;
+    private transient EpdSearchSerial epdSearchSerial;
 
     @Override
     public void accept(WorkerContext workerContext) {
-        pgnSearch = workerContext.getPgnSearch();
+        epdSearchSerial = workerContext.getEpdSearchSerial();
     }
 
     @Override
     public SearchResponse call() {
         log.info("[{}] Running PGN search={}", sessionId, pgn.toString());
 
-        List<EpdSearchResult> epdSearchResults = pgnSearch.run(pgn);
+        PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
+
+        EpdSearch epdSearch = new EpdSearch();
+        epdSearch.setDepth(pgnSearchParams.getDepth());
+
+        epdSearchSerial.setEpdSearch(epdSearch);
+
+        List<EpdSearchResult> epdSearchResults = epdSearchSerial.run(pgnSearchParams.getEPDs());
 
         log.info("[{}] Completed PGN search entries={}", sessionId, epdSearchResults.size());
 
