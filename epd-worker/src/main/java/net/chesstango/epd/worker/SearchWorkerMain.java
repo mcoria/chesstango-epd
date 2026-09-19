@@ -18,12 +18,14 @@ public class SearchWorkerMain implements Runnable {
     }
 
     private final String rabbitHost;
+    private final WorkerContext workerContext;
 
     public SearchWorkerMain(String rabbitHost) {
         if (rabbitHost == null) {
             throw new IllegalArgumentException("rabbitHost and enginesCatalog must be provided");
         }
         this.rabbitHost = rabbitHost;
+        this.workerContext = new WorkerContext();
     }
 
     @Override
@@ -52,9 +54,14 @@ public class SearchWorkerMain implements Runnable {
 
             do {
 
-                SearchRequest request = requestConsumer.readMessage();
+                SearchRequest request = requestConsumer.readRequest();
 
                 log.info("[{}] Received SearchRequest: {}", request.getSessionId(), request.getSearchId());
+
+                /**
+                 * Bind context before processing request
+                 */
+                request.accept(workerContext);
 
                 SearchResponse response = request.call();
 

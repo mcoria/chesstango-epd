@@ -1,5 +1,6 @@
 package net.chesstango.epd.core.search;
 
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.board.Color;
@@ -21,19 +22,20 @@ import java.util.List;
 @Accessors(chain = true)
 @Slf4j
 public class PgnSearch {
-    private final EpdSearch epdSearch;
-
     private Color playingColor;
     private int searchFrom;
     private int searchTo;
     private int depth;
     private Game game;
 
-    public PgnSearch() {
-        epdSearch = new EpdSearch();
-    }
 
-    public List<EpdSearchResult> run(Search search, PGN pgn) {
+    @Setter
+    private EpdSearch epdSearch;
+
+    @Setter
+    private Search search;
+
+    public List<EpdSearchResult> run(PGN pgn) {
 
         // Read parameters
         readParameters(pgn);

@@ -7,12 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.search.EpdSearch;
 import net.chesstango.epd.core.search.EpdSearchParallel;
 import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.SearchSupplier;
 import net.chesstango.gardel.epd.EPD;
 
 import java.io.Serial;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
@@ -22,18 +20,20 @@ import java.util.stream.Stream;
 @Setter
 @Slf4j
 public class EpdSearchRequest extends SearchRequest {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
     private int depth;
     private int timeOut;
 
     private List<EPD> epdList;
 
+    private transient EpdSearchParallel epdSearchParallel;
 
     @Override
-    public SearchResponse call()  {
+    public void accept(WorkerContext workerContext) {
+        epdSearchParallel = workerContext.getEpdSearchParallel();
+    }
+
+    @Override
+    public SearchResponse call() {
         log.info("[{}] Running EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 
         EpdSearch epdSearch = new EpdSearch();
@@ -42,13 +42,9 @@ public class EpdSearchRequest extends SearchRequest {
             epdSearch.setTimeOut(timeOut);
         }
 
-        EpdSearchParallel epdSearchParallel = new EpdSearchParallel(epdSearch);
+        epdSearchParallel.setEpdSearch(epdSearch);
 
-        SearchSupplier searchSupplier = new SearchSupplier();
-
-        Stream<EPD> epdStream = epdList.stream();
-
-        List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(searchSupplier, epdStream);
+        List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(epdList);
 
         log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 
@@ -57,4 +53,5 @@ public class EpdSearchRequest extends SearchRequest {
                 .setSessionId(sessionId)
                 .setSearchId(getSearchId());
     }
+
 }

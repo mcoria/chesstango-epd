@@ -90,7 +90,9 @@ public class EpdSearchMain implements Runnable {
             epdSearch.setTimeOut(timeOut);
         }
 
-        EpdSearchParallel epdSearchParallel = new EpdSearchParallel(epdSearch);
+        EpdSearchParallel epdSearchParallel = new EpdSearchParallel();
+        epdSearchParallel.setEpdSearch(epdSearch);
+        epdSearchParallel.setSearchSupplier(searchSupplier);
 
         for (Path epdFile : epdFiles) {
             try {
@@ -98,7 +100,7 @@ public class EpdSearchMain implements Runnable {
 
                 Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
 
-                List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(searchSupplier, edpEntries);
+                List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(edpEntries.toList());
 
                 searchReportSaver.accept(suiteName, epdSearchResults);
 

@@ -1,17 +1,16 @@
 package net.chesstango.epd.core.search;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.search.Search;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * @author Mauricio Coria
@@ -19,29 +18,36 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class EpdSearchParallel {
-
-    private final EpdSearch epdSearch;
     private final int availableCores;
     private final BlockingQueue<Search> searchPool;
-
     private boolean searchPoolInitialized = false;
 
-    public EpdSearchParallel(EpdSearch epdSearch) {
-        this.epdSearch = epdSearch;
+    @Setter
+    private EpdSearch epdSearch;
+
+    public EpdSearchParallel() {
         this.availableCores = Runtime.getRuntime().availableProcessors();
         this.searchPool = new LinkedBlockingDeque<>(availableCores);
     }
 
+    public synchronized void setSearchSupplier(SearchSupplier searchSupplier) {
+        if (!searchPoolInitialized) {
+            for (int i = 0; i < availableCores; i++) {
+                searchPool.add(searchSupplier.get());
+            }
+            searchPoolInitialized = true;
+        }
+    }
 
-    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
-        initSearchPool(searchSupplier);
-
-        List<EpdSearchResult> epdSearchResults = Collections.synchronizedList(new LinkedList<>());
-
-        edpEntries
-                .parallel()
-                .map(this::run)
-                .forEach(epdSearchResults::add);
+    public List<EpdSearchResult> run(List<EPD> edpEntries) {
+        List<EpdSearchResult> epdSearchResults =
+                new ArrayList<>(
+                        edpEntries
+                                .stream()
+                                .parallel()
+                                .map(this::run)
+                                .toList()
+                );
 
         if (epdSearchResults.isEmpty()) {
             throw new RuntimeException("No edp entry was processed");
@@ -50,17 +56,6 @@ public class EpdSearchParallel {
         epdSearchResults.sort(Comparator.comparing(o -> o.epd().getId()));
 
         return epdSearchResults;
-    }
-
-    void initSearchPool(Supplier<Search> searchSupplier) {
-        synchronized (this) {
-            if (!searchPoolInitialized) {
-                for (int i = 0; i < availableCores; i++) {
-                    searchPool.add(searchSupplier.get());
-                }
-                searchPoolInitialized = true;
-            }
-        }
     }
 
     EpdSearchResult run(EPD epd) {

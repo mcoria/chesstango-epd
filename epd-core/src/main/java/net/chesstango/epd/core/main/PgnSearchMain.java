@@ -85,14 +85,15 @@ public class PgnSearchMain implements Runnable {
 
     @Override
     public void run() {
-        PgnSearch epdSearch = new PgnSearch();
-
         Search search = searchSupplier.get();
+
+        PgnSearch epdSearch = new PgnSearch();
+        epdSearch.setSearch(search);
 
         for (PGN pgn : pgnList) {
             String suiteName = pgn.getEvent();
 
-            List<EpdSearchResult> epdSearchResults = epdSearch.run(search, pgn);
+            List<EpdSearchResult> epdSearchResults = epdSearch.run(pgn);
 
             searchReportSaver.accept(suiteName, epdSearchResults);
         }
