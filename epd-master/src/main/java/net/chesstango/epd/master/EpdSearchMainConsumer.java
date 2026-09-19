@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.main.Common;
 import net.chesstango.epd.core.main.SearchReportSaver;
 import net.chesstango.epd.worker.SearchResponse;
+import org.apache.commons.cli.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,10 +21,22 @@ import java.util.concurrent.ForkJoinPool;
 @Slf4j
 public class EpdSearchMainConsumer implements Runnable {
 
+    /**
+     * Parametros
+     * -h RabbitMQ host
+     * -i Directorio donde se almacenan los resultados
+     * <p>
+     * Ejemplo:
+     * -h localhost -i C:\java\projects\chess\chess-utils\testing\EPD\database
+     *
+     * @param args
+     */
     public static void main(String[] args) throws Exception {
-        String rabbitHost = args[0];
+        CommandLine parsedArgs = parseArguments(args);
 
-        String directory = args[1];
+        String rabbitHost = parsedArgs.getOptionValue('h');
+
+        String directory = parsedArgs.getOptionValue('i');
 
         System.out.printf("directory={%s}\n", directory);
 
@@ -33,6 +46,28 @@ public class EpdSearchMainConsumer implements Runnable {
         }
 
         new EpdSearchMainConsumer(rabbitHost, suiteDirectory).run();
+    }
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option rabbitHostOpt = Option.builder("h").argName("rabbitHost").hasArg().required().desc("RabbitMQ host").build();
+        options.addOption(rabbitHostOpt);
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where results are stored").build();
+        options.addOption(directoryOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            // oops, something went wrong
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+            new HelpFormatter().printHelp(EpdSearchMainConsumer.class.getName(), options);
+            System.exit(-1);
+        }
+        return null;
     }
 
     private final String rabbitHost;
