@@ -1,10 +1,7 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.search.EpdSearch;
-import net.chesstango.epd.core.search.EpdSearchParallel;
-import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.SearchSupplier;
+import net.chesstango.epd.core.search.*;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
 import org.apache.commons.cli.*;
@@ -13,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static net.chesstango.epd.core.main.Common.createSessionId;
@@ -22,7 +20,7 @@ import static net.chesstango.epd.core.main.Common.createSessionId;
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchMain implements Runnable {
+public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> {
     /**
      * Parametros
      * -d Depth
@@ -47,26 +45,64 @@ public class EpdSearchMain implements Runnable {
 
         int timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : 0;
 
-        String directory = parsedArgs.getOptionValue('i');
+        String suiteDirectoryStr = parsedArgs.getOptionValue('i');
 
         String filePattern = parsedArgs.getOptionValue('f');
 
-        System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
+        log.info("depth={}; timeOut={}; directory={}; filePattern={}", depth, timeOut, suiteDirectoryStr, filePattern);
 
-        Path suiteDirectory = Path.of(directory);
+        Path suiteDirectory = Path.of(suiteDirectoryStr);
         if (!Files.isDirectory(suiteDirectory)) {
-            throw new RuntimeException("Directory not found: " + directory);
+            throw new RuntimeException("Directory not found: " + suiteDirectoryStr);
         }
-
-        List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
 
         String sessionId = createSessionId(depth);
 
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, sessionId);
 
-        new EpdSearchMain(sessionId, sessionDirectory, epdFiles, depth, timeOut)
-                .run();
+        EpdSearchMain epdSearchMain = new EpdSearchMain(depth, timeOut);
+
+        SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
+
+        List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
+
+        epdFiles.stream()
+                .map(epdSearchMain)
+                .forEach(searchReportSaver);
+
     }
+
+    private final EpdSearchParallel epdSearchParallel;
+
+    public EpdSearchMain(int depth, int timeOut) {
+        EpdSearch epdSearch = new EpdSearch();
+        epdSearch.setDepth(depth);
+        if (timeOut > 0) {
+            epdSearch.setTimeOut(timeOut);
+        }
+
+        this.epdSearchParallel = new EpdSearchParallel();
+        this.epdSearchParallel.setEpdSearch(epdSearch);
+        this.epdSearchParallel.setSearchSupplier(new SearchSupplier());
+    }
+
+    @Override
+    public EpdSearchResultCollection apply(Path epdFile) {
+        EPDDecoder reader = new EPDDecoder();
+        try {
+            String suiteName = epdFile.getFileName().toString();
+
+            Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
+
+            List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(edpEntries.toList());
+
+            return new EpdSearchResultCollection(suiteName, epdSearchResults);
+        } catch (IOException ioException) {
+            log.error("Error reading file: {}", epdFile, ioException);
+            throw new RuntimeException(ioException);
+        }
+    }
+
 
     private static CommandLine parseArguments(String[] args) {
         final Options options = new Options();
@@ -94,50 +130,5 @@ public class EpdSearchMain implements Runnable {
             System.exit(-1);
         }
         return null;
-    }
-
-    private final List<Path> epdFiles;
-    private final int depth;
-    private final int timeOut;
-
-    private final EPDDecoder reader;
-    private final SearchSupplier searchSupplier;
-    private final SearchReportSaver searchReportSaver;
-
-    public EpdSearchMain(String sessionId, Path sessionDirectory, List<Path> epdFiles, int depth, int timeOut) {
-        this.epdFiles = epdFiles;
-        this.depth = depth;
-        this.timeOut = timeOut;
-        this.reader = new EPDDecoder();
-        this.searchSupplier = new SearchSupplier();
-        this.searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
-    }
-
-    @Override
-    public void run() {
-        EpdSearch epdSearch = new EpdSearch();
-        epdSearch.setDepth(depth);
-        if (timeOut > 0) {
-            epdSearch.setTimeOut(timeOut);
-        }
-
-        EpdSearchParallel epdSearchParallel = new EpdSearchParallel();
-        epdSearchParallel.setEpdSearch(epdSearch);
-        epdSearchParallel.setSearchSupplier(searchSupplier);
-
-        for (Path epdFile : epdFiles) {
-            try {
-                String suiteName = epdFile.getFileName().toString();
-
-                Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
-
-                List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(edpEntries.toList());
-
-                searchReportSaver.accept(suiteName, epdSearchResults);
-
-            } catch (IOException ioException) {
-                log.error("Error reading file: {}", epdFile, ioException);
-            }
-        }
     }
 }
