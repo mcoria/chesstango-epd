@@ -35,11 +35,6 @@ public class EpdSearch {
     @Getter(AccessLevel.PACKAGE)
     private Integer timeOut;
 
-    private final EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
-
-    public List<EpdSearchResult> runParallel(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
-        return epdSearchParallel.run(searchSupplier, edpEntries);
-    }
 
     public EpdSearchResult run(Search search, EPD epd) {
         return timeOut == null ? runNow(search, epd) : runTimeOut(search, epd);

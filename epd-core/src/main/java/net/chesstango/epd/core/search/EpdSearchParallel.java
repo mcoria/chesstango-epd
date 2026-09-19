@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 
 @Slf4j
-class EpdSearchParallel {
+public class EpdSearchParallel {
 
     private final EpdSearch epdSearch;
     private final int availableCores;
@@ -26,14 +26,14 @@ class EpdSearchParallel {
 
     private boolean searchPoolInitialized = false;
 
-    EpdSearchParallel(EpdSearch epdSearch) {
+    public EpdSearchParallel(EpdSearch epdSearch) {
         this.epdSearch = epdSearch;
         this.availableCores = Runtime.getRuntime().availableProcessors();
         this.searchPool = new LinkedBlockingDeque<>(availableCores);
     }
 
 
-    List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
+    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
         initSearchPool(searchSupplier);
 
         List<EpdSearchResult> epdSearchResults = Collections.synchronizedList(new LinkedList<>());
@@ -86,5 +86,4 @@ class EpdSearchParallel {
             throw new RuntimeException(e);
         }
     }
-
 }

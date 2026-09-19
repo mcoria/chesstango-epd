@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.search.EpdSearch;
+import net.chesstango.epd.core.search.EpdSearchParallel;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.SearchSupplier;
 import net.chesstango.gardel.epd.EPD;
@@ -35,18 +36,19 @@ public class EpdSearchRequest extends SearchRequest {
     public SearchResponse call()  {
         log.info("[{}] Running EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 
-        EpdSearch epdSearch = new EpdSearch()
-                .setDepth(depth);
-
+        EpdSearch epdSearch = new EpdSearch();
+        epdSearch.setDepth(depth);
         if (timeOut > 0) {
             epdSearch.setTimeOut(timeOut);
         }
+
+        EpdSearchParallel epdSearchParallel = new EpdSearchParallel(epdSearch);
 
         SearchSupplier searchSupplier = new SearchSupplier();
 
         Stream<EPD> epdStream = epdList.stream();
 
-        List<EpdSearchResult> epdSearchResults = epdSearch.runParallel(searchSupplier, epdStream);
+        List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(searchSupplier, epdStream);
 
         log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 
