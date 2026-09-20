@@ -17,9 +17,6 @@ import java.util.List;
 public class SearchResponse implements Serializable {
     public final static String EPD_RESPONSES_QUEUE_NAME = "epd_responses";
 
-    @Serial
-    private static final long serialVersionUID = 1L;
-
     private String sessionId;
     private String searchId;
 

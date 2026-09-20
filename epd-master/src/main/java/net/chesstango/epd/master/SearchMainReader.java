@@ -2,6 +2,7 @@ package net.chesstango.epd.master;
 
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.main.SearchReportSaver;
+import net.chesstango.epd.core.search.EpdSearchResultCollection;
 import net.chesstango.epd.worker.SearchResponse;
 
 import java.io.File;
@@ -41,9 +42,9 @@ public class SearchMainReader {
                             .parallel()
                             .map(SearchMainReader::readEpdSearchResponse)
                             .filter(Objects::nonNull)
-                            .forEach(epdSearchResponse -> {
-                                SearchReportSaver searchReportSaver = new SearchReportSaver(epdSearchResponse.getSessionId(), sessionDirectory);
-                                searchReportSaver.accept(epdSearchResponse.getSearchId(), epdSearchResponse.getEpdSearchResults());
+                            .forEach(searchResponse -> {
+                                SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory);
+                                searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
                             });
                 });
 

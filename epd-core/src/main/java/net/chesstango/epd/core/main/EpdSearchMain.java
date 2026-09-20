@@ -56,16 +56,26 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
             throw new RuntimeException("Directory not found: " + suiteDirectoryStr);
         }
 
+        /**
+         * Input
+         */
         String sessionId = createSessionId(depth);
 
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, sessionId);
 
+        List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
+
+
+        /**
+         * Processors
+         */
         EpdSearchMain epdSearchMain = new EpdSearchMain(depth, timeOut);
 
         SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
 
-        List<Path> epdFiles = Common.listEpdFiles(suiteDirectory, filePattern);
-
+        /**
+         * Execute
+         */
         epdFiles.stream()
                 .map(epdSearchMain)
                 .forEach(searchReportSaver);
@@ -88,11 +98,11 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
 
     @Override
     public EpdSearchResultCollection apply(Path epdFile) {
-        EPDDecoder reader = new EPDDecoder();
+        EPDDecoder epdDecoder = new EPDDecoder();
         try {
             String suiteName = epdFile.getFileName().toString();
 
-            Stream<EPD> edpEntries = reader.decodeEPDs(epdFile);
+            Stream<EPD> edpEntries = epdDecoder.decodeEPDs(epdFile);
 
             List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(edpEntries.toList());
 
