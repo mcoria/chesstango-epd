@@ -3,19 +3,20 @@ package net.chesstango.epd.core.main;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.*;
 import net.chesstango.epd.core.search.EpdSearchResult;
+import net.chesstango.epd.core.search.EpdSearchResultCollection;
 import net.chesstango.reports.Report;
 import net.chesstango.reports.ReportToFile;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @author Mauricio Coria
  */
 @Slf4j
-public class SearchReportSaver implements BiConsumer<String, List<EpdSearchResult>> {
+public class SearchReportSaver implements Consumer<EpdSearchResultCollection> {
 
     private final String sessionId;
     private final Path directory;
@@ -26,7 +27,9 @@ public class SearchReportSaver implements BiConsumer<String, List<EpdSearchResul
     }
 
     @Override
-    public void accept(String suiteName, List<EpdSearchResult> epdSearchResults) {
+    public void accept(EpdSearchResultCollection epdSearchResultCollection) {
+        String suiteName = epdSearchResultCollection.suiteName();
+        List<EpdSearchResult> epdSearchResults = epdSearchResultCollection.epdSearchResults();
         try {
             EpdAgregateModel epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults);
 

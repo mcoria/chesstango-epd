@@ -11,6 +11,7 @@ module net.chesstango.epd.core {
     requires net.chesstango.engine;
     requires net.chesstango.reports;
 
+    requires org.apache.commons.cli;
     requires org.slf4j;
     requires com.fasterxml.jackson.annotation;
     requires tools.jackson.databind;
