@@ -4,13 +4,14 @@ package net.chesstango.epd.core.report;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import net.chesstango.board.moves.Move;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultSuccess;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
 import net.chesstango.reports.search.evaluation.EvaluationModel;
-import net.chesstango.reports.search.nodes.visited.VisitedModel;
 import net.chesstango.reports.search.nodes.types.NodesTypesModel;
+import net.chesstango.reports.search.nodes.visited.VisitedModel;
 import net.chesstango.reports.search.pv.PrincipalVariationModel;
 import net.chesstango.reports.search.transposition.TranspositionModel;
 import net.chesstango.search.SearchResult;
@@ -213,37 +214,42 @@ public class SummaryModel implements Model<EpdAgregateModel> {
         Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap = new HashMap<>();
         principalVariationReportModel.moveDetails.forEach(pvMoveDetail -> pvMap.put(pvMoveDetail.id, pvMoveDetail));
 
-        epdSearchResults
+        searchDetailList = epdSearchResults
                 .stream()
-                .map(epdSearchResult -> {
-                    SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
-                    SearchResult searchResult = epdSearchResult.getSearchResult();
-                    PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.getEpd().getId());
-
-                    searchSummaryModeDetail.id = epdSearchResult.getEpd().getId();
-
-                    searchSummaryModeDetail.move = epdSearchResult.getBestMove();
-                    searchSummaryModeDetail.moveSuccess = epdSearchResult.isMoveSuccess();
-
-                    searchSummaryModeDetail.evaluation = epdSearchResult.getBestEvaluation();
-                    searchSummaryModeDetail.evaluationSuccess = epdSearchResult.isEvaluationSuccess();
-
-                    searchSummaryModeDetail.depthMoves = searchResult
-                            .getSearchResultByDepths()
-                            .stream()
-                            .map(SearchResultByDepth::getBestMove)
-                            .map(Move::coordinateEncoding)
-                            .toList()
-                            .toString();
-
-                    searchSummaryModeDetail.pv = pvDetail.principalVariation;
-                    searchSummaryModeDetail.pvComplete = pvDetail.pvComplete;
-
-                    return searchSummaryModeDetail;
-                })
-                .forEach(this.searchDetailList::add);
+                .map(epdSearchResult -> toSearchSummaryModeDetail(epdSearchResult, pvMap))
+                .toList();
 
 
         return this;
     }
+
+    SearchSummaryModeDetail toSearchSummaryModeDetail(EpdSearchResult epdSearchResult, Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap) {
+        SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
+        SearchResult searchResult = epdSearchResult.searchResult();
+        PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.epd().getId());
+
+        searchSummaryModeDetail.id = epdSearchResult.epd().getId();
+
+        EpdSearchResultSuccess epdSearchResultSuccess = EpdSearchResultSuccess.from(epdSearchResult);
+
+        searchSummaryModeDetail.move = epdSearchResultSuccess.getBestMove();
+        searchSummaryModeDetail.moveSuccess = epdSearchResultSuccess.isMoveSuccess();
+
+        searchSummaryModeDetail.evaluation = epdSearchResultSuccess.getBestEvaluation();
+        searchSummaryModeDetail.evaluationSuccess = epdSearchResultSuccess.isEvaluationSuccess();
+
+        searchSummaryModeDetail.depthMoves = searchResult
+                .getSearchResultByDepths()
+                .stream()
+                .map(SearchResultByDepth::getBestMove)
+                .map(Move::coordinateEncoding)
+                .toList()
+                .toString();
+
+        searchSummaryModeDetail.pv = pvDetail.principalVariation;
+        searchSummaryModeDetail.pvComplete = pvDetail.pvComplete;
+
+        return searchSummaryModeDetail;
+    }
+
 }

@@ -6,6 +6,7 @@ import net.chesstango.epd.worker.EpdSearchRequest;
 import net.chesstango.epd.worker.SearchRequest;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
+import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,13 +28,13 @@ import static net.chesstango.epd.core.main.Common.listEpdFiles;
 public class EpdSearchMainProducer implements Runnable {
     /**
      * Parametros
-     * 1. Depth
-     * 2. TimeOut in milliseconds
-     * 3. Directorio donde se encuentran los archivos de posicion
-     * 4. Filtro de archivos
+     * -d Depth
+     * -t TimeOut in milliseconds
+     * -i Directorio donde se encuentran los archivos de posicion
+     * -f Filtro de archivos
      * <p>
      * Ejemplo:
-     * 4 500 C:\java\projects\chess\chess-utils\testing\EPD\database "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * -d 4 -t 500 -i C:\java\projects\chess\chess-utils\testing\EPD\database -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * <p>
      * Ejecutar VM con`
@@ -43,13 +44,15 @@ public class EpdSearchMainProducer implements Runnable {
      * @param args
      */
     public static void main(String[] args) {
-        int depth = Integer.parseInt(args[0]);
+        CommandLine parsedArgs = parseArguments(args);
 
-        int timeOut = Integer.parseInt(args[1]);
+        int depth = Integer.parseInt(parsedArgs.getOptionValue('d'));
 
-        String directory = args[2];
+        int timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : 0;
 
-        String filePattern = args[3];
+        String directory = parsedArgs.getOptionValue('i');
+
+        String filePattern = parsedArgs.getOptionValue('f');
 
         System.out.printf("depth={%d}; timeOut={%d}; directory={%s}; filePattern={%s}%n", depth, timeOut, directory, filePattern);
 
@@ -63,6 +66,34 @@ public class EpdSearchMainProducer implements Runnable {
         List<Path> epdFiles = listEpdFiles(suiteDirectory, filePattern);
 
         new EpdSearchMainProducer(sessionId, epdFiles, depth, timeOut).run();
+    }
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option depthOpt = Option.builder("d").argName("depth").hasArg().required().desc("search depth").build();
+        options.addOption(depthOpt);
+
+        Option timeOutOpt = Option.builder("t").argName("timeOut").hasArg().desc("timeout in milliseconds").build();
+        options.addOption(timeOutOpt);
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where epd files are located").build();
+        options.addOption(directoryOpt);
+
+        Option filePatternOpt = Option.builder("f").argName("filePattern").hasArg().required().desc("epd file name pattern").build();
+        options.addOption(filePatternOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            // oops, something went wrong
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+            new HelpFormatter().printHelp(EpdSearchMainProducer.class.getName(), options);
+            System.exit(-1);
+        }
+        return null;
     }
 
     private final String rabbitHost;

@@ -1,16 +1,17 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.epd.core.search.EpdSearchResult;
-import net.chesstango.epd.core.search.PgnSearch;
-import net.chesstango.epd.core.search.SearchSupplier;
+import net.chesstango.epd.core.search.*;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.gardel.pgn.PGNDecoder;
+import net.chesstango.search.Search;
+import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static net.chesstango.epd.core.main.Common.createSessionId;
@@ -20,13 +21,14 @@ import static net.chesstango.epd.core.main.Common.createSessionId;
  * @author Mauricio Coria
  */
 @Slf4j
-public class PgnSearchMain implements Runnable {
+public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
     /**
      * Parametros
-     * 1. Archivo PGN
+     * -i Directorio donde se encuentra el archivo PGN
+     * -f Archivo PGN
      * <p>
      * Ejemplo:
-     * C:\java\projects\chess\chess-utils\testing\EPD\database games.pgn
+     * -i C:\java\projects\chess\chess-utils\testing\EPD\database -f games.pgn
      *
      * <p>
      * Ejecutar VM con
@@ -36,63 +38,99 @@ public class PgnSearchMain implements Runnable {
      * @param args
      */
     public static void main(String[] args) {
-        String directory = args[0];
+        CommandLine parsedArgs = parseArguments(args);
 
-        String fileName = args[1];
+        String directory = parsedArgs.getOptionValue('i');
 
-        System.out.printf("directory={%s}; file={%s}%n", directory, fileName);
+        String fileName = parsedArgs.getOptionValue('f');
+
+        log.info("directory={}; file={}", directory, fileName);
 
         Path directoryPath = Path.of(directory);
-
         if (!Files.isDirectory(directoryPath)) {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
         Path pgnFilePath = directoryPath.resolve(fileName);
-
         if (!Files.exists(pgnFilePath)) {
             throw new RuntimeException("File not found: " + fileName);
         }
 
+        /**
+         * Input
+         */
         String sessionId = createSessionId(fileName);
 
         Path sessionDirectory = Common.createSessionDirectory(directoryPath, sessionId);
 
-        PGNDecoder pgnDecoder = new PGNDecoder();
+        /**
+         * Processors
+         */
+        PgnSearchMain pgnSearchMain = new PgnSearchMain();
 
-        try (Stream<PGN> pgnStream = pgnDecoder.decodePGNs(pgnFilePath)) {
+        SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
 
-            List<PGN> pgnList = pgnStream.toList();
 
-            new PgnSearchMain(sessionId, sessionDirectory, pgnList)
-                    .run();
-
+        /**
+         * Execute
+         */
+        try (Stream<PGN> pgnStream = new PGNDecoder().decodePGNs(pgnFilePath)) {
+            pgnStream
+                    .map(pgnSearchMain)
+                    .forEach(searchReportSaver);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private final List<PGN> pgnList;
+    private final EpdSearchSerial epdSearchSerial;
+    private final EpdSearch epdSearch;
 
-    private final SearchReportSaver searchReportSaver;
-    private final SearchSupplier searchSupplier;
+    public PgnSearchMain() {
+        SearchSupplier searchSupplier = new SearchSupplier();
 
-    public PgnSearchMain(String sessionId, Path sessionDirectory, List<PGN> pgnList) {
-        this.pgnList = pgnList;
-        this.searchSupplier = new SearchSupplier();
-        this.searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
+        epdSearch = new EpdSearch();
+        Search search = searchSupplier.get();
+
+        epdSearchSerial = new EpdSearchSerial();
+        epdSearchSerial.setSearch(search);
+        epdSearchSerial.setEpdSearch(epdSearch);
+
     }
 
     @Override
-    public void run() {
-        PgnSearch epdSearch = new PgnSearch();
+    public EpdSearchResultCollection apply(PGN pgn) {
+        String suiteName = pgn.getEvent();
 
-        for (PGN pgn : pgnList) {
-            String suiteName = pgn.getEvent();
+        PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
 
-            List<EpdSearchResult> epdSearchResults = epdSearch.run(searchSupplier, pgn);
+        epdSearch.setDepth(pgnSearchParams.getDepth());
 
-            searchReportSaver.accept(suiteName, epdSearchResults);
+        List<EpdSearchResult> epdSearchResults = epdSearchSerial.run(pgnSearchParams.getEPDs());
+
+        return new EpdSearchResultCollection(suiteName, epdSearchResults);
+    }
+
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where pgn file is located").build();
+        options.addOption(directoryOpt);
+
+        Option fileNameOpt = Option.builder("f").argName("fileName").hasArg().required().desc("pgn file name").build();
+        options.addOption(fileNameOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            // oops, something went wrong
+            log.error("Parsing failed.", exp);
+            new HelpFormatter().printHelp(PgnSearchMain.class.getName(), options);
+            System.exit(-1);
         }
+        return null;
     }
 }

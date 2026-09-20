@@ -4,7 +4,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.main.Common;
 import net.chesstango.epd.core.main.SearchReportSaver;
+import net.chesstango.epd.core.search.EpdSearchResultCollection;
 import net.chesstango.epd.worker.SearchResponse;
+import org.apache.commons.cli.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,12 +22,24 @@ import java.util.concurrent.ForkJoinPool;
 @Slf4j
 public class EpdSearchMainConsumer implements Runnable {
 
+    /**
+     * Parametros
+     * -h RabbitMQ host
+     * -i Directorio donde se almacenan los resultados
+     * <p>
+     * Ejemplo:
+     * -h localhost -i C:\java\projects\chess\chess-utils\testing\EPD\database
+     *
+     * @param args
+     */
     public static void main(String[] args) throws Exception {
-        String rabbitHost = args[0];
+        CommandLine parsedArgs = parseArguments(args);
 
-        String directory = args[1];
+        String rabbitHost = parsedArgs.getOptionValue('h');
 
-        System.out.printf("directory={%s}\n", directory);
+        String directory = parsedArgs.getOptionValue('i');
+
+        log.info("directory={}", directory);
 
         Path suiteDirectory = Path.of(directory);
         if (!Files.exists(suiteDirectory) || !Files.isDirectory(suiteDirectory)) {
@@ -94,7 +108,8 @@ public class EpdSearchMainConsumer implements Runnable {
 
     private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
         SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory);
-        searchReportSaver.accept(searchResponse.getSearchId(), searchResponse.getEpdSearchResults());
+
+        searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
     }
 
     private void saveResponse(Path sessionDirectory, SearchResponse searchResponse) {
@@ -110,5 +125,26 @@ public class EpdSearchMainConsumer implements Runnable {
             log.error("Failed to serialize response", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option rabbitHostOpt = Option.builder("h").argName("rabbitHost").hasArg().required().desc("RabbitMQ host").build();
+        options.addOption(rabbitHostOpt);
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where results are stored").build();
+        options.addOption(directoryOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            log.error("Parsing failed.  Reason: {}", exp.getMessage());
+            new HelpFormatter().printHelp(EpdSearchMainConsumer.class.getName(), options);
+            System.exit(-1);
+        }
+        return null;
     }
 }

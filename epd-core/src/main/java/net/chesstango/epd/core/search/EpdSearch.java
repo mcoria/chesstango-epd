@@ -10,10 +10,10 @@ import net.chesstango.gardel.epd.EPD;
 import net.chesstango.search.Search;
 import net.chesstango.search.SearchResult;
 import net.chesstango.search.visitors.SetMaxDepthVisitor;
+import net.chesstango.search.visitors.SetSearchByDepthListenerVisitor;
 
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Mauricio Coria
@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 @Accessors(chain = true)
 @Slf4j
 public class EpdSearch {
-    private final EpdSearchResultBuilder epdSearchResultBuilder = new EpdSearchResultBuilder();
 
     @Setter
     @Getter(AccessLevel.PACKAGE)
@@ -31,13 +30,22 @@ public class EpdSearch {
     @Getter(AccessLevel.PACKAGE)
     private Integer timeOut;
 
-    private final EpdSearchParallel epdSearchParallel = new EpdSearchParallel(this);
 
-    public List<EpdSearchResult> run(Supplier<Search> searchSupplier, Stream<EPD> edpEntries) {
-        return epdSearchParallel.run(searchSupplier, edpEntries);
+    public EpdSearchResult run(Search search, EPD epd) {
+        return timeOut == null ? runNow(search, epd) : runTimeOut(search, epd);
     }
 
-    EpdSearchResult run(Search search, EPD epd) {
+    EpdSearchResult runTimeOut(Search search, EPD epd) {
+        CompletableFuture<Void> stopTask = stopTask(search);
+
+        EpdSearchResult result = runNow(search, epd);
+
+        stopTask.join();
+
+        return result;
+    }
+
+    EpdSearchResult runNow(Search search, EPD epd) {
         Game game = Game.from(epd);
 
         search.accept(new SetMaxDepthVisitor(depth));
@@ -46,7 +54,26 @@ public class EpdSearch {
 
         searchResult.setId(epd.getId());
 
-        return epdSearchResultBuilder.apply(epd, searchResult);
+        return new EpdSearchResult(epd, searchResult);
+    }
+
+    private CompletableFuture<Void> stopTask(Search search) {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        search.accept(new SetSearchByDepthListenerVisitor(_ -> countDownLatch.countDown()));
+
+        return CompletableFuture.runAsync(() -> {
+            try {
+                countDownLatch.await();
+
+                Thread.sleep(timeOut * 1000L);
+
+                // Stopping search after depth 1 completes
+                search.stopSearch();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

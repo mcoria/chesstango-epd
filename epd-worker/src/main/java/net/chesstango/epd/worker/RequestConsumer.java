@@ -20,8 +20,7 @@ class RequestConsumer {
         this.channel = channel;
     }
 
-
-    public SearchRequest readMessage() throws IOException {
+    public SearchRequest readRequest() throws IOException {
         do {
             GetResponse response = channel.basicGet(EPD_REQUESTS_QUEUE_NAME, true);
             if (response != null) {

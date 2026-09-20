@@ -32,8 +32,8 @@ public class EpdRebaseModel implements Model<List<EpdSearchResult>> {
     EPD convert(EpdSearchResult epdSearchResult) {
         SANEncoder sanEncoder = new SANEncoder();
 
-        EPD epd = epdSearchResult.getEpd();
-        SearchResult searchResult = epdSearchResult.getSearchResult();
+        EPD epd = epdSearchResult.epd();
+        SearchResult searchResult = epdSearchResult.searchResult();
 
         EPD newEpd = new EPD();
         newEpd.setId(epd.getId());

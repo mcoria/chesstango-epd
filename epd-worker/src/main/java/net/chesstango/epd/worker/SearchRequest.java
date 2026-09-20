@@ -9,6 +9,7 @@ import net.chesstango.gardel.pgn.PGN;
 import java.io.*;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 @Getter
 @Setter
-public abstract class SearchRequest implements Serializable, Callable<SearchResponse> {
+public abstract class SearchRequest implements Serializable, Callable<SearchResponse>, Consumer<WorkerContext> {
     public final static String EPD_REQUESTS_QUEUE_NAME = "epd_requests";
 
     protected String sessionId;

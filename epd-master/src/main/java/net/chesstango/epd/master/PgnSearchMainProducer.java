@@ -6,6 +6,7 @@ import net.chesstango.epd.worker.PgnSearchRequest;
 import net.chesstango.epd.worker.SearchRequest;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.gardel.pgn.PGNDecoder;
+import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,10 +27,11 @@ import static net.chesstango.epd.core.main.Common.createSessionId;
 public class PgnSearchMainProducer implements Runnable {
     /**
      * Parametros
-     * 1. Archivo PGN
+     * -i Directorio donde se encuentra el archivo PGN
+     * -f Archivo PGN
      * <p>
      * Ejemplo:
-     * C:\java\projects\chess\chess-utils\testing\PGN\database depth-5.pgn
+     * -i C:\java\projects\chess\chess-utils\testing\PGN\database -f depth-5.pgn
      *
      * <p>
      * Ejecutar VM con
@@ -39,9 +41,11 @@ public class PgnSearchMainProducer implements Runnable {
      * @param args
      */
     public static void main(String[] args) {
-        String directory = args[0];
+        CommandLine parsedArgs = parseArguments(args);
 
-        String fileName = args[1];
+        String directory = parsedArgs.getOptionValue('i');
+
+        String fileName = parsedArgs.getOptionValue('f');
 
         System.out.printf("directory={%s}; file={%s}%n", directory, fileName);
 
@@ -71,6 +75,28 @@ public class PgnSearchMainProducer implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where pgn file is located").build();
+        options.addOption(directoryOpt);
+
+        Option fileNameOpt = Option.builder("f").argName("fileName").hasArg().required().desc("pgn file name").build();
+        options.addOption(fileNameOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            // oops, something went wrong
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+            new HelpFormatter().printHelp(PgnSearchMainProducer.class.getName(), options);
+            System.exit(-1);
+        }
+        return null;
     }
 
     private final String rabbitHost;
