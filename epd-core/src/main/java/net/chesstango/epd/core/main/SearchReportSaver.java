@@ -31,6 +31,7 @@ public class SearchReportSaver implements Consumer<EpdSearchResultCollection> {
         String suiteName = epdSearchResultCollection.suiteName();
         List<EpdSearchResult> epdSearchResults = epdSearchResultCollection.epdSearchResults();
         try {
+
             EpdAgregateModel epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults);
 
             CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {

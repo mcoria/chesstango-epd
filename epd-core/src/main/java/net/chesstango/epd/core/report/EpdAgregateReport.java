@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.chesstango.engine.Tango;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Report;
 import net.chesstango.reports.search.board.BoardReport;
@@ -18,6 +19,7 @@ import net.chesstango.reports.search.transposition.TranspositionReport;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.function.Function;
 
 @Setter
 @Getter
@@ -77,8 +79,10 @@ public class EpdAgregateReport implements Report {
         return this;
     }
 
-    public EpdAgregateReport withEpdSearchResults(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        this.epdAgregateModel = EpdAgregateModel.load(suiteName, epdSearchResults);
+    public EpdAgregateReport withEpdSearchResults(String suiteName,
+                                                  List<EpdSearchResult> epdSearchResults,
+                                                  Function<EpdSearchResult, EpdSearchResultInterpret> interpretFunction) {
+        this.epdAgregateModel = EpdAgregateModel.load(suiteName, epdSearchResults, interpretFunction);
         return this;
     }
 

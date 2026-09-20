@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import net.chesstango.board.moves.Move;
 import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
-import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Mauricio Coria
@@ -156,7 +156,8 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
 
     @Override
-    public SummaryModel collectStatistics(String sessionId, EpdAgregateModel input) {
+    public SummaryModel collectStatistics(String sessionId,
+                                          EpdAgregateModel input) {
         List<EpdSearchResult> epdSearchResults = input.epdSearchResults();
         EpdSearchModel epdSearchModel = input.epdSearchModel();
         VisitedModel nodesDepthModel = input.nodesVisitedModel();
@@ -217,21 +218,24 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         searchDetailList = epdSearchResults
                 .stream()
-                .map(epdSearchResult -> toSearchSummaryModeDetail(epdSearchResult, pvMap))
+                .map(epdSearchResult -> toSearchSummaryModeDetail(epdSearchResult, input.interpretFunction(), pvMap))
                 .toList();
 
 
         return this;
     }
 
-    SearchSummaryModeDetail toSearchSummaryModeDetail(EpdSearchResult epdSearchResult, Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap) {
+    SearchSummaryModeDetail toSearchSummaryModeDetail(EpdSearchResult epdSearchResult,
+                                                      Function<EpdSearchResult, EpdSearchResultInterpret> interpretFn,
+                                                      Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap) {
+
         SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
         SearchResult searchResult = epdSearchResult.searchResult();
         PrincipalVariationModel.PrincipalVariationReportModelDetail pvDetail = pvMap.get(epdSearchResult.epd().getId());
 
         searchSummaryModeDetail.id = epdSearchResult.epd().getId();
 
-        EpdSearchResultInterpret epdSearchResultInterpret = EpdSearchResultCompare.from(epdSearchResult);
+        EpdSearchResultInterpret epdSearchResultInterpret = interpretFn.apply(epdSearchResult);
 
         searchSummaryModeDetail.move = epdSearchResultInterpret.getBestMove();
         searchSummaryModeDetail.moveSuccess = epdSearchResultInterpret.isMoveSuccess();

@@ -36,24 +36,4 @@ public class SummaryReport implements Report {
                 .print();
         return this;
     }
-
-    public SummaryReport withEpdSearchResults(List<EpdSearchResult> epdSearchResults,
-                                              EpdSearchModel epdSearchModel,
-                                              BoardModel boardModel,
-                                              VisitedModel nodesVisitedModel,
-                                              NodesTypesModel nodesTypesModel,
-
-                                              EvaluationModel evaluationReportModel,
-                                              EvaluationIterationModel evaluationIterationModel,
-
-                                              PrincipalVariationModel principalVariationReportModel,
-                                              PrincipalVariationIterationModel principalVariationIterationReportModel,
-
-                                              TranspositionModel transpositionModel,
-                                              EvaluationCacheModel evaluationCacheModel) {
-
-        reportModel = new SummaryModel().collectStatistics(SESSION_DATE, new EpdAgregateModel(epdSearchResults, epdSearchModel, boardModel, nodesVisitedModel, nodesTypesModel, principalVariationReportModel, principalVariationIterationReportModel, evaluationReportModel, evaluationIterationModel, transpositionModel, evaluationCacheModel));
-
-        return this;
-    }
 }
