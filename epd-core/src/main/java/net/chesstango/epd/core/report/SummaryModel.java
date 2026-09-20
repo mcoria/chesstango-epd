@@ -4,6 +4,8 @@ package net.chesstango.epd.core.report;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import net.chesstango.board.moves.Move;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultBaseline;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
 import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
@@ -218,7 +220,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         searchDetailList = epdSearchResults
                 .stream()
-                .map(epdSearchResult -> toSearchSummaryModeDetail(epdSearchResult, input.interpretFunction(), pvMap))
+                .map(epdSearchResult -> toSearchSummaryModeDetail(epdSearchResult, input.baselineModel(), pvMap))
                 .toList();
 
 
@@ -226,7 +228,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
     }
 
     SearchSummaryModeDetail toSearchSummaryModeDetail(EpdSearchResult epdSearchResult,
-                                                      Function<EpdSearchResult, EpdSearchResultInterpret> interpretFn,
+                                                      boolean baselineModel,
                                                       Map<String, PrincipalVariationModel.PrincipalVariationReportModelDetail> pvMap) {
 
         SearchSummaryModeDetail searchSummaryModeDetail = new SearchSummaryModeDetail();
@@ -235,7 +237,7 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         searchSummaryModeDetail.id = epdSearchResult.epd().getId();
 
-        EpdSearchResultInterpret epdSearchResultInterpret = interpretFn.apply(epdSearchResult);
+        EpdSearchResultInterpret epdSearchResultInterpret = baselineModel ? EpdSearchResultBaseline.from(epdSearchResult) : EpdSearchResultCompare.from(epdSearchResult);
 
         searchSummaryModeDetail.move = epdSearchResultInterpret.getBestMove();
         searchSummaryModeDetail.moveSuccess = epdSearchResultInterpret.isMoveSuccess();

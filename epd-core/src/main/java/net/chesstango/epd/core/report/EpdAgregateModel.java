@@ -34,10 +34,11 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
 
                                TranspositionModel transpositionModel,
                                EvaluationCacheModel evaluationCacheModel,
-                               Function<EpdSearchResult, EpdSearchResultInterpret> interpretFunction) {
+                               boolean baselineModel) {
 
     public static EpdAgregateModel load(String suiteName, List<EpdSearchResult> epdSearchResults,
-                                        Function<EpdSearchResult, EpdSearchResultInterpret> interpretFunction) {
+                                        boolean baselineModel) {
+
         EpdSearchModel epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
 
         List<SearchResult> searchResults = epdSearchResults.stream().map(EpdSearchResult::searchResult).toList();
@@ -67,7 +68,7 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                 iterationEvaluationModel,
                 transpositionReportModel,
                 evaluationCacheModel,
-                interpretFunction
+                baselineModel
         );
     }
 }

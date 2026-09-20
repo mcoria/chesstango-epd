@@ -81,8 +81,8 @@ public class EpdAgregateReport implements Report {
 
     public EpdAgregateReport withEpdSearchResults(String suiteName,
                                                   List<EpdSearchResult> epdSearchResults,
-                                                  Function<EpdSearchResult, EpdSearchResultInterpret> interpretFunction) {
-        this.epdAgregateModel = EpdAgregateModel.load(suiteName, epdSearchResults, interpretFunction);
+                                                  boolean baseline) {
+        this.epdAgregateModel = EpdAgregateModel.load(suiteName, epdSearchResults, baseline);
         return this;
     }
 

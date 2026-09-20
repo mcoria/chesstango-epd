@@ -10,11 +10,11 @@ import java.io.Serializable;
 /**
  * @author Mauricio Coria
  */
-public record EpdSearchResultSuccess(EPD epd,
-                                     SearchResult searchResult) implements Serializable, EpdSearchResultInterpret {
+public record EpdSearchResultBaseline(EPD epd,
+                                      SearchResult searchResult) implements Serializable, EpdSearchResultInterpret {
 
     public static EpdSearchResultInterpret from(EpdSearchResult epdSearchResult) {
-        return new EpdSearchResultSuccess(epdSearchResult.epd(), epdSearchResult.searchResult());
+        return new EpdSearchResultBaseline(epdSearchResult.epd(), epdSearchResult.searchResult());
     }
 
     @Override

@@ -33,7 +33,7 @@ public class EpdSearchSerialTest {
     public void tearDown(TestInfo testInfo) {
         if (PRINT_REPORT) {
             new EpdAgregateReport()
-                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), epdSearchResult, EpdSearchResultCompare::from)
+                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), epdSearchResult, false)
                     .printReport(System.out);
         }
     }

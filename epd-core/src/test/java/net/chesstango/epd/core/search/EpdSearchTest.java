@@ -34,7 +34,7 @@ public class EpdSearchTest {
     public void tearDown(TestInfo testInfo) {
         if (PRINT_REPORT) {
             new EpdAgregateReport()
-                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), List.of(epdSearchResult), EpdSearchResultCompare::from)
+                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), List.of(epdSearchResult), false)
                     .printReport(System.out);
         }
     }

@@ -27,6 +27,7 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
      * -t TimeOut in milliseconds
      * -i Directorio donde se encuentran los archivos de posicion
      * -f Filtro de archivos
+     * -b baseline search
      * <p>
      * Ejemplo:
      * -d 6 -t 0 -i C:\java\projects\chess\chess-utils\testing\EPD\database -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
@@ -56,6 +57,8 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
             throw new RuntimeException("Directory not found: " + suiteDirectoryStr);
         }
 
+        boolean baseline = parsedArgs.hasOption('b');
+
         /**
          * Input
          */
@@ -71,7 +74,8 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
          */
         EpdSearchMain epdSearchMain = new EpdSearchMain(depth, timeOut);
 
-        SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
+
+        SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory, baseline);
 
         /**
          * Execute
@@ -128,6 +132,9 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
 
         Option filePatternOpt = Option.builder("f").argName("filePattern").hasArg().required().desc("epd file name pattern").build();
         options.addOption(filePatternOpt);
+
+        Option baselineOpt = Option.builder("b").argName("baseline").desc("baseline search").build();
+        options.addOption(baselineOpt);
 
         CommandLineParser parser = new DefaultParser();
         try {

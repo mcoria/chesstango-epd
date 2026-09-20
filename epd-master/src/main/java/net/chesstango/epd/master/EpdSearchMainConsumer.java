@@ -39,6 +39,8 @@ public class EpdSearchMainConsumer implements Runnable {
 
         String directory = parsedArgs.getOptionValue('i');
 
+        boolean baseline = parsedArgs.hasOption('b');
+
         log.info("directory={}", directory);
 
         Path suiteDirectory = Path.of(directory);
@@ -46,18 +48,20 @@ public class EpdSearchMainConsumer implements Runnable {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
-        new EpdSearchMainConsumer(rabbitHost, suiteDirectory).run();
+        new EpdSearchMainConsumer(rabbitHost, suiteDirectory, baseline).run();
     }
 
     private final String rabbitHost;
     private final Path suiteDirectory;
+    private final boolean baseline;
 
-    public EpdSearchMainConsumer(String rabbitHost, Path suiteDirectory) {
+    public EpdSearchMainConsumer(String rabbitHost, Path suiteDirectory, boolean baseline) {
         if (rabbitHost == null) {
             throw new IllegalArgumentException("rabbitHost and enginesCatalog must be provided");
         }
         this.rabbitHost = rabbitHost;
         this.suiteDirectory = suiteDirectory;
+        this.baseline = baseline;
     }
 
     @Override
@@ -107,7 +111,7 @@ public class EpdSearchMainConsumer implements Runnable {
     }
 
     private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
-        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory);
+        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory, baseline);
 
         searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
     }
@@ -135,6 +139,9 @@ public class EpdSearchMainConsumer implements Runnable {
 
         Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where results are stored").build();
         options.addOption(directoryOpt);
+
+        Option baselineOpt = Option.builder("b").argName("baseline").desc("baseline search").build();
+        options.addOption(baselineOpt);
 
         CommandLineParser parser = new DefaultParser();
         try {

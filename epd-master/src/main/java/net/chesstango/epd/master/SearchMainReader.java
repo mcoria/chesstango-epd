@@ -24,6 +24,8 @@ public class SearchMainReader {
     public static void main(String[] args) {
         Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
+        boolean baseline = false;
+
         List<String> sessionDirectories = List.of(
                 "depth-5-2026-09-17-09-11-v1.11.0-SNAPSHOT"
                 //"depth-6-2026-09-14-09-43-v1.10.0-SNAPSHOT",
@@ -43,7 +45,7 @@ public class SearchMainReader {
                             .map(SearchMainReader::readEpdSearchResponse)
                             .filter(Objects::nonNull)
                             .forEach(searchResponse -> {
-                                SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory);
+                                SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory, false);
                                 searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
                             });
                 });
