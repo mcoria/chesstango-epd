@@ -4,7 +4,8 @@ package net.chesstango.epd.core.report;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import net.chesstango.board.moves.Move;
-import net.chesstango.epd.core.report.interpret.EpdSearchResultSuccess;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.reports.search.board.BoardModel;
@@ -230,13 +231,13 @@ public class SummaryModel implements Model<EpdAgregateModel> {
 
         searchSummaryModeDetail.id = epdSearchResult.epd().getId();
 
-        EpdSearchResultSuccess epdSearchResultSuccess = EpdSearchResultSuccess.from(epdSearchResult);
+        EpdSearchResultInterpret epdSearchResultInterpret = EpdSearchResultCompare.from(epdSearchResult);
 
-        searchSummaryModeDetail.move = epdSearchResultSuccess.getBestMove();
-        searchSummaryModeDetail.moveSuccess = epdSearchResultSuccess.isMoveSuccess();
+        searchSummaryModeDetail.move = epdSearchResultInterpret.getBestMove();
+        searchSummaryModeDetail.moveSuccess = epdSearchResultInterpret.isMoveSuccess();
 
-        searchSummaryModeDetail.evaluation = epdSearchResultSuccess.getBestEvaluation();
-        searchSummaryModeDetail.evaluationSuccess = epdSearchResultSuccess.isEvaluationSuccess();
+        searchSummaryModeDetail.evaluation = epdSearchResultInterpret.getBestEvaluation();
+        searchSummaryModeDetail.evaluationSuccess = epdSearchResultInterpret.isEvaluationSuccess();
 
         searchSummaryModeDetail.depthMoves = searchResult
                 .getSearchResultByDepths()

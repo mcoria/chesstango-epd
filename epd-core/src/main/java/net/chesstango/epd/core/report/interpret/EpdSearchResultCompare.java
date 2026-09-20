@@ -10,11 +10,10 @@ import java.io.Serializable;
 /**
  * @author Mauricio Coria
  */
-public record EpdSearchResultSuccess(EPD epd,
-                                     SearchResult searchResult) implements Serializable, EpdSearchResultInterpret {
+public record EpdSearchResultCompare(EPD epd, SearchResult searchResult) implements Serializable, EpdSearchResultInterpret {
 
     public static EpdSearchResultInterpret from(EpdSearchResult epdSearchResult) {
-        return new EpdSearchResultSuccess(epdSearchResult.epd(), epdSearchResult.searchResult());
+        return new EpdSearchResultCompare(epdSearchResult.epd(), epdSearchResult.searchResult());
     }
 
     @Override
@@ -25,7 +24,7 @@ public record EpdSearchResultSuccess(EPD epd,
 
     @Override
     public boolean isMoveSuccess() {
-        return true;
+        return epd.isMoveSuccess(getBestMove());
     }
 
     @Override
@@ -35,6 +34,6 @@ public record EpdSearchResultSuccess(EPD epd,
 
     @Override
     public boolean isEvaluationSuccess() {
-        return true;
+        return epd.isEvaluationSuccess(getBestEvaluation().toString());
     }
 }
