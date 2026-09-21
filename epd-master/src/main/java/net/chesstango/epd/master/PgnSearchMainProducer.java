@@ -120,8 +120,8 @@ public class PgnSearchMainProducer implements Runnable {
             factory.setHost(rabbitHost);
             factory.setSharedExecutor(executorService);
 
-            try (EpdSearchProducer epdSearchProducer = new EpdSearchProducer(factory)) {
-                searchRequests.forEach(epdSearchProducer::publish);
+            try (SearchProducer searchProducer = new SearchProducer(factory)) {
+                searchRequests.forEach(searchProducer::publish);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

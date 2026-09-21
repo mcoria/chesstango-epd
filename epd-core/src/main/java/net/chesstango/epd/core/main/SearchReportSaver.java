@@ -38,24 +38,24 @@ public class SearchReportSaver implements Consumer<EpdSearchResultCollection> {
 
             EpdAgregateModel epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults, baseline);
 
-            CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Void> saveAgregateReportTask = CompletableFuture.supplyAsync(() -> {
                 saveAgregateReport(suiteName, epdAgregateModel);
                 return null;
             });
 
-            CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Void> saveSummaryJsonTask = CompletableFuture.supplyAsync(() -> {
                 SummaryModel summaryModel = new SummaryModel().collectStatistics(sessionId, epdAgregateModel);
                 saveSummaryJson(suiteName, summaryModel);
                 return null;
             });
 
-            CompletableFuture<Void> epdRebase = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Void> saveEpdRebaseTask = CompletableFuture.supplyAsync(() -> {
                 EpdRebaseModel epdRebaseModel = new EpdRebaseModel().collectStatistics(sessionId, epdSearchResults);
                 saveEpdRebase(suiteName, epdRebaseModel);
                 return null;
             });
 
-            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson, epdRebase);
+            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveAgregateReportTask, saveSummaryJsonTask, saveEpdRebaseTask);
 
             log.info("Saving reports {}", suiteName);
 

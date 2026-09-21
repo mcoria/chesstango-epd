@@ -20,7 +20,7 @@ import java.util.concurrent.ForkJoinPool;
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchMainConsumer implements Runnable {
+public class SearchMainConsumer implements Runnable {
 
     /**
      * Parametros
@@ -48,14 +48,15 @@ public class EpdSearchMainConsumer implements Runnable {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
-        new EpdSearchMainConsumer(rabbitHost, suiteDirectory, baseline).run();
+        new SearchMainConsumer(rabbitHost, suiteDirectory, baseline)
+                .run();
     }
 
     private final String rabbitHost;
     private final Path suiteDirectory;
     private final boolean baseline;
 
-    public EpdSearchMainConsumer(String rabbitHost, Path suiteDirectory, boolean baseline) {
+    public SearchMainConsumer(String rabbitHost, Path suiteDirectory, boolean baseline) {
         if (rabbitHost == null) {
             throw new IllegalArgumentException("rabbitHost and enginesCatalog must be provided");
         }
@@ -75,11 +76,11 @@ public class EpdSearchMainConsumer implements Runnable {
         factory.setSharedExecutor(ForkJoinPool.commonPool());
 
         log.info("Connecting to RabbitMQ");
-        try (EpdSearchConsumer epdSearchConsumer = new EpdSearchConsumer(factory)) {
+        try (SearchConsumer searchConsumer = new SearchConsumer(factory)) {
 
             log.info("Connected to RabbitMQ");
 
-            epdSearchConsumer.setupQueueConsumer(this::accept);
+            searchConsumer.setupQueueConsumer(this::accept);
 
             log.info("Waiting for EpdSearchRequest");
 
@@ -110,12 +111,6 @@ public class EpdSearchMainConsumer implements Runnable {
         CompletableFuture.allOf(task1, task2).join();
     }
 
-    private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
-        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory, baseline);
-
-        searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
-    }
-
     private void saveResponse(Path sessionDirectory, SearchResponse searchResponse) {
         String filename = String.format("epdSearchResponse_%s.ser", searchResponse.getSearchId());
 
@@ -129,6 +124,12 @@ public class EpdSearchMainConsumer implements Runnable {
             log.error("Failed to serialize response", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
+        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory, baseline);
+
+        searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
     }
 
     private static CommandLine parseArguments(String[] args) {
@@ -149,7 +150,7 @@ public class EpdSearchMainConsumer implements Runnable {
             return parser.parse(options, args);
         } catch (ParseException exp) {
             log.error("Parsing failed.  Reason: {}", exp.getMessage());
-            new HelpFormatter().printHelp(EpdSearchMainConsumer.class.getName(), options);
+            new HelpFormatter().printHelp(SearchMainConsumer.class.getName(), options);
             System.exit(-1);
         }
         return null;
