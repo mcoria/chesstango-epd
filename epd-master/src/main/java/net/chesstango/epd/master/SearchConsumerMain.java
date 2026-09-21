@@ -20,7 +20,7 @@ import java.util.concurrent.ForkJoinPool;
  * @author Mauricio Coria
  */
 @Slf4j
-public class SearchMainConsumer implements Runnable {
+public class SearchConsumerMain implements Runnable {
 
     /**
      * Parametros
@@ -48,7 +48,7 @@ public class SearchMainConsumer implements Runnable {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
-        new SearchMainConsumer(rabbitHost, suiteDirectory, baseline)
+        new SearchConsumerMain(rabbitHost, suiteDirectory, baseline)
                 .run();
     }
 
@@ -56,7 +56,7 @@ public class SearchMainConsumer implements Runnable {
     private final Path suiteDirectory;
     private final boolean baseline;
 
-    public SearchMainConsumer(String rabbitHost, Path suiteDirectory, boolean baseline) {
+    public SearchConsumerMain(String rabbitHost, Path suiteDirectory, boolean baseline) {
         if (rabbitHost == null) {
             throw new IllegalArgumentException("rabbitHost and enginesCatalog must be provided");
         }
@@ -150,7 +150,7 @@ public class SearchMainConsumer implements Runnable {
             return parser.parse(options, args);
         } catch (ParseException exp) {
             log.error("Parsing failed.  Reason: {}", exp.getMessage());
-            new HelpFormatter().printHelp(SearchMainConsumer.class.getName(), options);
+            new HelpFormatter().printHelp(SearchConsumerMain.class.getName(), options);
             System.exit(-1);
         }
         return null;

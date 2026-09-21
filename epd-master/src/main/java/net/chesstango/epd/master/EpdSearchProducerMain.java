@@ -25,7 +25,7 @@ import static net.chesstango.epd.core.main.Common.listEpdFiles;
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchMainProducer implements Runnable {
+public class EpdSearchProducerMain implements Runnable {
     /**
      * Parametros
      * -d Depth
@@ -65,7 +65,7 @@ public class EpdSearchMainProducer implements Runnable {
 
         List<Path> epdFiles = listEpdFiles(suiteDirectory, filePattern);
 
-        new EpdSearchMainProducer(sessionId, epdFiles, depth, timeOut).run();
+        new EpdSearchProducerMain(sessionId, epdFiles, depth, timeOut).run();
     }
 
     private static CommandLine parseArguments(String[] args) {
@@ -90,7 +90,7 @@ public class EpdSearchMainProducer implements Runnable {
         } catch (ParseException exp) {
             // oops, something went wrong
             System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-            new HelpFormatter().printHelp(EpdSearchMainProducer.class.getName(), options);
+            new HelpFormatter().printHelp(EpdSearchProducerMain.class.getName(), options);
             System.exit(-1);
         }
         return null;
@@ -104,7 +104,7 @@ public class EpdSearchMainProducer implements Runnable {
     private final int timeOut;
 
 
-    public EpdSearchMainProducer(String sessionId, List<Path> epdFiles, int depth, int timeOut) {
+    public EpdSearchProducerMain(String sessionId, List<Path> epdFiles, int depth, int timeOut) {
         this.rabbitHost = "localhost";
         this.sessionId = sessionId;
         this.epdFiles = epdFiles;

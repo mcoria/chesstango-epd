@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * @author Mauricio Coria
  */
 @Slf4j
-public class SearchMainReader {
+public class SearchReaderMain {
 
     public static void main(String[] args) {
         Path baseDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
@@ -42,7 +42,7 @@ public class SearchMainReader {
                 .forEach(sessionDirectory -> {
                     readSerFiles(sessionDirectory)
                             .parallel()
-                            .map(SearchMainReader::readEpdSearchResponse)
+                            .map(SearchReaderMain::readEpdSearchResponse)
                             .filter(Objects::nonNull)
                             .forEach(searchResponse -> {
                                 SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory, false);

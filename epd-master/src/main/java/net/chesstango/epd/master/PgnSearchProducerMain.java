@@ -24,7 +24,7 @@ import static net.chesstango.epd.core.main.Common.createSessionId;
  * @author Mauricio Coria
  */
 @Slf4j
-public class PgnSearchMainProducer implements Runnable {
+public class PgnSearchProducerMain implements Runnable {
     /**
      * Parametros
      * -i Directorio donde se encuentra el archivo PGN
@@ -69,7 +69,7 @@ public class PgnSearchMainProducer implements Runnable {
 
             List<PGN> pgnList = pgnStream.toList();
 
-            new PgnSearchMainProducer(sessionId, pgnList)
+            new PgnSearchProducerMain(sessionId, pgnList)
                     .run();
 
         } catch (IOException e) {
@@ -93,7 +93,7 @@ public class PgnSearchMainProducer implements Runnable {
         } catch (ParseException exp) {
             // oops, something went wrong
             System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-            new HelpFormatter().printHelp(PgnSearchMainProducer.class.getName(), options);
+            new HelpFormatter().printHelp(PgnSearchProducerMain.class.getName(), options);
             System.exit(-1);
         }
         return null;
@@ -103,7 +103,7 @@ public class PgnSearchMainProducer implements Runnable {
     private final String sessionId;
     private final List<PGN> pgnList;
 
-    public PgnSearchMainProducer(String sessionId, List<PGN> pgnList) {
+    public PgnSearchProducerMain(String sessionId, List<PGN> pgnList) {
         this.rabbitHost = "localhost";
         this.sessionId = sessionId;
         this.pgnList = pgnList;
