@@ -1,6 +1,7 @@
 package net.chesstango.epd.core.main;
 
 
+import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.SummaryDiffModel;
 import net.chesstango.epd.core.report.SummaryDiffModelInput;
 import net.chesstango.epd.core.report.SummaryDiffReport;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 /**
  * @author Mauricio Coria
  */
+@Slf4j
 public class ComparatorMain {
 
     public static void main(String[] args) {
@@ -122,7 +124,8 @@ public class ComparatorMain {
             throw new RuntimeException("baseLineSearchSummary not found");
         }
 
-        searchSummaryList = searchSessions.stream()
+        searchSummaryList = searchSessions
+                .stream()
                 .map(this::loadSearchSummary)
                 .filter(Objects::nonNull)
                 .toList();
@@ -132,7 +135,7 @@ public class ComparatorMain {
         Path searchSummaryPath = suiteParentDirectory.resolve(sessionID).resolve(String.format("%s.json", suiteName));
 
         if (!Files.exists(searchSummaryPath)) {
-            System.err.printf("file not found: %s\n", searchSummaryPath);
+            log.error("file not found: {}", searchSummaryPath);
             return null;
         }
 
@@ -144,7 +147,7 @@ public class ComparatorMain {
                 .collectStatistics(suiteName, new SummaryDiffModelInput(baseLineSearchSummary, searchSummaryList));
 
         new SummaryDiffReport()
-                .withSummaryDiffReportModel(reportModel)
+                .setReportModel(reportModel)
                 .printReport(out);
     }
 }
