@@ -26,6 +26,7 @@ public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
      * Parametros
      * -i Directorio donde se encuentra el archivo PGN
      * -f Archivo PGN
+     * -b baseline search
      * <p>
      * Ejemplo:
      * -i C:\java\projects\chess\chess-utils\testing\EPD\database -f games.pgn
@@ -56,6 +57,8 @@ public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
             throw new RuntimeException("File not found: " + fileName);
         }
 
+        boolean baseline = parsedArgs.hasOption('b');
+
         /**
          * Input
          */
@@ -68,7 +71,7 @@ public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
          */
         PgnSearchMain pgnSearchMain = new PgnSearchMain();
 
-        SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory);
+        SearchReportSaver searchReportSaver = new SearchReportSaver(sessionId, sessionDirectory, baseline);
 
 
         /**
@@ -120,6 +123,9 @@ public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
 
         Option fileNameOpt = Option.builder("f").argName("fileName").hasArg().required().desc("pgn file name").build();
         options.addOption(fileNameOpt);
+
+        Option baselineOpt = Option.builder("b").argName("baseline").desc("baseline search").build();
+        options.addOption(baselineOpt);
 
         CommandLineParser parser = new DefaultParser();
         try {

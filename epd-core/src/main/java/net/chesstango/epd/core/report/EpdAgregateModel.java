@@ -1,5 +1,6 @@
 package net.chesstango.epd.core.report;
 
+import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.search.board.BoardModel;
 import net.chesstango.reports.search.evalcache.EvaluationCacheModel;
@@ -13,6 +14,7 @@ import net.chesstango.reports.search.transposition.TranspositionModel;
 import net.chesstango.search.SearchResult;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author Mauricio Coria
@@ -31,9 +33,14 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                                EvaluationIterationModel evaluationIterationModel,
 
                                TranspositionModel transpositionModel,
-                               EvaluationCacheModel evaluationCacheModel) {
-    public static EpdAgregateModel load(String suiteName, List<EpdSearchResult> epdSearchResults) {
-        EpdSearchModel epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
+                               EvaluationCacheModel evaluationCacheModel,
+                               boolean baselineModel) {
+
+    public static EpdAgregateModel load(String suiteName,
+                                        List<EpdSearchResult> epdSearchResults,
+                                        boolean baselineModel) {
+
+        EpdSearchModel epdSearchModel = new EpdSearchModel(baselineModel).collectStatistics(suiteName, epdSearchResults);
 
         List<SearchResult> searchResults = epdSearchResults.stream().map(EpdSearchResult::searchResult).toList();
 
@@ -56,10 +63,13 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                 epdSearchModel,
                 boardModel,
                 visitedModel, nodesTypesModel,
-                principalVariationReportModel, principalVariationIterationReportModel,
-                evaluationReportModel, iterationEvaluationModel,
+                principalVariationReportModel,
+                principalVariationIterationReportModel,
+                evaluationReportModel,
+                iterationEvaluationModel,
                 transpositionReportModel,
-                evaluationCacheModel
+                evaluationCacheModel,
+                baselineModel
         );
     }
 }

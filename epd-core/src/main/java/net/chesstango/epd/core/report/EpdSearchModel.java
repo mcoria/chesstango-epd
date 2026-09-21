@@ -1,6 +1,8 @@
 package net.chesstango.epd.core.report;
 
-import net.chesstango.epd.core.report.interpret.EpdSearchResultSuccess;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultBaseline;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.search.SearchResult;
@@ -11,6 +13,8 @@ import java.util.List;
  * @author Mauricio Coria
  */
 public class EpdSearchModel implements Model<List<EpdSearchResult>> {
+    final boolean baselineModel;
+
     String reportTitle;
 
     int searches;
@@ -26,6 +30,11 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     long duration;
 
 
+    public EpdSearchModel(boolean baselineModel) {
+        this.baselineModel = baselineModel;
+    }
+
+
     @Override
     public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdSearchResults) {
         List<SearchResult> searchResults = epdSearchResults
@@ -33,24 +42,24 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
                 .map(EpdSearchResult::searchResult)
                 .toList();
 
-        List<EpdSearchResultSuccess> epdSearchResultSuccesses = epdSearchResults
+        List<EpdSearchResultInterpret> epdSearchResultInterprets = epdSearchResults
                 .stream()
-                .map(EpdSearchResultSuccess::from)
+                .map(baselineModel ? EpdSearchResultBaseline::from : EpdSearchResultCompare::from)
                 .toList();
 
         this.reportTitle = reportTitle;
 
         this.searches = epdSearchResults.size();
 
-        this.moveSuccess = (int) epdSearchResultSuccesses
+        this.moveSuccess = (int) epdSearchResultInterprets
                 .stream()
-                .filter(EpdSearchResultSuccess::isMoveSuccess)
+                .filter(EpdSearchResultInterpret::isMoveSuccess)
                 .count();
         this.moveSuccessPct = ((100 * this.moveSuccess) / this.searches);
 
-        this.evaluationSuccess = (int) epdSearchResultSuccesses
+        this.evaluationSuccess = (int) epdSearchResultInterprets
                 .stream()
-                .filter(EpdSearchResultSuccess::isEvaluationSuccess)
+                .filter(EpdSearchResultInterpret::isEvaluationSuccess)
                 .count();
         this.evaluationSuccessPct = ((100 * this.evaluationSuccess) / this.searches);
 
@@ -60,7 +69,7 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
                 .sum();
 
         // No coincide el movimiento ni la evaluacion
-        this.failedEntries = epdSearchResultSuccesses
+        this.failedEntries = epdSearchResultInterprets
                 .stream()
                 .filter(epdSearchResult -> !epdSearchResult.isMoveSuccess() && !epdSearchResult.isEvaluationSuccess())
                 .map(epdSearchResult ->

@@ -2,6 +2,8 @@ package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.report.*;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultBaseline;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.epd.core.search.EpdSearchResultCollection;
 import net.chesstango.reports.Report;
@@ -20,10 +22,12 @@ public class SearchReportSaver implements Consumer<EpdSearchResultCollection> {
 
     private final String sessionId;
     private final Path directory;
+    private final boolean baseline;
 
-    public SearchReportSaver(String sessionId, Path directory) {
+    public SearchReportSaver(String sessionId, Path directory, boolean baseline) {
         this.sessionId = sessionId;
         this.directory = directory;
+        this.baseline = baseline;
     }
 
     @Override
@@ -31,26 +35,27 @@ public class SearchReportSaver implements Consumer<EpdSearchResultCollection> {
         String suiteName = epdSearchResultCollection.suiteName();
         List<EpdSearchResult> epdSearchResults = epdSearchResultCollection.epdSearchResults();
         try {
-            EpdAgregateModel epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults);
 
-            CompletableFuture<Void> saveReport = CompletableFuture.supplyAsync(() -> {
+            EpdAgregateModel epdAgregateModel = EpdAgregateModel.load(sessionId, epdSearchResults, baseline);
+
+            CompletableFuture<Void> saveAgregateReportTask = CompletableFuture.supplyAsync(() -> {
                 saveAgregateReport(suiteName, epdAgregateModel);
                 return null;
             });
 
-            CompletableFuture<Void> saveJson = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Void> saveSummaryJsonTask = CompletableFuture.supplyAsync(() -> {
                 SummaryModel summaryModel = new SummaryModel().collectStatistics(sessionId, epdAgregateModel);
                 saveSummaryJson(suiteName, summaryModel);
                 return null;
             });
 
-            CompletableFuture<Void> epdRebase = CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Void> saveEpdRebaseTask = CompletableFuture.supplyAsync(() -> {
                 EpdRebaseModel epdRebaseModel = new EpdRebaseModel().collectStatistics(sessionId, epdSearchResults);
                 saveEpdRebase(suiteName, epdRebaseModel);
                 return null;
             });
 
-            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveReport, saveJson, epdRebase);
+            CompletableFuture<Void> combinedSave = CompletableFuture.allOf(saveAgregateReportTask, saveSummaryJsonTask, saveEpdRebaseTask);
 
             log.info("Saving reports {}", suiteName);
 

@@ -46,9 +46,4 @@ public class EpdSearchPrinter implements Printer {
         return this;
     }
 
-    public EpdSearchPrinter withEdpEntries(List<EpdSearchResult> edpEntries) {
-        this.reportModel = new EpdSearchModel().collectStatistics(reportTitle, edpEntries);
-        return this;
-    }
-
 }

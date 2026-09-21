@@ -10,27 +10,31 @@ import java.io.Serializable;
 /**
  * @author Mauricio Coria
  */
-public record EpdSearchResultSuccess(EPD epd, SearchResult searchResult) implements Serializable {
+public record EpdSearchResultBaseline(EPD epd,
+                                      SearchResult searchResult) implements Serializable, EpdSearchResultInterpret {
 
-    public static EpdSearchResultSuccess from(EpdSearchResult epdSearchResult) {
-        return new EpdSearchResultSuccess(epdSearchResult.epd(), epdSearchResult.searchResult());
+    public static EpdSearchResultInterpret from(EpdSearchResult epdSearchResult) {
+        return new EpdSearchResultBaseline(epdSearchResult.epd(), epdSearchResult.searchResult());
     }
 
+    @Override
     public String getBestMove() {
         Move bestMove = searchResult.getBestMove();
         return bestMove.coordinateEncoding();
     }
 
+    @Override
     public boolean isMoveSuccess() {
-        return epd.isMoveSuccess(getBestMove());
+        return true;
     }
 
-
+    @Override
     public Integer getBestEvaluation() {
         return searchResult.getBestEvaluation();
     }
 
+    @Override
     public boolean isEvaluationSuccess() {
-        return epd.isEvaluationSuccess(getBestEvaluation().toString());
+        return true;
     }
 }

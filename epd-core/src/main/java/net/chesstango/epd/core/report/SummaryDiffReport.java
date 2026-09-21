@@ -24,9 +24,4 @@ public class SummaryDiffReport implements Report {
         return this;
     }
 
-    public SummaryDiffReport withSummaryDiffReportModel(SummaryDiffModel reportModel) {
-        this.reportModel = reportModel;
-        return this;
-    }
-
 }

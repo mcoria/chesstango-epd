@@ -20,7 +20,7 @@ import java.util.concurrent.ForkJoinPool;
  * @author Mauricio Coria
  */
 @Slf4j
-public class EpdSearchMainConsumer implements Runnable {
+public class SearchConsumerMain implements Runnable {
 
     /**
      * Parametros
@@ -39,6 +39,8 @@ public class EpdSearchMainConsumer implements Runnable {
 
         String directory = parsedArgs.getOptionValue('i');
 
+        boolean baseline = parsedArgs.hasOption('b');
+
         log.info("directory={}", directory);
 
         Path suiteDirectory = Path.of(directory);
@@ -46,18 +48,21 @@ public class EpdSearchMainConsumer implements Runnable {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
-        new EpdSearchMainConsumer(rabbitHost, suiteDirectory).run();
+        new SearchConsumerMain(rabbitHost, suiteDirectory, baseline)
+                .run();
     }
 
     private final String rabbitHost;
     private final Path suiteDirectory;
+    private final boolean baseline;
 
-    public EpdSearchMainConsumer(String rabbitHost, Path suiteDirectory) {
+    public SearchConsumerMain(String rabbitHost, Path suiteDirectory, boolean baseline) {
         if (rabbitHost == null) {
             throw new IllegalArgumentException("rabbitHost and enginesCatalog must be provided");
         }
         this.rabbitHost = rabbitHost;
         this.suiteDirectory = suiteDirectory;
+        this.baseline = baseline;
     }
 
     @Override
@@ -71,11 +76,11 @@ public class EpdSearchMainConsumer implements Runnable {
         factory.setSharedExecutor(ForkJoinPool.commonPool());
 
         log.info("Connecting to RabbitMQ");
-        try (EpdSearchConsumer epdSearchConsumer = new EpdSearchConsumer(factory)) {
+        try (SearchConsumer searchConsumer = new SearchConsumer(factory)) {
 
             log.info("Connected to RabbitMQ");
 
-            epdSearchConsumer.setupQueueConsumer(this::accept);
+            searchConsumer.setupQueueConsumer(this::accept);
 
             log.info("Waiting for EpdSearchRequest");
 
@@ -106,12 +111,6 @@ public class EpdSearchMainConsumer implements Runnable {
         CompletableFuture.allOf(task1, task2).join();
     }
 
-    private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
-        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory);
-
-        searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
-    }
-
     private void saveResponse(Path sessionDirectory, SearchResponse searchResponse) {
         String filename = String.format("epdSearchResponse_%s.ser", searchResponse.getSearchId());
 
@@ -127,6 +126,12 @@ public class EpdSearchMainConsumer implements Runnable {
         }
     }
 
+    private void saveReport(Path sessionDirectory, SearchResponse searchResponse) {
+        SearchReportSaver searchReportSaver = new SearchReportSaver(searchResponse.getSessionId(), sessionDirectory, baseline);
+
+        searchReportSaver.accept(new EpdSearchResultCollection(searchResponse.getSearchId(), searchResponse.getEpdSearchResults()));
+    }
+
     private static CommandLine parseArguments(String[] args) {
         final Options options = new Options();
 
@@ -136,13 +141,16 @@ public class EpdSearchMainConsumer implements Runnable {
         Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where results are stored").build();
         options.addOption(directoryOpt);
 
+        Option baselineOpt = Option.builder("b").argName("baseline").desc("baseline search").build();
+        options.addOption(baselineOpt);
+
         CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
             return parser.parse(options, args);
         } catch (ParseException exp) {
             log.error("Parsing failed.  Reason: {}", exp.getMessage());
-            new HelpFormatter().printHelp(EpdSearchMainConsumer.class.getName(), options);
+            new HelpFormatter().printHelp(SearchConsumerMain.class.getName(), options);
             System.exit(-1);
         }
         return null;

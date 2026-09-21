@@ -1,6 +1,7 @@
 package net.chesstango.epd.core.search;
 
 import net.chesstango.epd.core.report.EpdAgregateReport;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
@@ -32,7 +33,7 @@ public class EpdSearchSerialTest {
     public void tearDown(TestInfo testInfo) {
         if (PRINT_REPORT) {
             new EpdAgregateReport()
-                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), epdSearchResult)
+                    .withEpdSearchResults(testInfo.getTestMethod().orElseThrow().toString(), epdSearchResult, false)
                     .printReport(System.out);
         }
     }

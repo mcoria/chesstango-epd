@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  */
 
 @Slf4j
-public class EpdSearchConsumer implements AutoCloseable {
+public class SearchConsumer implements AutoCloseable {
 
     private final Connection connection;
 
@@ -24,7 +24,7 @@ public class EpdSearchConsumer implements AutoCloseable {
     private String cTag;
 
 
-    public EpdSearchConsumer(ConnectionFactory factory) throws IOException, TimeoutException {
+    public SearchConsumer(ConnectionFactory factory) throws IOException, TimeoutException {
         this.connection = factory.newConnection();
         this.channel = connection.createChannel();
         this.channel.basicQos(1);
