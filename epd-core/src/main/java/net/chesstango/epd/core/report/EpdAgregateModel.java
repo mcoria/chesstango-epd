@@ -36,10 +36,11 @@ public record EpdAgregateModel(List<EpdSearchResult> epdSearchResults,
                                EvaluationCacheModel evaluationCacheModel,
                                boolean baselineModel) {
 
-    public static EpdAgregateModel load(String suiteName, List<EpdSearchResult> epdSearchResults,
+    public static EpdAgregateModel load(String suiteName,
+                                        List<EpdSearchResult> epdSearchResults,
                                         boolean baselineModel) {
 
-        EpdSearchModel epdSearchModel = new EpdSearchModel().collectStatistics(suiteName, epdSearchResults);
+        EpdSearchModel epdSearchModel = new EpdSearchModel(baselineModel).collectStatistics(suiteName, epdSearchResults);
 
         List<SearchResult> searchResults = epdSearchResults.stream().map(EpdSearchResult::searchResult).toList();
 

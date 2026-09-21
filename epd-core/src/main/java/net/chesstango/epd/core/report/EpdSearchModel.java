@@ -1,7 +1,8 @@
 package net.chesstango.epd.core.report;
 
-import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultBaseline;
 import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
+import net.chesstango.epd.core.report.interpret.EpdSearchResultInterpret;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.reports.Model;
 import net.chesstango.search.SearchResult;
@@ -12,6 +13,8 @@ import java.util.List;
  * @author Mauricio Coria
  */
 public class EpdSearchModel implements Model<List<EpdSearchResult>> {
+    final boolean baselineModel;
+
     String reportTitle;
 
     int searches;
@@ -27,6 +30,11 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
     long duration;
 
 
+    public EpdSearchModel(boolean baselineModel) {
+        this.baselineModel = baselineModel;
+    }
+
+
     @Override
     public EpdSearchModel collectStatistics(String reportTitle, List<EpdSearchResult> epdSearchResults) {
         List<SearchResult> searchResults = epdSearchResults
@@ -36,7 +44,7 @@ public class EpdSearchModel implements Model<List<EpdSearchResult>> {
 
         List<EpdSearchResultInterpret> epdSearchResultInterprets = epdSearchResults
                 .stream()
-                .map(EpdSearchResultCompare::from)
+                .map(baselineModel ? EpdSearchResultBaseline::from : EpdSearchResultCompare::from)
                 .toList();
 
         this.reportTitle = reportTitle;
