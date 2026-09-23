@@ -1,6 +1,7 @@
 package net.chesstango.epd.core.search;
 
 import net.chesstango.evaluation.Evaluator;
+import net.chesstango.evaluation.evaluators.EvaluatorByMaterial;
 import net.chesstango.search.Search;
 import net.chesstango.search.builders.AlphaBetaBuilder;
 

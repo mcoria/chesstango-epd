@@ -1,6 +1,4 @@
 module net.chesstango.epd.master {
-
-    exports net.chesstango.epd.master.filters;
     exports net.chesstango.epd.master;
 
     requires net.chesstango.board;
