@@ -2,7 +2,6 @@ package net.chesstango.epd.core.search;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.board.Game;
@@ -13,34 +12,48 @@ import net.chesstango.search.SearchResult;
 import net.chesstango.search.visitors.SetMaxDepthVisitor;
 import net.chesstango.search.visitors.SetSearchByDepthListenerVisitor;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.*;
 
 /**
  * @author Mauricio Coria
  */
 @Accessors(chain = true)
 @Slf4j
-public class EpdSearch {
+public class EpdSearch implements AutoCloseable {
 
-    @Setter
     @Getter(AccessLevel.PACKAGE)
-    private Integer depth;
+    private final Integer depth;
 
-    @Setter
     @Getter(AccessLevel.PACKAGE)
-    private Integer timeOut;
+    private final Integer timeOut;
+
+    private Executor executor;
+    private ExecutorService executorService;
 
 
-    public EpdSearchResult run(Search search, EPD epd) {
+    public static EpdSearch OpenByDepth(int depth) {
+        return new EpdSearch(depth, null);
+    }
+
+    public static EpdSearch OpenByTimeOut(int timeOut) {
+        return new EpdSearch(Tango.INFINITE_DEPTH, timeOut);
+    }
+
+
+    private EpdSearch(Integer depth, Integer timeOut) {
         if (depth == null && timeOut == null) {
             throw new IllegalArgumentException("Depth or timeOut must be set");
         }
+        this.depth = depth;
+        this.timeOut = timeOut;
 
-        if (depth == null) {
-            depth = Tango.INFINITE_DEPTH;
+        if (timeOut != null) {
+            this.executorService = Executors.newSingleThreadExecutor();
+            this.executor = CompletableFuture.delayedExecutor(timeOut + 500, TimeUnit.MILLISECONDS, executorService);
         }
+    }
 
+    public EpdSearchResult run(Search search, EPD epd) {
         return timeOut == null ? runNow(search, epd) : runTimeOut(search, epd);
     }
 
@@ -75,14 +88,19 @@ public class EpdSearch {
             try {
                 countDownLatch.await();
 
-                Thread.sleep(timeOut);
-
                 // Stopping search after depth 1 completes
                 search.stopSearch();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        });
+        }, executor);
     }
 
+
+    @Override
+    public void close() {
+        if (executorService != null) {
+            this.executorService.close();
+        }
+    }
 }

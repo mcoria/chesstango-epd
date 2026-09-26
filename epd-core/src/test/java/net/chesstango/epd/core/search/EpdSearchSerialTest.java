@@ -1,7 +1,6 @@
 package net.chesstango.epd.core.search;
 
 import net.chesstango.epd.core.report.EpdAgregateReport;
-import net.chesstango.epd.core.report.interpret.EpdSearchResultCompare;
 import net.chesstango.evaluation.Evaluator;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.search.Search;
@@ -71,14 +70,14 @@ public class EpdSearchSerialTest {
 
         PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
 
-        EpdSearch epdSearch = new EpdSearch();
-        epdSearch.setDepth(pgnSearchParams.getDepth());
+        try (EpdSearch epdSearch = EpdSearch.OpenByDepth(pgnSearchParams.getDepth())) {
 
-        EpdSearchSerial epdSearchSerial = new EpdSearchSerial();
-        epdSearchSerial.setSearch(buildSearchMove(Evaluator.createInstance()));
-        epdSearchSerial.setEpdSearch(epdSearch);
+            EpdSearchSerial epdSearchSerial = new EpdSearchSerial();
+            epdSearchSerial.setSearch(buildSearchMove(Evaluator.createInstance()));
+            epdSearchSerial.setEpdSearch(epdSearch);
 
-        epdSearchResult = epdSearchSerial.run(pgnSearchParams.getEPDs());
+            epdSearchResult = epdSearchSerial.run(pgnSearchParams.getEPDs());
+        }
     }
 
 

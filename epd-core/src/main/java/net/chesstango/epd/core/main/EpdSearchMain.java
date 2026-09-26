@@ -1,7 +1,6 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
-import net.chesstango.engine.Tango;
 import net.chesstango.epd.core.search.*;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
@@ -44,7 +43,7 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
     public static void main(String[] args) {
         CommandLine parsedArgs = parseArguments(args);
 
-        Integer depth = parsedArgs.hasOption('d') ?  Integer.parseInt(parsedArgs.getOptionValue('d')) : null;
+        Integer depth = parsedArgs.hasOption('d') ? Integer.parseInt(parsedArgs.getOptionValue('d')) : null;
 
         Integer timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : null;
 
@@ -88,32 +87,37 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
 
     }
 
-    private final EpdSearchParallel epdSearchParallel;
+    private final Integer depth;
+    private final Integer timeOut;
+
 
     public EpdSearchMain(Integer depth, Integer timeOut) {
-        EpdSearch epdSearch = new EpdSearch();
-        epdSearch.setDepth(depth);
-        epdSearch.setTimeOut(timeOut);
-
-        this.epdSearchParallel = new EpdSearchParallel();
-        this.epdSearchParallel.setEpdSearch(epdSearch);
-        this.epdSearchParallel.setSearchSupplier(new SearchSupplier());
+        this.depth = depth;
+        this.timeOut = timeOut;
     }
 
     @Override
     public EpdSearchResultCollection apply(Path epdFile) {
         EPDDecoder epdDecoder = new EPDDecoder();
+        String suiteName = epdFile.getFileName().toString();
         try {
-            String suiteName = epdFile.getFileName().toString();
-
             Stream<EPD> edpEntries = epdDecoder.decodeEPDs(epdFile);
 
-            List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(edpEntries.toList());
+            List<EpdSearchResult> epdSearchResults = run(edpEntries.toList());
 
             return new EpdSearchResultCollection(suiteName, epdSearchResults);
         } catch (IOException ioException) {
             log.error("Error reading file: {}", epdFile, ioException);
             throw new RuntimeException(ioException);
+        }
+    }
+
+    private List<EpdSearchResult> run(List<EPD> list) {
+        try (EpdSearch epdSearch = depth != null ? EpdSearch.OpenByDepth(depth) : EpdSearch.OpenByTimeOut(timeOut)) {
+            EpdSearchParallel epdSearchParallel = new EpdSearchParallel();
+            epdSearchParallel.setEpdSearch(epdSearch);
+            epdSearchParallel.setSearchSupplier(new SearchSupplier());
+            return epdSearchParallel.run(list);
         }
     }
 

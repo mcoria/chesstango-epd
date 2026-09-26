@@ -2,9 +2,9 @@ package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.epd.core.search.*;
+import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.pgn.PGN;
 import net.chesstango.gardel.pgn.PGNDecoder;
-import net.chesstango.search.Search;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -86,20 +86,6 @@ public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
         }
     }
 
-    private final EpdSearchSerial epdSearchSerial;
-    private final EpdSearch epdSearch;
-
-    public PgnSearchMain() {
-        SearchSupplier searchSupplier = new SearchSupplier();
-
-        epdSearch = new EpdSearch();
-        Search search = searchSupplier.get();
-
-        epdSearchSerial = new EpdSearchSerial();
-        epdSearchSerial.setSearch(search);
-        epdSearchSerial.setEpdSearch(epdSearch);
-
-    }
 
     @Override
     public EpdSearchResultCollection apply(PGN pgn) {
@@ -107,11 +93,19 @@ public class PgnSearchMain implements Function<PGN, EpdSearchResultCollection> {
 
         PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
 
-        epdSearch.setDepth(pgnSearchParams.getDepth());
-
-        List<EpdSearchResult> epdSearchResults = epdSearchSerial.run(pgnSearchParams.getEPDs());
+        List<EpdSearchResult> epdSearchResults = run(pgnSearchParams.getEPDs(), pgnSearchParams.getDepth());
 
         return new EpdSearchResultCollection(suiteName, epdSearchResults);
+    }
+
+    private List<EpdSearchResult> run(List<EPD> list, int depth) {
+        SearchSupplier searchSupplier = new SearchSupplier();
+        try (EpdSearch epdSearch = EpdSearch.OpenByDepth(depth)) {
+            EpdSearchSerial epdSearchSerial = new EpdSearchSerial();
+            epdSearchSerial.setSearch(searchSupplier.get());
+            epdSearchSerial.setEpdSearch(epdSearch);
+            return epdSearchSerial.run(list);
+        }
     }
 
 

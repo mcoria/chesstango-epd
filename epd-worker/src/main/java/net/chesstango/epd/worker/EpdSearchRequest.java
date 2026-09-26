@@ -9,7 +9,6 @@ import net.chesstango.epd.core.search.EpdSearchParallel;
 import net.chesstango.epd.core.search.EpdSearchResult;
 import net.chesstango.gardel.epd.EPD;
 
-import java.io.Serial;
 import java.util.List;
 
 /**
@@ -20,8 +19,8 @@ import java.util.List;
 @Setter
 @Slf4j
 public class EpdSearchRequest extends SearchRequest {
-    private int depth;
-    private int timeOut;
+    private Integer depth;
+    private Integer timeOut;
 
     private List<EPD> epdList;
 
@@ -36,22 +35,19 @@ public class EpdSearchRequest extends SearchRequest {
     public SearchResponse call() {
         log.info("[{}] Running EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
 
-        EpdSearch epdSearch = new EpdSearch();
-        epdSearch.setDepth(depth);
-        if (timeOut > 0) {
-            epdSearch.setTimeOut(timeOut);
+        try (EpdSearch epdSearch = depth != null ? EpdSearch.OpenByDepth(depth) : EpdSearch.OpenByTimeOut(timeOut)) {
+
+            epdSearchParallel.setEpdSearch(epdSearch);
+
+            List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(epdList);
+
+            log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
+
+            return new SearchResponse()
+                    .setEpdSearchResults(epdSearchResults)
+                    .setSessionId(sessionId)
+                    .setSearchId(getSearchId());
         }
-
-        epdSearchParallel.setEpdSearch(epdSearch);
-
-        List<EpdSearchResult> epdSearchResults = epdSearchParallel.run(epdList);
-
-        log.info("[{}] Completed EPD search entries={}, depth={}, timeOut={}", sessionId, epdList.size(), depth, timeOut);
-
-        return new SearchResponse()
-                .setEpdSearchResults(epdSearchResults)
-                .setSessionId(sessionId)
-                .setSearchId(getSearchId());
     }
 
 }
