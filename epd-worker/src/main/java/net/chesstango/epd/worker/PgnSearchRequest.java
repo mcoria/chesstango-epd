@@ -35,18 +35,18 @@ public class PgnSearchRequest extends SearchRequest {
 
         PgnSearchParams pgnSearchParams = new PgnSearchParams(pgn);
 
-        EpdSearch epdSearch = new EpdSearch();
-        epdSearch.setDepth(pgnSearchParams.getDepth());
+        try (EpdSearch epdSearch = EpdSearch.OpenByDepth(pgnSearchParams.getDepth())) {
 
-        epdSearchSerial.setEpdSearch(epdSearch);
+            epdSearchSerial.setEpdSearch(epdSearch);
 
-        List<EpdSearchResult> epdSearchResults = epdSearchSerial.run(pgnSearchParams.getEPDs());
+            List<EpdSearchResult> epdSearchResults = epdSearchSerial.run(pgnSearchParams.getEPDs());
 
-        log.info("[{}] Completed PGN search entries={}", sessionId, epdSearchResults.size());
+            log.info("[{}] Completed PGN search entries={}", sessionId, epdSearchResults.size());
 
-        return new SearchResponse()
-                .setEpdSearchResults(epdSearchResults)
-                .setSessionId(sessionId)
-                .setSearchId(getSearchId());
+            return new SearchResponse()
+                    .setEpdSearchResults(epdSearchResults)
+                    .setSessionId(sessionId)
+                    .setSearchId(getSearchId());
+        }
     }
 }
