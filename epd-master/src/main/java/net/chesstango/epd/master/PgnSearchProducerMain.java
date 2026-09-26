@@ -77,28 +77,6 @@ public class PgnSearchProducerMain implements Runnable {
         }
     }
 
-    private static CommandLine parseArguments(String[] args) {
-        final Options options = new Options();
-
-        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where pgn file is located").build();
-        options.addOption(directoryOpt);
-
-        Option fileNameOpt = Option.builder("f").argName("fileName").hasArg().required().desc("pgn file name").build();
-        options.addOption(fileNameOpt);
-
-        CommandLineParser parser = new DefaultParser();
-        try {
-            // parse the command line arguments
-            return parser.parse(options, args);
-        } catch (ParseException exp) {
-            // oops, something went wrong
-            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-            new HelpFormatter().printHelp(PgnSearchProducerMain.class.getName(), options);
-            System.exit(-1);
-        }
-        return null;
-    }
-
     private final String rabbitHost;
     private final String sessionId;
     private final List<PGN> pgnList;
@@ -143,5 +121,27 @@ public class PgnSearchProducerMain implements Runnable {
             searchRequests.add(searchRequest);
         }
         return searchRequests;
+    }
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where pgn file is located").build();
+        options.addOption(directoryOpt);
+
+        Option fileNameOpt = Option.builder("f").argName("fileName").hasArg().required().desc("pgn file name").build();
+        options.addOption(fileNameOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            // oops, something went wrong
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+            new HelpFormatter().printHelp(PgnSearchProducerMain.class.getName(), options);
+            System.exit(-1);
+        }
+        return null;
     }
 }

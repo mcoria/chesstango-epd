@@ -26,8 +26,13 @@ public class Common {
         return String.format("%s-%s-%s", pgn, SESSION_DATE, Tango.ENGINE_VERSION);
     }
 
-    public static String createSessionId(int depth) {
-        return String.format("depth-%d-%s-%s", depth, SESSION_DATE, Tango.ENGINE_VERSION);
+    public static String createSessionId(Integer depth, Integer timeOut) {
+        if (depth != null) {
+            return String.format("depth-%d-%s-%s", depth, SESSION_DATE, Tango.ENGINE_VERSION);
+        } else if (timeOut != null) {
+            return String.format("time-%d-%s-%s", timeOut, SESSION_DATE, Tango.ENGINE_VERSION);
+        }
+        throw new IllegalArgumentException("depth and timeOut cannot be null");
     }
 
     public static synchronized Path createSessionDirectory(Path suiteDirectory, String sessionId) {

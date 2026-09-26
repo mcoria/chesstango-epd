@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.chesstango.board.Game;
+import net.chesstango.engine.Tango;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.search.Search;
 import net.chesstango.search.SearchResult;
@@ -24,7 +25,7 @@ public class EpdSearch {
 
     @Setter
     @Getter(AccessLevel.PACKAGE)
-    private int depth;
+    private Integer depth;
 
     @Setter
     @Getter(AccessLevel.PACKAGE)
@@ -32,6 +33,14 @@ public class EpdSearch {
 
 
     public EpdSearchResult run(Search search, EPD epd) {
+        if (depth == null && timeOut == null) {
+            throw new IllegalArgumentException("Depth or timeOut must be set");
+        }
+
+        if (depth == null) {
+            depth = Tango.INFINITE_DEPTH;
+        }
+
         return timeOut == null ? runNow(search, epd) : runTimeOut(search, epd);
     }
 
@@ -66,7 +75,7 @@ public class EpdSearch {
             try {
                 countDownLatch.await();
 
-                Thread.sleep(timeOut * 1000L);
+                Thread.sleep(timeOut);
 
                 // Stopping search after depth 1 completes
                 search.stopSearch();

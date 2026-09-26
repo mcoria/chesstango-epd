@@ -1,6 +1,7 @@
 package net.chesstango.epd.core.main;
 
 import lombok.extern.slf4j.Slf4j;
+import net.chesstango.engine.Tango;
 import net.chesstango.epd.core.search.*;
 import net.chesstango.gardel.epd.EPD;
 import net.chesstango.gardel.epd.EPDDecoder;
@@ -30,7 +31,8 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
      * -b baseline search
      * <p>
      * Ejemplo:
-     * -d 6 -t 0 -i C:\java\projects\chess\chess-utils\testing\EPD\database -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * -d 6   -i "C:\java\projects\chess\chess-utils\testing\EPD\database" -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * -t 100 -i "C:\java\projects\chess\chess-utils\testing\EPD\database" -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
      *
      * <p>
      * Ejecutar VM con
@@ -42,9 +44,9 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
     public static void main(String[] args) {
         CommandLine parsedArgs = parseArguments(args);
 
-        int depth = Integer.parseInt(parsedArgs.getOptionValue('d'));
+        Integer depth = parsedArgs.hasOption('d') ?  Integer.parseInt(parsedArgs.getOptionValue('d')) : null;
 
-        int timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : 0;
+        Integer timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : null;
 
         String suiteDirectoryStr = parsedArgs.getOptionValue('i');
 
@@ -62,7 +64,7 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
         /**
          * Input
          */
-        String sessionId = createSessionId(depth);
+        String sessionId = createSessionId(depth, timeOut);
 
         Path sessionDirectory = Common.createSessionDirectory(suiteDirectory, sessionId);
 
@@ -88,12 +90,10 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
 
     private final EpdSearchParallel epdSearchParallel;
 
-    public EpdSearchMain(int depth, int timeOut) {
+    public EpdSearchMain(Integer depth, Integer timeOut) {
         EpdSearch epdSearch = new EpdSearch();
         epdSearch.setDepth(depth);
-        if (timeOut > 0) {
-            epdSearch.setTimeOut(timeOut);
-        }
+        epdSearch.setTimeOut(timeOut);
 
         this.epdSearchParallel = new EpdSearchParallel();
         this.epdSearchParallel.setEpdSearch(epdSearch);
@@ -121,7 +121,7 @@ public class EpdSearchMain implements Function<Path, EpdSearchResultCollection> 
     private static CommandLine parseArguments(String[] args) {
         final Options options = new Options();
 
-        Option depthOpt = Option.builder("d").argName("depth").hasArg().required().desc("search depth").build();
+        Option depthOpt = Option.builder("d").argName("depth").hasArg().desc("search depth").build();
         options.addOption(depthOpt);
 
         Option timeOutOpt = Option.builder("t").argName("timeOut").hasArg().desc("timeout in milliseconds").build();

@@ -46,9 +46,9 @@ public class EpdSearchProducerMain implements Runnable {
     public static void main(String[] args) {
         CommandLine parsedArgs = parseArguments(args);
 
-        int depth = Integer.parseInt(parsedArgs.getOptionValue('d'));
+        Integer depth = parsedArgs.hasOption('d') ? Integer.parseInt(parsedArgs.getOptionValue('d')) : null;
 
-        int timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : 0;
+        Integer timeOut = parsedArgs.hasOption('t') ? Integer.parseInt(parsedArgs.getOptionValue('t')) : null;
 
         String directory = parsedArgs.getOptionValue('i');
 
@@ -61,50 +61,22 @@ public class EpdSearchProducerMain implements Runnable {
             throw new RuntimeException("Directory not found: " + directory);
         }
 
-        String sessionId = createSessionId(depth);
+        String sessionId = createSessionId(depth, timeOut);
 
         List<Path> epdFiles = listEpdFiles(suiteDirectory, filePattern);
 
         new EpdSearchProducerMain(sessionId, epdFiles, depth, timeOut).run();
     }
 
-    private static CommandLine parseArguments(String[] args) {
-        final Options options = new Options();
-
-        Option depthOpt = Option.builder("d").argName("depth").hasArg().required().desc("search depth").build();
-        options.addOption(depthOpt);
-
-        Option timeOutOpt = Option.builder("t").argName("timeOut").hasArg().desc("timeout in milliseconds").build();
-        options.addOption(timeOutOpt);
-
-        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where epd files are located").build();
-        options.addOption(directoryOpt);
-
-        Option filePatternOpt = Option.builder("f").argName("filePattern").hasArg().required().desc("epd file name pattern").build();
-        options.addOption(filePatternOpt);
-
-        CommandLineParser parser = new DefaultParser();
-        try {
-            // parse the command line arguments
-            return parser.parse(options, args);
-        } catch (ParseException exp) {
-            // oops, something went wrong
-            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-            new HelpFormatter().printHelp(EpdSearchProducerMain.class.getName(), options);
-            System.exit(-1);
-        }
-        return null;
-    }
-
     private final String rabbitHost;
 
     private final String sessionId;
     private final List<Path> epdFiles;
-    private final int depth;
-    private final int timeOut;
+    private final Integer depth;
+    private final Integer timeOut;
 
 
-    public EpdSearchProducerMain(String sessionId, List<Path> epdFiles, int depth, int timeOut) {
+    public EpdSearchProducerMain(String sessionId, List<Path> epdFiles, Integer depth, Integer timeOut) {
         this.rabbitHost = "localhost";
         this.sessionId = sessionId;
         this.epdFiles = epdFiles;
@@ -158,5 +130,34 @@ public class EpdSearchProducerMain implements Runnable {
             }
         }
         return searchRequests;
+    }
+
+
+    private static CommandLine parseArguments(String[] args) {
+        final Options options = new Options();
+
+        Option depthOpt = Option.builder("d").argName("depth").hasArg().desc("search depth").build();
+        options.addOption(depthOpt);
+
+        Option timeOutOpt = Option.builder("t").argName("timeOut").hasArg().desc("timeout in milliseconds").build();
+        options.addOption(timeOutOpt);
+
+        Option directoryOpt = Option.builder("i").argName("directory").hasArg().required().desc("directory where epd files are located").build();
+        options.addOption(directoryOpt);
+
+        Option filePatternOpt = Option.builder("f").argName("filePattern").hasArg().required().desc("epd file name pattern").build();
+        options.addOption(filePatternOpt);
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            return parser.parse(options, args);
+        } catch (ParseException exp) {
+            // oops, something went wrong
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+            new HelpFormatter().printHelp(EpdSearchProducerMain.class.getName(), options);
+            System.exit(-1);
+        }
+        return null;
     }
 }

@@ -17,7 +17,7 @@ public class SearchSupplier implements Supplier<Search> {
 
     @Override
     public Search get() {
-        return conPoco();
+        return createDefault();
     }
 
     static Search createDefault() {
