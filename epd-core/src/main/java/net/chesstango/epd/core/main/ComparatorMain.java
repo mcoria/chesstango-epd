@@ -27,10 +27,12 @@ public class ComparatorMain {
     public static void main(String[] args) {
         printSummaryLegends();
 
-        Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\jira\\CHT-754\\con_poco\\depth-1");
+        Path suiteParentDirectory = Path.of("C:\\java\\projects\\chess\\chess-utils\\testing\\EPD\\database");
 
-        new ComparatorMain(suiteParentDirectory, "depth-1-2026-09-24-20-00-v1.11.0-SNAPSHOT")
-                .addSession("depth-1-2026-09-24-20-06-v1.11.0-SNAPSHOT")
+        new ComparatorMain(suiteParentDirectory, "depth-7-2026-09-15-00-05-v1.10.0")
+                .addSession("depth-7-2026-10-01-08-24-v1.11.0-SNAPSHOT")
+                .addSession("depth-7-2026-10-02-20-04-v1.11.0-SNAPSHOT")
+                .addSession("depth-7-2026-10-02-21-24-v1.11.0-SNAPSHOT")
                 //
                 //
                 .execute();
