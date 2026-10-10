@@ -34,7 +34,7 @@ public class EpdSearchProducerMain implements Runnable {
      * -f Filtro de archivos
      * <p>
      * Ejemplo:
-     * -d 4 -t 500 -i C:\java\projects\chess\chess-utils\testing\EPD\database -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd)"
+     * -d 4 -t 500 -i C:\java\projects\chess\chess-utils\testing\EPD\database -f "(mate-[wb][123].epd|Bratko-Kopec.epd|Kaufman.epd|wac-2018.epd|STS*.epd|Nolot.epd|sbd.epd|pet.epd|lapuce2.epd|ecmgcp.epd)"
      *
      * <p>
      * Ejecutar VM con`
